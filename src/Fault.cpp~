@@ -38,5 +38,4 @@ int Fault::check(Bus _bus)
 		bus[i]=_bus.internel[(int)con[i][0]-1];
 		//printf("%d\n",bus[i]);
 	}
-	return 1;
 }

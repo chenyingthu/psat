@@ -33,7 +33,7 @@ OBJ_DEBUG = $(OBJDIR_DEBUG)/src/PV.o $(OBJDIR_DEBUG)/src/BoundaryNode.o $(OBJDIR
 
 OBJ_RELEASE = $(OBJDIR_RELEASE)/src/PV.o $(OBJDIR_RELEASE)/src/BoundaryNode.o $(OBJDIR_RELEASE)/src/Bus.o $(OBJDIR_RELEASE)/src/Clpsat.o $(OBJDIR_RELEASE)/src/DAE.o $(OBJDIR_RELEASE)/src/Fault.o $(OBJDIR_RELEASE)/src/Line.o $(OBJDIR_RELEASE)/src/Mn.o $(OBJDIR_RELEASE)/src/PQ.o $(OBJDIR_RELEASE)/src/Psat.o $(OBJDIR_RELEASE)/src/SW.o $(OBJDIR_RELEASE)/src/Settings.o $(OBJDIR_RELEASE)/src/Shunt.o $(OBJDIR_RELEASE)/src/Syn.o $(OBJDIR_RELEASE)/src/Varout.o $(OBJDIR_RELEASE)/src/main.o $(OBJDIR_RELEASE)/lib/myLib.o
 
-all: debug release
+all: debug 
 
 clean: clean_debug clean_release
 

@@ -58,6 +58,7 @@ public:
 	void fm_base_pq();
 	void fm_base_pv();
 	void fm_base_syn();
+	void fm_base_mn();
 	void fm_y();
 	void fm_dynlf();
 	void fm_spf();

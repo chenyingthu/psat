@@ -1,0 +1,385 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+AR	makefile	/^AR = ar$/;"	m
+Ac	inc/DAE.h	/^	double *Ac;$/;"	m	class:DAE
+Angle	inc/BoundaryNode.h	/^	double *Angle;$/;"	m	class:BoundaryNode
+BoundaryNode	inc/BoundaryNode.h	/^class BoundaryNode{$/;"	c
+BoundaryNode	src/BoundaryNode.cpp	/^BoundaryNode::BoundaryNode()$/;"	f	class:BoundaryNode
+Bp	inc/Line.h	/^	double *Bp;$/;"	m	class:Line
+Bpp	inc/Line.h	/^	double *Bpp;$/;"	m	class:Line
+Bus	inc/Bus.h	/^class Bus{$/;"	c
+Bus	src/Bus.cpp	/^Bus::Bus()$/;"	f	class:Bus
+CC	makefile	/^CC = gcc$/;"	m
+CFLAGS	makefile	/^CFLAGS = -Wall -fexceptions$/;"	m
+CFLAGS_DEBUG	makefile	/^CFLAGS_DEBUG = $(CFLAGS) -g$/;"	m
+CXX	makefile	/^CXX = g++$/;"	m
+Clpsat	inc/Clpsat.h	/^class Clpsat{$/;"	c
+Clpsat	src/Clpsat.cpp	/^Clpsat::Clpsat(){$/;"	f	class:Clpsat
+Complex	inc/Psat.h	/^typedef  complex<double> Complex;$/;"	t
+DAE	inc/DAE.h	/^class DAE{$/;"	c
+DAE	src/DAE.cpp	/^DAE::DAE()$/;"	f	class:DAE
+DEP_DEBUG	makefile	/^DEP_DEBUG = $/;"	m
+Fault	inc/Fault.h	/^class Fault$/;"	c
+Fault	src/Fault.cpp	/^Fault::Fault()$/;"	f	class:Fault
+Fx	inc/DAE.h	/^	double *Fx;$/;"	m	class:DAE
+Fy	inc/DAE.h	/^	double *Fy;$/;"	m	class:DAE
+Gp	inc/Syn.h	/^	double *Gp;$/;"	m	class:Syn
+Gq	inc/Syn.h	/^	double *Gq;$/;"	m	class:Syn
+Gx	inc/DAE.h	/^	double *Gx;$/;"	m	class:DAE
+INC	makefile	/^INC = $/;"	m
+INC_DEBUG	makefile	/^INC_DEBUG = $(INC) -I..\/..\/..\/下载\/software\/lapack-3.4.2\/lapacke\/include -I..\/..\/..\/下载\/software\/lapack-3.4.2\/CBLAS\/include -Iinc$/;"	m
+Id	inc/Syn.h	/^	double *Id;$/;"	m	class:Syn
+Iq	inc/Syn.h	/^	double *Iq;$/;"	m	class:Syn
+J11	inc/DAE.h	/^	double *J11;$/;"	m	class:DAE
+J11	inc/Syn.h	/^	double *J11;$/;"	m	class:Syn
+J12	inc/DAE.h	/^	double *J12;$/;"	m	class:DAE
+J12	inc/Syn.h	/^	double *J12;$/;"	m	class:Syn
+J21	inc/DAE.h	/^	double *J21;$/;"	m	class:DAE
+J21	inc/Syn.h	/^	double *J21;$/;"	m	class:Syn
+J22	inc/DAE.h	/^	double *J22;$/;"	m	class:DAE
+J22	inc/Syn.h	/^	double *J22;$/;"	m	class:Syn
+Jlf	inc/DAE.h	/^	double *Jlf;$/;"	m	class:DAE
+Jlfd	inc/DAE.h	/^	double *Jlfd;$/;"	m	class:DAE
+Jlfv	inc/DAE.h	/^	double *Jlfv;$/;"	m	class:DAE
+LD	makefile	/^LD = g++$/;"	m
+LDFLAGS	makefile	/^LDFLAGS = $/;"	m
+LDFLAGS_DEBUG	makefile	/^LDFLAGS_DEBUG = $(LDFLAGS)$/;"	m
+LIB	makefile	/^LIB = $/;"	m
+LIBDIR	makefile	/^LIBDIR = $/;"	m
+LIBDIR_DEBUG	makefile	/^LIBDIR_DEBUG = $(LIBDIR) -L..\/..\/..\/下载\/software\/lapack-3.4.2\/CBLAS\/lib$/;"	m
+LIB_DEBUG	makefile	/^LIB_DEBUG = $(LIB)..\/..\/..\/下载\/software\/lapack-3.4.2\/CBLAS\/lib\/cblas_LINUX.a ..\/..\/..\/下载\/software\/lapack-3.4.2\/liblapacke.a ..\/..\/..\/下载\/software\/lapack-3.4.2\/libtmglib.a ..\/..\/..\/下载\/software\/lapack-3.4.2\/liblapack.a ..\/..\/..\/下载\/software\/lapack-3.4.2\/librefblas.a -lgfortran$/;"	m
+Line	inc/Line.h	/^class Line{$/;"	c
+Line	src/Line.cpp	/^Line::Line()$/;"	f	class:Line
+Mn	inc/Mn.h	/^class Mn{$/;"	c
+Mn	src/Mn.cpp	/^Mn::Mn(){$/;"	f	class:Mn
+Mndelete	src/Mn.cpp	/^void Mn::Mndelete(int _n){$/;"	f	class:Mn
+Mninit	src/Mn.cpp	/^void Mn::Mninit(int _n){$/;"	f	class:Mn
+OBJDIR_DEBUG	makefile	/^OBJDIR_DEBUG = obj\/Debug$/;"	m
+OBJ_DEBUG	makefile	/^OBJ_DEBUG = $(OBJDIR_DEBUG)\/src\/PV.o $(OBJDIR_DEBUG)\/src\/BoundaryNode.o $(OBJDIR_DEBUG)\/src\/Bus.o $(OBJDIR_DEBUG)\/src\/Clpsat.o $(OBJDIR_DEBUG)\/src\/DAE.o $(OBJDIR_DEBUG)\/src\/Fault.o $(OBJDIR_DEBUG)\/src\/Line.o $(OBJDIR_DEBUG)\/src\/Mn.o $(OBJDIR_DEBUG)\/src\/PQ.o $(OBJDIR_DEBUG)\/src\/Psat.o $(OBJDIR_DEBUG)\/src\/SW.o $(OBJDIR_DEBUG)\/src\/Settings.o $(OBJDIR_DEBUG)\/src\/Shunt.o $(OBJDIR_DEBUG)\/src\/Syn.o $(OBJDIR_DEBUG)\/src\/Varout.o $(OBJDIR_DEBUG)\/src\/main.o $(OBJDIR_DEBUG)\/lib\/myLib.o$/;"	m
+OBJ_RELEASE	makefile	/^OBJ_RELEASE = $(OBJDIR_RELEASE)\/src\/PV.o $(OBJDIR_RELEASE)\/src\/BoundaryNode.o $(OBJDIR_RELEASE)\/src\/Bus.o $(OBJDIR_RELEASE)\/src\/Clpsat.o $(OBJDIR_RELEASE)\/src\/DAE.o $(OBJDIR_RELEASE)\/src\/Fault.o $(OBJDIR_RELEASE)\/src\/Line.o $(OBJDIR_RELEASE)\/src\/Mn.o $(OBJDIR_RELEASE)\/src\/PQ.o $(OBJDIR_RELEASE)\/src\/Psat.o $(OBJDIR_RELEASE)\/src\/SW.o $(OBJDIR_RELEASE)\/src\/Settings.o $(OBJDIR_RELEASE)\/src\/Shunt.o $(OBJDIR_RELEASE)\/src\/Syn.o $(OBJDIR_RELEASE)\/src\/Varout.o $(OBJDIR_RELEASE)\/src\/main.o $(OBJDIR_RELEASE)\/lib\/myLib.o$/;"	m
+OUT_DEBUG	makefile	/^OUT_DEBUG = bin\/Debug\/psat$/;"	m
+P	inc/BoundaryNode.h	/^	double *P;$/;"	m	class:BoundaryNode
+P0	inc/PQ.h	/^	double *P0;$/;"	m	class:PQ
+PQ	inc/PQ.h	/^class PQ$/;"	c
+PQ	src/PQ.cpp	/^PQ::PQ()$/;"	f	class:PQ
+PV	inc/PV.h	/^class PV$/;"	c
+PV	src/PV.cpp	/^PV::PV()$/;"	f	class:PV
+Pg	inc/Bus.h	/^	double *Pg;$/;"	m	class:Bus
+Pg	inc/Syn.h	/^	double *Pg;$/;"	m	class:Syn
+Pl	inc/Bus.h	/^	double *Pl;$/;"	m	class:Bus
+Pm	inc/Varout.h	/^	double *Pm;$/;"	m	class:Varout
+Psat	inc/Psat.h	/^class Psat{$/;"	c
+Psat	src/Psat.cpp	/^Psat::Psat(){$/;"	f	class:Psat
+Q	inc/BoundaryNode.h	/^	double *Q;$/;"	m	class:BoundaryNode
+Q0	inc/PQ.h	/^	double *Q0;$/;"	m	class:PQ
+Qg	inc/Bus.h	/^	double *Qg;$/;"	m	class:Bus
+Qg	inc/Syn.h	/^	double *Qg;$/;"	m	class:Syn
+Ql	inc/Bus.h	/^	double *Ql;$/;"	m	class:Bus
+RCFLAGS_DEBUG	makefile	/^RCFLAGS_DEBUG = $(RCFLAGS)$/;"	m
+RESINC	makefile	/^RESINC = $/;"	m
+RESINC_DEBUG	makefile	/^RESINC_DEBUG = $(RESINC) -I..\/..\/..\/下载\/software\/lapack-3.4.2\/CBLAS\/src -I..\/..\/..\/下载\/software\/lapack-3.4.2\/SRC$/;"	m
+SW	inc/SW.h	/^class SW{$/;"	c
+SW	src/SW.cpp	/^SW::SW()$/;"	f	class:SW
+Settings	inc/settings.h	/^class Settings {$/;"	c
+Settings	src/Settings.cpp	/^Settings::Settings()$/;"	f	class:Settings
+Shunt	inc/Shunt.h	/^class Shunt{$/;"	c
+Shunt	src/Shunt.cpp	/^Shunt::Shunt()$/;"	f	class:Shunt
+Shuntdelete	src/Shunt.cpp	/^void Shunt::Shuntdelete(int _n)$/;"	f	class:Shunt
+Syn	inc/Syn.h	/^class Syn$/;"	c
+Syn	src/Syn.cpp	/^Syn::Syn()$/;"	f	class:Syn
+V	inc/DAE.h	/^	double *V;$/;"	m	class:DAE
+V	inc/Fault.h	/^	double *V;$/;"	m	class:Fault
+V	inc/Varout.h	/^	double *V;$/;"	m	class:Varout
+Varout	inc/Varout.h	/^class Varout$/;"	c
+Varout	src/Varout.cpp	/^Varout::Varout(){$/;"	f	class:Varout
+Vf	inc/Varout.h	/^	double *Vf;$/;"	m	class:Varout
+Voltage	inc/BoundaryNode.h	/^	double *Voltage;$/;"	m	class:BoundaryNode
+WINDRES	makefile	/^WINDRES = windres$/;"	m
+WORKDIR	makefile	/^WORKDIR = `pwd`$/;"	m
+Y	inc/Line.h	/^	complex<double> *Y;$/;"	m	class:Line
+_BOUNDARYNODE_H	inc/BoundaryNode.h	2;"	d
+_BUS_H	inc/Bus.h	2;"	d
+_CLPSAT_H	inc/Clpsat.h	2;"	d
+_DAE_H	inc/DAE.h	2;"	d
+_FAULT_H	inc/Fault.h	2;"	d
+_LINE_H	inc/Line.h	2;"	d
+_MN_H	inc/Mn.h	2;"	d
+_MYLIB_H	lib/myLib.h	2;"	d
+_PQ_H	inc/PQ.h	2;"	d
+_PSAT_H	inc/Psat.h	2;"	d
+_PV_H	inc/PV.h	2;"	d
+_SETTINGS_H	inc/settings.h	2;"	d
+_SHUNT_H	inc/Shunt.h	2;"	d
+_SW_H	inc/SW.h	2;"	d
+_SYN_H	inc/Syn.h	2;"	d
+_VAROUT_H	inc/Varout.h	2;"	d
+a	inc/DAE.h	/^	double *a;$/;"	m	class:DAE
+absvalues	inc/settings.h	/^	int absvalues;$/;"	m	class:Settings
+alpha	inc/Psat.h	/^	complex<double>alpha;$/;"	m	class:Psat
+ang	inc/Fault.h	/^	double *ang;$/;"	m	class:Fault
+ang	inc/Varout.h	/^	double *ang;$/;"	m	class:Varout
+b	inc/Shunt.h	/^	double *b;$/;"	m	class:Shunt
+beep	inc/settings.h	/^	int beep;$/;"	m	class:Settings
+beta	inc/Psat.h	/^	complex<double>beta;$/;"	m	class:Psat
+bnode	inc/BoundaryNode.h	/^	int *bnode;$/;"	m	class:BoundaryNode
+boundaryNodeDelete	src/BoundaryNode.cpp	/^void BoundaryNode::boundaryNodeDelete()$/;"	f	class:BoundaryNode
+boundarynode	inc/Psat.h	/^	BoundaryNode boundarynode;$/;"	m	class:Psat
+bs2	inc/Syn.h	/^	int *bs2;$/;"	m	class:Syn
+bs3	inc/Syn.h	/^	int *bs3;$/;"	m	class:Syn
+bs4	inc/Syn.h	/^	int *bs4;$/;"	m	class:Syn
+bs51	inc/Syn.h	/^	int *bs51;$/;"	m	class:Syn
+bs52	inc/Syn.h	/^	int *bs52;$/;"	m	class:Syn
+bs53	inc/Syn.h	/^	int *bs53;$/;"	m	class:Syn
+bs6	inc/Syn.h	/^	int *bs6;$/;"	m	class:Syn
+bs8	inc/Syn.h	/^	int *bs8;$/;"	m	class:Syn
+bus	inc/Fault.h	/^	int *bus;$/;"	m	class:Fault
+bus	inc/Mn.h	/^	int *bus;$/;"	m	class:Mn
+bus	inc/PQ.h	/^	int *bus;$/;"	m	class:PQ
+bus	inc/PV.h	/^	int *bus;$/;"	m	class:PV
+bus	inc/Psat.h	/^	Bus bus;$/;"	m	class:Psat
+bus	inc/SW.h	/^	int *bus;$/;"	m	class:SW
+bus	inc/Shunt.h	/^	int *bus;$/;"	m	class:Shunt
+bus	inc/Syn.h	/^	int *bus;$/;"	m	class:Syn
+busDelete	src/Bus.cpp	/^void Bus::busDelete(){$/;"	f	class:Bus
+c1	inc/Syn.h	/^	double *c1;$/;"	m	class:Syn
+c2	inc/Syn.h	/^	double *c2;$/;"	m	class:Syn
+c3	inc/Syn.h	/^	double *c3;$/;"	m	class:Syn
+cat4matrix	lib/myLib.cpp	/^void cat4matrix(double *A,int na,int ma,double *B,int nb,int mb,double *C,int nc,int mc,double *D,int nd,int md,double *Result)$/;"	f
+check	src/Bus.cpp	/^int Bus::check()$/;"	f	class:Bus
+check	src/DAE.cpp	/^int DAE::check(Bus bus)$/;"	f	class:DAE
+check	src/Fault.cpp	/^int Fault::check(Bus _bus)$/;"	f	class:Fault
+check	src/Line.cpp	/^int Line::check(Settings settings){$/;"	f	class:Line
+check	src/Mn.cpp	/^void Mn::check(Bus _bus){$/;"	f	class:Mn
+check	src/PQ.cpp	/^int PQ::check(Bus _bus ,Clpsat clpsat)$/;"	f	class:PQ
+check	src/PV.cpp	/^int PV::check(Bus _bus,Clpsat clpsat,DAE dae){$/;"	f	class:PV
+check	src/SW.cpp	/^int SW::check(Bus _bus){$/;"	f	class:SW
+check	src/Shunt.cpp	/^void Shunt::check(Bus _bus,Settings settings)$/;"	f	class:Shunt
+check	src/Syn.cpp	/^int Syn::check(Bus _bus)$/;"	f	class:Syn
+check_2	src/DAE.cpp	/^int DAE::check_2(SW sw)$/;"	f	class:DAE
+chunk	inc/settings.h	/^	int chunk;$/;"	m	class:Settings
+clpsat	inc/Psat.h	/^	Clpsat clpsat;$/;"	m	class:Psat
+cmp	lib/myLib.cpp	/^int cmp(const void *a, const void *b)$/;"	f
+cmpD	lib/myLib.cpp	/^int cmpD(const void * a, const void * b)$/;"	f
+color	inc/settings.h	/^	int color;$/;"	m	class:Settings
+con	inc/Bus.h	/^	double **con;$/;"	m	class:Bus
+con	inc/Fault.h	/^	double **con;$/;"	m	class:Fault
+con	inc/Line.h	/^	double **con;$/;"	m	class:Line
+con	inc/Mn.h	/^	double **con;$/;"	m	class:Mn
+con	inc/PQ.h	/^	double **con;$/;"	m	class:PQ
+con	inc/PV.h	/^	double **con;$/;"	m	class:PV
+con	inc/SW.h	/^	double **con;$/;"	m	class:SW
+con	inc/Shunt.h	/^	double **con;$/;"	m	class:Shunt
+con	inc/Syn.h	/^	double **con;$/;"	m	class:Syn
+conj	lib/myLib.cpp	/^complex<double> conj(complex<double>a)$/;"	f
+conj_	lib/myLib.cpp	/^complex<double> *conj_(int n,complex<double>*a)$/;"	f
+conv	inc/settings.h	/^	int conv;$/;"	m	class:Settings
+dac	inc/settings.h	/^	int dac;$/;"	m	class:Settings
+dae	inc/Psat.h	/^	DAE dae;$/;"	m	class:Psat
+daeDelete	src/DAE.cpp	/^void DAE::daeDelete()$/;"	f	class:DAE
+dat	inc/Fault.h	/^	double *dat;$/;"	m	class:Fault
+deleteVarout	src/Varout.cpp	/^void Varout::deleteVarout(){$/;"	f	class:Varout
+delta	inc/Fault.h	/^	double delta;$/;"	m	class:Fault
+delta	inc/Syn.h	/^	double *delta;$/;"	m	class:Syn
+delta_idx	inc/Syn.h	/^	int *delta_idx;$/;"	m	class:Syn
+deltamax	inc/settings.h	/^	double deltamax;$/;"	m	class:Settings
+deltamin	inc/settings.h	/^	double deltamin;$/;"	m	class:Settings
+deltat	inc/settings.h	/^	double deltat;$/;"	m	class:Settings
+distrsw	inc/settings.h	/^	int distrsw;$/;"	m	class:Settings
+dynmit	inc/settings.h	/^	int dynmit;$/;"	m	class:Settings
+dyntol	inc/settings.h	/^	double dyntol;$/;"	m	class:Settings
+e1d	inc/Syn.h	/^	double *e1d;$/;"	m	class:Syn
+e1d_idx	inc/Syn.h	/^	int *e1d_idx;$/;"	m	class:Syn
+e1q	inc/Syn.h	/^	double *e1q;$/;"	m	class:Syn
+e1q_idx	inc/Syn.h	/^	int *e1q_idx;$/;"	m	class:Syn
+e2d	inc/Syn.h	/^	double *e2d;$/;"	m	class:Syn
+e2d_idx	inc/Syn.h	/^	int *e2d_idx;$/;"	m	class:Syn
+e2q	inc/Syn.h	/^	double *e2q;$/;"	m	class:Syn
+e2q_idx	inc/Syn.h	/^	int *e2q_idx;$/;"	m	class:Syn
+exportType	inc/settings.h	/^	char exportType[20];$/;"	m	class:Settings
+f	inc/DAE.h	/^	double *f;$/;"	m	class:DAE
+f	inc/Varout.h	/^	double *f;$/;"	m	class:Varout
+fault	inc/Psat.h	/^	Fault fault;$/;"	m	class:Psat
+faultDelete	src/Fault.cpp	/^void Fault::faultDelete()$/;"	f	class:Fault
+find	lib/myLib.cpp	/^int find(double *srcArray,int len,double ref,int *dstArray)$/;"	f
+findi	lib/myLib.cpp	/^int findi(int *srcArray,int len,int ref,int *dstArray)$/;"	f
+fixt	inc/settings.h	/^	int fixt;$/;"	m	class:Settings
+fm_base_line	src/Psat.cpp	/^void Psat::fm_base_line(){$/;"	f	class:Psat
+fm_dynidx	src/Syn.cpp	/^int Syn::fm_dynidx(DAE dae)$/;"	f	class:Syn
+fm_ncomp	src/Psat.cpp	/^int Psat::fm_ncomp(){$/;"	f	class:Psat
+fm_synit	src/PV.cpp	/^void PV::fm_synit(int _n,int *_bus){$/;"	f	class:PV
+fm_synit	src/SW.cpp	/^void SW::fm_synit(int _n,int *_bus){$/;"	f	class:SW
+fm_synit	src/Syn.cpp	/^void Syn::fm_synit(Settings settings,DAE dae,Bus _bus){$/;"	f	class:Syn
+fm_synit_mod2	src/Syn.cpp	/^void Syn::fm_synit_mod2(int is2_n,int *is2,double *vd,double *vq){$/;"	f	class:Syn
+fm_synit_mod3	src/Syn.cpp	/^void Syn::fm_synit_mod3(int is3_n,int *is3,double *vd,double *vq,DAE dae){$/;"	f	class:Syn
+fm_synit_mod4	src/Syn.cpp	/^void Syn::fm_synit_mod4(int is4_n,int *is4,double *vd,double *vq,DAE dae){$/;"	f	class:Syn
+fm_synit_mod51	src/Syn.cpp	/^void Syn::fm_synit_mod51(int is51_n,int *is51,double *vd,double *vq){$/;"	f	class:Syn
+fm_synit_mod52	src/Syn.cpp	/^void Syn::fm_synit_mod52(int is52_n,int *is52,double *vd,double *vq){$/;"	f	class:Syn
+fm_synit_mod53	src/Syn.cpp	/^void Syn::fm_synit_mod53(int is53_n,int *is53,double *vd,double *vq){$/;"	f	class:Syn
+fm_synit_mod6	src/Syn.cpp	/^void Syn::fm_synit_mod6(int is6_n,int *is6,double *vd,double *vq){$/;"	f	class:Syn
+fm_synit_mod8	src/Syn.cpp	/^void Syn::fm_synit_mod8(int is8_n,int *is8,double *vd,double *vq){$/;"	f	class:Syn
+fm_y_line	src/Line.cpp	/^void Line::fm_y_line(int nodes,Shunt shunt)$/;"	f	class:Line
+formConMatrix	src/Psat.cpp	/^void Psat::formConMatrix(){$/;"	f	class:Psat
+freq	inc/settings.h	/^	double freq;$/;"	m	class:Settings
+from	inc/Line.h	/^	int *from;$/;"	m	class:Line
+g	inc/DAE.h	/^	double *g;$/;"	m	class:DAE
+g	inc/Shunt.h	/^	double *g;$/;"	m	class:Shunt
+glfp	inc/DAE.h	/^	double *glfp;$/;"	m	class:DAE
+glfq	inc/DAE.h	/^	double *glfq;$/;"	m	class:DAE
+gp	inc/DAE.h	/^	double *gp;$/;"	m	class:DAE
+gq	inc/DAE.h	/^	double *gq;$/;"	m	class:DAE
+indexAll	inc/BoundaryNode.h	/^	int *indexAll;$/;"	m	class:BoundaryNode
+indexG	inc/BoundaryNode.h	/^	int *indexG;$/;"	m	class:BoundaryNode
+init	inc/Clpsat.h	/^	int init;$/;"	m	class:Clpsat
+init	inc/Mn.h	/^	int *init;$/;"	m	class:Mn
+init	inc/settings.h	/^	int init;$/;"	m	class:Settings
+init	src/BoundaryNode.cpp	/^void BoundaryNode::init(int bus_n,int dae_n)$/;"	f	class:BoundaryNode
+init	src/Bus.cpp	/^void Bus::init()$/;"	f	class:Bus
+init	src/Fault.cpp	/^void Fault::init()$/;"	f	class:Fault
+init	src/Line.cpp	/^void Line::init(int nodes)$/;"	f	class:Line
+init	src/PQ.cpp	/^void PQ::init()$/;"	f	class:PQ
+init	src/PV.cpp	/^void PV::init()$/;"	f	class:PV
+init	src/Psat.cpp	/^void Psat::init(){$/;"	f	class:Psat
+init	src/SW.cpp	/^void SW::init()$/;"	f	class:SW
+init	src/Shunt.cpp	/^void Shunt::init(int _n){$/;"	f	class:Shunt
+init	src/Syn.cpp	/^void Syn::init()$/;"	f	class:Syn
+init_n	inc/Mn.h	/^	int init_n;$/;"	m	class:Mn
+initialLF	src/Psat.cpp	/^void Psat::initialLF(){$/;"	f	class:Psat
+internel	inc/Bus.h	/^	int *internel;$/;"	m	class:Bus
+ipiv	inc/Psat.h	/^	int *ipiv;$/;"	m	class:Psat
+is2	inc/Syn.h	/^	int *is2;$/;"	m	class:Syn
+is2_n	inc/Syn.h	/^	int is2_n;$/;"	m	class:Syn
+is3	inc/Syn.h	/^	int *is3;$/;"	m	class:Syn
+is3_n	inc/Syn.h	/^	int is3_n;$/;"	m	class:Syn
+is4	inc/Syn.h	/^	int *is4;$/;"	m	class:Syn
+is4_n	inc/Syn.h	/^	int is4_n;$/;"	m	class:Syn
+is51	inc/Syn.h	/^	int *is51;$/;"	m	class:Syn
+is51_n	inc/Syn.h	/^	int is51_n;$/;"	m	class:Syn
+is52	inc/Syn.h	/^	int *is52;$/;"	m	class:Syn
+is52_n	inc/Syn.h	/^	int is52_n;$/;"	m	class:Syn
+is53	inc/Syn.h	/^	int *is53;$/;"	m	class:Syn
+is53_n	inc/Syn.h	/^	int is53_n;$/;"	m	class:Syn
+is6	inc/Syn.h	/^	int *is6;$/;"	m	class:Syn
+is6_n	inc/Syn.h	/^	int is6_n;$/;"	m	class:Syn
+is8	inc/Syn.h	/^	int *is8;$/;"	m	class:Syn
+is8_n	inc/Syn.h	/^	int is8_n;$/;"	m	class:Syn
+isStatic	inc/settings.h	/^	int isStatic;$/;"	m	class:Settings
+island	inc/Bus.h	/^	double *island;$/;"	m	class:Bus
+iter	inc/settings.h	/^	int iter;$/;"	m	class:Settings
+jay	inc/Psat.h	/^	complex<double> jay;$/;"	m	class:Psat
+jay	inc/Syn.h	/^	complex<double> jay;$/;"	m	class:Syn
+kg	inc/DAE.h	/^	int kg;$/;"	m	class:DAE
+lfmit	inc/settings.h	/^	double lfmit;$/;"	m	class:Settings
+lftime	inc/settings.h	/^	double lftime;$/;"	m	class:Settings
+lftol	inc/settings.h	/^	double lftol;$/;"	m	class:Settings
+line	inc/Psat.h	/^	Line line;$/;"	m	class:Psat
+lineDelete	src/Line.cpp	/^void Line::lineDelete()$/;"	f	class:Line
+local	inc/settings.h	/^	int local;$/;"	m	class:Settings
+locksnap	inc/settings.h	/^	int locksnap;$/;"	m	class:Settings
+main	src/main.cpp	/^int main()$/;"	f
+main1	lib/myLib.cpp	/^void main1(){$/;"	f
+mesg	inc/Clpsat.h	/^	int mesg;$/;"	m	class:Clpsat
+method	inc/settings.h	/^	int method;$/;"	m	class:Settings
+mn	inc/Psat.h	/^	Mn mn;$/;"	m	class:Psat
+mv	inc/settings.h	/^	int mv;$/;"	m	class:Settings
+mva	inc/settings.h	/^	double mva;$/;"	m	class:Settings
+n	inc/BoundaryNode.h	/^	int n;$/;"	m	class:BoundaryNode
+n	inc/Bus.h	/^	int n;$/;"	m	class:Bus
+n	inc/DAE.h	/^	int n;$/;"	m	class:DAE
+n	inc/Fault.h	/^	int n;$/;"	m	class:Fault
+n	inc/Line.h	/^	int n;$/;"	m	class:Line
+n	inc/Mn.h	/^	int n;$/;"	m	class:Mn
+n	inc/PQ.h	/^	int n;$/;"	m	class:PQ
+n	inc/PV.h	/^	int n;$/;"	m	class:PV
+n	inc/SW.h	/^	int n;$/;"	m	class:SW
+n	inc/Shunt.h	/^	int n;$/;"	m	class:Shunt
+n	inc/Syn.h	/^	int n;$/;"	m	class:Syn
+nBus	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
+nFault	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
+nLine	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
+nMn	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
+nPQ	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
+nPV	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
+nSW	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
+nShunt	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
+nSyn	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
+npf	inc/DAE.h	/^	int npf;$/;"	m	class:DAE
+numOfStep	inc/Varout.h	/^	int numOfStep;$/;"	m	class:Varout
+octave	inc/settings.h	/^	int octave;$/;"	m	class:Settings
+ok	inc/settings.h	/^	int ok;$/;"	m	class:Settings
+omega	inc/Syn.h	/^	double *omega;$/;"	m	class:Syn
+omega_idx	inc/Syn.h	/^	int *omega_idx;$/;"	m	class:Syn
+ord	inc/Syn.h	/^	int *ord;$/;"	m	class:Syn
+pfsolver	inc/settings.h	/^	int pfsolver;$/;"	m	class:Settings
+pi	inc/Syn.h	11;"	d
+plot	inc/settings.h	/^	int plot;$/;"	m	class:Settings
+plottype	inc/settings.h	/^	int plottype;$/;"	m	class:Settings
+pm	inc/Syn.h	/^	double *pm;$/;"	m	class:Syn
+pq	inc/PV.h	/^	double *pq;$/;"	m	class:PV
+pq	inc/Psat.h	/^	PQ pq;$/;"	m	class:Psat
+pq2z	inc/Clpsat.h	/^	int pq2z;$/;"	m	class:Clpsat
+pq2z	inc/settings.h	/^	int pq2z;$/;"	m	class:Settings
+pqDelete	src/PQ.cpp	/^void PQ::pqDelete()$/;"	f	class:PQ
+psid	inc/Syn.h	/^	double *psid;$/;"	m	class:Syn
+psid_idx	inc/Syn.h	/^	int *psid_idx;$/;"	m	class:Syn
+psiq	inc/Syn.h	/^	double *psiq;$/;"	m	class:Syn
+psiq_idx	inc/Syn.h	/^	int *psiq_idx;$/;"	m	class:Syn
+pv	inc/Psat.h	/^	PV pv;$/;"	m	class:Psat
+pv2pq	inc/settings.h	/^	int pv2pq;$/;"	m	class:Settings
+pvDelete	src/PV.cpp	/^void PV::pvDelete()$/;"	f	class:PV
+rad	inc/settings.h	/^	double rad;$/;"	m	class:Settings
+readfile	inc/Clpsat.h	/^	int readfile;$/;"	m	class:Clpsat
+red	inc/settings.h	/^	int red;$/;"	m	class:Settings
+refbus	inc/settings.h	/^	int refbus;$/;"	m	class:Settings
+refresh	inc/Clpsat.h	/^	int refresh;$/;"	m	class:Clpsat
+refreshsim	inc/Clpsat.h	/^	int refreshsim;$/;"	m	class:Clpsat
+settings	inc/Psat.h	/^	Settings settings;$/;"	m	class:Psat
+show	inc/settings.h	/^	int show;$/;"	m	class:Settings
+showlf	inc/settings.h	/^	int showlf;$/;"	m	class:Settings
+showopf	inc/Clpsat.h	/^	int showopf;$/;"	m	class:Clpsat
+shunt	inc/Psat.h	/^	Shunt shunt;$/;"	m	class:Psat
+shuntvalues	inc/settings.h	/^	int shuntvalues;$/;"	m	class:Settings
+sort	lib/myLib.cpp	/^int* sort(int *s,int n)$/;"	f
+sortD	lib/myLib.cpp	/^double* sortD(double *s,int n)$/;"	f
+specifySystem	src/Psat.cpp	/^void Psat::specifySystem(){$/;"	f	class:Psat
+store	inc/Mn.h	/^	double **store;$/;"	m	class:Mn
+store	inc/PQ.h	/^	double **store;$/;"	m	class:PQ
+store	inc/PV.h	/^	double **store;$/;"	m	class:PV
+sw	inc/Psat.h	/^	SW sw;$/;"	m	class:Psat
+swDelete	src/SW.cpp	/^void SW::swDelete()$/;"	f	class:SW
+syn	inc/Psat.h	/^	Syn syn;$/;"	m	class:Psat
+synDelete	src/Syn.cpp	/^void Syn::synDelete()$/;"	f	class:Syn
+t	inc/DAE.h	/^	double t;$/;"	m	class:DAE
+t	inc/Varout.h	/^	double *t;$/;"	m	class:Varout
+t0	inc/settings.h	/^	double t0;$/;"	m	class:Settings
+tFaultEnd	inc/Fault.h	/^	double tFaultEnd;$/;"	m	class:Fault
+tFaultStart	inc/Fault.h	/^	double tFaultStart;$/;"	m	class:Fault
+tempi	inc/settings.h	/^	double *tempi;$/;"	m	class:Settings
+tf	inc/settings.h	/^	double tf;$/;"	m	class:Settings
+tn	inc/DAE.h	/^	double *tn;$/;"	m	class:DAE
+to	inc/Line.h	/^	int *to;$/;"	m	class:Line
+tol1	lib/myLib.h	8;"	d
+tstep	inc/settings.h	/^	double tstep;$/;"	m	class:Settings
+varout	inc/Psat.h	/^	Varout varout;$/;"	m	class:Psat
+vf	inc/Syn.h	/^	double *vf;$/;"	m	class:Syn
+viewrep	inc/Clpsat.h	/^	int viewrep;$/;"	m	class:Clpsat
+violations	inc/settings.h	/^	int violations;$/;"	m	class:Settings
+vs	inc/settings.h	/^	int vs;$/;"	m	class:Settings
+x	inc/DAE.h	/^	double *x;$/;"	m	class:DAE
+x	inc/Varout.h	/^	double *x;$/;"	m	class:Varout
+zoom	inc/settings.h	/^	int zoom;$/;"	m	class:Settings
+~BoundaryNode	src/BoundaryNode.cpp	/^BoundaryNode::~BoundaryNode()$/;"	f	class:BoundaryNode
+~Bus	src/Bus.cpp	/^Bus::~Bus()$/;"	f	class:Bus
+~DAE	src/DAE.cpp	/^DAE::~DAE()$/;"	f	class:DAE
+~Fault	src/Fault.cpp	/^Fault::~Fault(){$/;"	f	class:Fault
+~Line	src/Line.cpp	/^Line::~Line()$/;"	f	class:Line
+~PQ	src/PQ.cpp	/^PQ::~PQ()$/;"	f	class:PQ
+~PV	src/PV.cpp	/^PV::~PV()$/;"	f	class:PV
+~Psat	src/Psat.cpp	/^Psat::~Psat(){$/;"	f	class:Psat
+~SW	src/SW.cpp	/^SW::~SW()$/;"	f	class:SW
+~Settings	src/Settings.cpp	/^Settings::~Settings()$/;"	f	class:Settings
+~Syn	src/Syn.cpp	/^Syn::~Syn(){$/;"	f	class:Syn
+~Varout	src/Varout.cpp	/^Varout::~Varout(){$/;"	f	class:Varout

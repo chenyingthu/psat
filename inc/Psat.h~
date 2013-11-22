@@ -21,7 +21,8 @@
 #include <complex>
 //#include <cstdlib>
 #include <iostream>
-#include <cula.h>
+#include <lapacke.h>
+typedef  complex<double> Complex;
 using namespace std;
 class Psat{
 public:
