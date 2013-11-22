@@ -1,0 +1,54 @@
+#include "../inc/settings.h"
+#include <stdio.h>
+Settings::Settings()
+{
+	dac=0;
+	pq2z=0;
+	pv2pq=0;
+	showlf=0;
+	init=0;
+	conv=1;
+	red=0;
+	plot=0;
+	plottype=1;
+	method=2;
+	show=1;
+	vs=0;
+	ok=0;
+	pfsolver=1;
+	deltat=1e-5;
+	deltamax=1e-3;
+	deltamin=1e-5;
+	chunk=100;
+	mv=0;
+	iter=0;
+	isStatic=0;
+	zoom=0;
+	freq=50;
+	beep=0;
+	dyntol=1e-5;
+	dynmit=20;
+	lftol=1e-5;
+	lfmit=20;
+	lftime=0;
+	t0=0;
+	tf=2;
+	mva=100;
+	rad=2*3.14159265358979*50;
+	distrsw=0;
+	refbus=0;
+	color=0;
+	fixt=1;
+	tstep=0.02;
+	locksnap=0;
+	octave=0;
+	local=1;
+	absvalues=0;
+	shuntvalues=0;
+	violations=0;
+	sprintf(exportType,"txt");
+}
+Settings::~Settings()
+{
+
+}

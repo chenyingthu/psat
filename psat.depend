@@ -1,0 +1,200 @@
+# depslib dependency file v1.0
+1385087047 source:/home/yuzhitong/workspace/bishe/psat/main.cpp
+	<iostream>
+	<complex>
+	<lapacke.h>
+	<cblas.h>
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+
+1369889911 /usr/local/cula/include/cula.h
+	"cula_status.h"
+	"cula_types.h"
+	"cula_lapack.h"
+	"cula_lapack_device.h"
+
+1369889911 /usr/local/cula/include/cula_status.h
+	"cula_types.h"
+
+1369889911 /usr/local/cula/include/cula_types.h
+	"cuComplex.h"
+
+1369889911 /usr/local/cula/include/cula_lapack.h
+	"cula_status.h"
+	"cula_types.h"
+
+1369889911 /usr/local/cula/include/cula_lapack_device.h
+	"cula_status.h"
+	"cula_types.h"
+	"cula_device.h"
+
+1369889911 /usr/local/cula/include/cula_device.h
+	"cula_status.h"
+
+1385089584 /home/yuzhitong/下载/software/lapack-3.4.2/lapacke/include/lapacke.h
+	"lapacke_config.h"
+	<stdlib.h>
+	<complex.h>
+	<complex.h>
+	"lapacke_mangling.h"
+
+1334271947 /home/yuzhitong/下载/software/lapack-3.4.2/lapacke/include/lapacke_config.h
+	<complex>
+	<stdlib.h>
+	<complex.h>
+	<complex.h>
+
+1366473523 /home/yuzhitong/下载/software/lapack-3.4.2/lapacke/include/lapacke_mangling.h
+
+1267739504 /home/yuzhitong/下载/software/lapack-3.4.2/CBLAS/include/cblas.h
+	<stddef.h>
+
+1385090024 source:/home/yuzhitong/workspace/bishe/psat/lib/myLib.cpp
+	"myLib.h"
+	<lapacke.h>
+
+1384947775 /home/yuzhitong/workspace/bishe/psat/lib/myLib.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<complex>
+
+1384949877 source:/home/yuzhitong/workspace/bishe/psat/src/BoundaryNode.cpp
+	"../inc/BoundaryNode.h"
+
+1383911416 /home/yuzhitong/workspace/bishe/psat/inc/BoundaryNode.h
+	<stdio.h>
+
+1383818846 source:/home/yuzhitong/workspace/bishe/psat/src/Bus.cpp
+	"../inc/Bus.h"
+	<stdio.h>
+
+1383742711 /home/yuzhitong/workspace/bishe/psat/inc/Bus.h
+
+1383810183 source:/home/yuzhitong/workspace/bishe/psat/src/Clpsat.cpp
+	"../inc/Clpsat.h"
+
+1383810101 /home/yuzhitong/workspace/bishe/psat/inc/Clpsat.h
+
+1384926367 source:/home/yuzhitong/workspace/bishe/psat/src/DAE.cpp
+	"../inc/DAE.h"
+
+1385028856 /home/yuzhitong/workspace/bishe/psat/inc/DAE.h
+	"Bus.h"
+	"SW.h"
+	<stdio.h>
+
+1384602331 /home/yuzhitong/workspace/bishe/psat/inc/SW.h
+	"Bus.h"
+	<stdio.h>
+
+1383818271 source:/home/yuzhitong/workspace/bishe/psat/src/Fault.cpp
+	"../inc/Fault.h"
+
+1385030940 /home/yuzhitong/workspace/bishe/psat/inc/Fault.h
+	"Bus.h"
+	<stdio.h>
+
+1385037476 source:/home/yuzhitong/workspace/bishe/psat/src/Line.cpp
+	"../inc/Line.h"
+
+1385037198 /home/yuzhitong/workspace/bishe/psat/inc/Line.h
+	"../lib/myLib.h"
+	"settings.h"
+	"Shunt.h"
+	<complex>
+	<iostream>
+
+1384949299 /home/yuzhitong/workspace/bishe/psat/inc/settings.h
+
+1384944756 /home/yuzhitong/workspace/bishe/psat/inc/Shunt.h
+	"Bus.h"
+	"settings.h"
+	<set>
+
+1385090682 source:/home/yuzhitong/workspace/bishe/psat/src/main.cpp
+	<stdio.h>
+	"../lib/myLib.h"
+	"../inc/Psat.h"
+	<lapacke.h>
+	<iostream>
+	<complex>
+
+1385090746 /home/yuzhitong/workspace/bishe/psat/inc/Psat.h
+	<stdio.h>
+	<set>
+	"Bus.h"
+	"DAE.h"
+	"Fault.h"
+	"Line.h"
+	"PQ.h"
+	"PV.h"
+	"settings.h"
+	"SW.h"
+	"Syn.h"
+	"Clpsat.h"
+	"BoundaryNode.h"
+	"Mn.h"
+	"Varout.h"
+	"Shunt.h"
+	<cmath>
+	<complex>
+	<iostream>
+	<lapacke.h>
+
+1383814026 /home/yuzhitong/workspace/bishe/psat/inc/PQ.h
+	"Bus.h"
+	"Clpsat.h"
+	<stdio.h>
+
+1384602466 /home/yuzhitong/workspace/bishe/psat/inc/PV.h
+	"Bus.h"
+	"Clpsat.h"
+	"DAE.h"
+
+1385090141 /home/yuzhitong/workspace/bishe/psat/inc/Syn.h
+	<stdio.h>
+	"Bus.h"
+	"DAE.h"
+	"settings.h"
+	"PV.h"
+	"SW.h"
+	"../lib/myLib.h"
+	<complex>
+
+1384922057 /home/yuzhitong/workspace/bishe/psat/inc/Mn.h
+
+1385020167 /home/yuzhitong/workspace/bishe/psat/inc/Varout.h
+
+1384942863 source:/home/yuzhitong/workspace/bishe/psat/src/Mn.cpp
+	"../inc/Mn.h"
+
+1385090253 source:/home/yuzhitong/workspace/bishe/psat/src/PQ.cpp
+	"../inc/PQ.h"
+
+1385096273 source:/home/yuzhitong/workspace/bishe/psat/src/Psat.cpp
+	"../inc/Psat.h"
+
+1385090435 source:/home/yuzhitong/workspace/bishe/psat/src/PV.cpp
+	"../inc/PV.h"
+
+1385090444 source:/home/yuzhitong/workspace/bishe/psat/src/Settings.cpp
+	"../inc/settings.h"
+	<stdio.h>
+
+1385090579 source:/home/yuzhitong/workspace/bishe/psat/src/Shunt.cpp
+	"../inc/Shunt.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+
+1384602660 source:/home/yuzhitong/workspace/bishe/psat/src/SW.cpp
+	"../inc/SW.h"
+
+1385020882 source:/home/yuzhitong/workspace/bishe/psat/src/Varout.cpp
+	"../inc/Varout.h"
+
+1385090604 source:/home/yuzhitong/workspace/bishe/psat/src/Syn.cpp
+	"../inc/Syn.h"
+

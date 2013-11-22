@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="psat" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/psat" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="../../../下载/software/lapack-3.4.2/lapacke/include" />
+					<Add directory="../../../下载/software/lapack-3.4.2/CBLAS/include" />
+					<Add directory="inc" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="../../../下载/software/lapack-3.4.2/CBLAS/src" />
+					<Add directory="../../../下载/software/lapack-3.4.2/SRC" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="../../../下载/software/lapack-3.4.2/CBLAS/lib/cblas_LINUX.a" />
+					<Add library="../../../下载/software/lapack-3.4.2/liblapacke.a" />
+					<Add library="../../../下载/software/lapack-3.4.2/libtmglib.a" />
+					<Add library="../../../下载/software/lapack-3.4.2/liblapack.a" />
+					<Add library="../../../下载/software/lapack-3.4.2/librefblas.a" />
+					<Add library="gfortran" />
+					<Add directory="../../../下载/software/lapack-3.4.2/CBLAS/lib" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/psat" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="inc/BoundaryNode.h" />
+		<Unit filename="inc/Bus.h" />
+		<Unit filename="inc/Clpsat.h" />
+		<Unit filename="inc/DAE.h" />
+		<Unit filename="inc/Fault.h" />
+		<Unit filename="inc/Line.h" />
+		<Unit filename="inc/Mn.h" />
+		<Unit filename="inc/PQ.h" />
+		<Unit filename="inc/PV.h" />
+		<Unit filename="inc/Psat.h" />
+		<Unit filename="inc/SW.h" />
+		<Unit filename="inc/Shunt.h" />
+		<Unit filename="inc/Syn.h" />
+		<Unit filename="inc/Varout.h" />
+		<Unit filename="inc/settings.h" />
+		<Unit filename="lib/myLib.cpp" />
+		<Unit filename="lib/myLib.h" />
+		<Unit filename="src/BoundaryNode.cpp" />
+		<Unit filename="src/Bus.cpp" />
+		<Unit filename="src/Clpsat.cpp" />
+		<Unit filename="src/DAE.cpp" />
+		<Unit filename="src/Fault.cpp" />
+		<Unit filename="src/Line.cpp" />
+		<Unit filename="src/Mn.cpp" />
+		<Unit filename="src/PQ.cpp" />
+		<Unit filename="src/PV.cpp" />
+		<Unit filename="src/Psat.cpp" />
+		<Unit filename="src/SW.cpp" />
+		<Unit filename="src/Settings.cpp" />
+		<Unit filename="src/Shunt.cpp" />
+		<Unit filename="src/Syn.cpp" />
+		<Unit filename="src/Varout.cpp" />
+		<Unit filename="src/main.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
