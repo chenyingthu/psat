@@ -113,15 +113,16 @@
 	"settings.h"
 	<set>
 
-1385090682 source:/home/yuzhitong/workspace/bishe/psat/src/main.cpp
+1385098212 source:/home/yuzhitong/workspace/bishe/psat/src/main.cpp
 	<stdio.h>
 	"../lib/myLib.h"
 	"../inc/Psat.h"
 	<lapacke.h>
 	<iostream>
 	<complex>
+	<stdio.h>
 
-1385090746 /home/yuzhitong/workspace/bishe/psat/inc/Psat.h
+1385114259 /home/yuzhitong/workspace/bishe/psat/inc/Psat.h
 	<stdio.h>
 	<set>
 	"Bus.h"
@@ -163,17 +164,18 @@
 	"../lib/myLib.h"
 	<complex>
 
-1384922057 /home/yuzhitong/workspace/bishe/psat/inc/Mn.h
+1385118225 /home/yuzhitong/workspace/bishe/psat/inc/Mn.h
+	"Bus.h"
 
 1385020167 /home/yuzhitong/workspace/bishe/psat/inc/Varout.h
 
-1384942863 source:/home/yuzhitong/workspace/bishe/psat/src/Mn.cpp
+1385119580 source:/home/yuzhitong/workspace/bishe/psat/src/Mn.cpp
 	"../inc/Mn.h"
 
 1385090253 source:/home/yuzhitong/workspace/bishe/psat/src/PQ.cpp
 	"../inc/PQ.h"
 
-1385096273 source:/home/yuzhitong/workspace/bishe/psat/src/Psat.cpp
+1385119521 source:/home/yuzhitong/workspace/bishe/psat/src/Psat.cpp
 	"../inc/Psat.h"
 
 1385090435 source:/home/yuzhitong/workspace/bishe/psat/src/PV.cpp
