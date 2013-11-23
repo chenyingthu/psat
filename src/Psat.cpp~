@@ -1,6 +1,6 @@
 #include "../inc/Psat.h"
 Psat::Psat(){
-    jay=Complex(1,0);
+    jay=Complex(0,1);
     nBus=0;
     nFault=0;
     nLine=0;
@@ -167,9 +167,9 @@ int Psat::fm_ncomp(){
     shunt.check(bus,settings);
     if(!dae.check(bus))
         return 0;
-    if(!dae.check_2(sw))
-        return 0;
     if(!sw.check(bus))
+        return 0;
+    if(!dae.check_2(sw))
         return 0;
     if(!pv.check(bus,clpsat,dae))
         return 0;
@@ -268,13 +268,165 @@ void Psat::fm_y(){
   line.fm_y_line(bus.n,shunt);
 }
 void Psat::fm_dynlf(){}
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  fm_spf
+ *  Description:  solve power flow
+ * =====================================================================================
+ */
 void Psat::fm_spf(){
   printf("Newton-Raphson Method for Power Flow Computation\n");
-//  int nodyn=1;
-  dae.f[0]=1;
-  dae.x[0]=1;
+  int nodyn=1;
+  dae.f[0]=0;
+  dae.x[0]=0;
   dae.Fx[0]=1;
   resetBoundNode();
+  int FDPF=settings.pfsolver;
+  switch(FDPF){
+    case 1:
+      printf("PF solver Newton-Raphson method\n");
+      break;
+    case 2:
+      printf("PF solver :XB fast decoupled power flow\n");
+      break;
+    case 3:
+      printf("PF solver:BX fast decoupled power flow\n");
+      break;
+    default:
+      break;
+  }
+  switch(settings.distrsw){
+    case 1:
+      printf("Distributed slack bus model\n");
+      break;
+    case 0:
+      printf("Single slack bus model\n");
+      break;
+    default:
+      break;
+  }
+  int iter_max=settings.lfmit;
+  if(iter_max<2)
+    iter_max=2;
+  int iteration=0;
+  double tol=settings.lftol;
+  double err_max=tol+1;
+   
+  double *deltf_nosw=new double [dae.n+2*bus.n-2*boundarynode.n];
+   double *tmp_nosw=new double [(dae.n+2*bus.n-2*boundarynode.n)*(dae.n+2*bus.n-2*boundarynode.n)];
+
+   double *tmp=new double [(dae.n+2*bus.n)*(dae.n+2*bus.n)];
+   double *deltf=new double [dae.n+2*bus.n];
+  while ( err_max>tol&&iteration<=iter_max ) {
+   fm_lf_1();
+   fm_pq_1(); 
+   fm_pv_1();
+   fm_sw_1();
+   for ( int i = 0; i < bus.n; i += 1 ) {
+     dae.g[i]=dae.gp[i];
+     dae.g[i+bus.n]=dae.gq[i];
+   }
+   fm_lf_2();
+   cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlf);
+
+   fm_pq_2();
+   fm_pv_2();
+   fm_sw_2();
+   cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlfv);
+   if(nodyn==1)
+     dae.Fx[0]=1;
+
+
+   for ( int i = 0; i < dae.n+2*bus.n; i += 1 ) {
+     if(i<dae.n)
+       deltf[i]=dae.f[i];
+     else 
+       deltf[i]=dae.g[i-dae.n];
+   }
+   cat4matrix(dae.Fx,dae.n,dae.n,dae.Gx,dae.n,2*bus.n,dae.Fy,2*bus.n,dae.n,dae.Jlfv,2*bus.n,2*bus.n,tmp);
+   for ( int i = 0; i < dae.n+2*bus.n-2*boundarynode.n; i += 1 ) {
+     int k=boundarynode.indexAll[i];
+     deltf_nosw[i]=deltf[k];
+   }
+
+   for ( int i = 0; i < dae.n+2*bus.n-2*boundarynode.n; i += 1 ) {
+     int row=boundarynode.indexAll[i];
+     for ( int j = 0; j < dae.n+2*bus.n-2*boundarynode.n; j += 1 ) {
+       int col=boundarynode.indexAll[j];
+       tmp_nosw[j+i*(dae.n+2*bus.n-2*boundarynode.n)]=tmp[col+row*(dae.n+2*bus.n)];
+     }
+   }
+
+   ipiv=new int[dae.n+2*bus.n-2*boundarynode.n];
+   LAPACKE_dgesv(LAPACK_COL_MAJOR,dae.n+2*bus.n-2*boundarynode.n,1,tmp_nosw,dae.n+2*bus.n-2*boundarynode.n,ipiv,deltf_nosw,dae.n+2*bus.n-2*boundarynode.n);
+   
+   for ( int i = 0; i < dae.n+2*bus.n-2*boundarynode.n; i += 1 ) {
+     deltf_nosw[i]=-deltf_nosw[i];
+   }
+   
+   for ( int i = 0; i < dae.n; i += 1 ) {
+     dae.x[i]+=deltf_nosw[i];
+   }
+   for ( int i = 0; i < bus.n-boundarynode.n; i += 1 ) {
+    int h=boundarynode.indexG[i]; 
+    dae.a[h]+=deltf_nosw[dae.n+i];
+    dae.V[h]+=deltf_nosw[dae.n+i+bus.n-boundarynode.n];
+   }
+   
+   
+
+//   FILE	*fp;										/* output-file pointer */
+//
+//   fp	= fopen( "Jlfv", "w" );
+//   if ( fp == NULL ) {
+//     exit (EXIT_FAILURE);
+//   }
+//
+//   for ( int i = 0; i < 2*bus.n; i += 1 ) {
+//     for ( int j = 0; j < 2*bus.n; j += 1 ) {
+//       fprintf(fp,"%lf\t",dae.Jlfv[j+i*2*bus.n]);
+//     }
+//     fprintf(fp,"\n");
+//   }
+//   if( fclose(fp) == EOF ) {			/* close output file   */
+//     exit (EXIT_FAILURE);
+//   }
+
+   iteration++;
+   err_max=0;
+   for(int i=0;i<dae.n+2*bus.n-2*boundarynode.n;++i)
+   {
+     if(abs(deltf_nosw[i])>err_max)
+       err_max=abs(deltf_nosw[i]);
+   }
+  }
+   memset(dae.gp,0,bus.n*sizeof(double));
+   memset(dae.gq,0,bus.n*sizeof(double));
+   fm_pq_1();
+   memcpy(bus.Pl,dae.gp,bus.n*sizeof(double));
+   memcpy(bus.Ql,dae.gq,bus.n*sizeof(double));
+   if(line.n>0)
+     fm_lf_1();
+   memset(dae.gp,0,bus.n*sizeof(double));
+   memset(dae.gq,0,bus.n*sizeof(double));
+   fm_pq_1();
+   for(int i=0;i<bus.n;++i){
+     bus.Pg[i]=dae.gp[i]+dae.glfp[i];
+     bus.Qg[i]=dae.gq[i]+dae.glfq[i];
+//     printf("%lf\t%lf\n",bus.Pg[i],bus.Qg[i]);
+   }
+   if(nodyn==1)
+     dae.n=0;
+//   int dynordold=dae.n;
+   dae.npf=dae.n;
+   fm_dynidx();
+   getchar();
+   delete []deltf_nosw;
+   delete []tmp_nosw;
+   delete []deltf;
+   delete []tmp;
+
+
 }
 void Psat::resetBoundNode(){
  int *indexAll=new int [dae.n+2*bus.n]; 
@@ -318,15 +470,206 @@ void Psat::resetBoundNode(){
  delete []indexG;
 }
 
-void Psat::fm_lf_1(){}
-void Psat::fm_pq_1(){}
-void Psat::fm_pv_1(){}
-void Psat::fm_sw_1(){}
-void Psat::fm_lf_2(){}
-void Psat::fm_pq_2(){}
-void Psat::fm_pv_2(){}
-void Psat::fm_sw_2(){}
-void Psat::fm_dynidx(){}
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  fm_lf_1
+ *  Description:  solve load flow when flag =1
+ * =====================================================================================
+ */
+void Psat::fm_lf_1(){
+  alpha=Complex(1,0);
+  beta=Complex(0,0);
+  Complex *Vc=new Complex[bus.n];
+  Complex *S=new Complex[bus.n];
+  for ( int i = 0; i < bus.n; i += 1 ) {
+    Vc[i]=dae.V[i]*exp(jay*dae.a[i]);
+//    cout<<Vc[i]<<endl;
+  }
+  cblas_zgemv(CblasColMajor,CblasTrans,bus.n,bus.n,&alpha,line.Y,bus.n,Vc,1,&beta,S,1);
+  for ( int i = 0; i < bus.n; i += 1 ) {
+    S[i]=Vc[i]*conj(S[i]);
+    dae.gp[i]=S[i].real();
+    dae.gq[i]=S[i].imag();
+    dae.glfp[i]=dae.gp[i];
+    dae.glfq[i]=dae.gq[i];
+//    printf ( "%lf\t%lf\n",dae.glfp[i],dae.glfq[i] );
+  }
+//  cout<<"test"<<endl;
+}
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  fm_pq_1
+ *  Description:  for dae.gp dae.gq with pq
+ * =====================================================================================
+ */
+void Psat::fm_pq_1(){
+  
+  for ( int i = 0; i < pq.n; i += 1 ) {
+    int k=pq.bus[i];
+    dae.gp[k]=pq.con[i][3]+dae.gp[k];
+    dae.gq[k]=pq.con[i][4]+dae.gq[k];
+    if(dae.V[k]<pq.con[i][6]&&(int)pq.con[i][7]==1)
+    {
+      dae.gp[k]=pq.con[i][3]*dae.V[k]*dae.V[k]/pq.con[i][6]/pq.con[i][6]+dae.gp[k]-pq.con[i][3];
+      dae.gq[k]=pq.con[i][4]*dae.V[k]*dae.V[k]/pq.con[i][6]/pq.con[i][6]+dae.gq[k]-pq.con[i][4];
+    }
+    else if(dae.V[k]>pq.con[i][5]&&(int)pq.con[i][7]==1)
+    {
+      dae.gp[k]=pq.con[i][3]*dae.V[k]*dae.V[k]/pq.con[i][5]/pq.con[i][5]+dae.gp[k]-pq.con[i][3];
+      dae.gq[k]=pq.con[i][4]*dae.V[k]*dae.V[k]/pq.con[i][5]/pq.con[i][5]+dae.gq[k]-pq.con[i][4];
+    }
+//    printf ( "%lf\t%lf\n",dae.gp[k],dae.gq[k] );
+  }
+}
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  fm_pv_1
+ *  Description:  solve dae.gp dae.gq with pv
+ * =====================================================================================
+ */
+void Psat::fm_pv_1(){
+  for ( int i = 0; i < pv.n; i += 1 ) {
+    double K=1+dae.kg*pv.con[i][9];
+    int k=pv.bus[i];
+    dae.gp[k]=dae.gp[k]-K*pv.con[i][3];
+    dae.gq[k]=0;
+  }
+//  for ( int i = 0; i < bus.n; i += 1 ) {
+//    printf ( "%lf\t%lf\n",dae.gp[i],dae.gq[i] );
+//  }
+  /*-----------------------------------------------------------------------------
+   *  todo:pv2pq
+   *-----------------------------------------------------------------------------*/
+}
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  fm_sw_1
+ *  Description:  solve pf for sw with flag 1
+ * =====================================================================================
+ */
+void Psat::fm_sw_1(){
+  
+  for ( int i = 0; i < sw.n; i += 1 ) {
+    int k=sw.bus[i];
+    dae.gp[k]=0;
+    dae.gq[k]=0;
+  }
+}
+void Psat::fm_lf_2(){
+  Complex *U=new Complex [bus.n];
+  Complex *V=new Complex [bus.n];
+  Complex *I=new Complex [bus.n];
+  Complex *Vc=new Complex [bus.n*bus.n];
+  Complex *Vn=new Complex [bus.n*bus.n];
+  Complex *Ic=new Complex [bus.n*bus.n];
+  Complex *temp=new Complex [bus.n*bus.n];
+  Complex *dS=new Complex[bus.n*bus.n];
+  for ( int i = 0; i < bus.n; i += 1 ) {
+    U[i]=exp(jay*dae.a[i]);
+    V[i]=dae.V[i]*U[i];
+  }
+  cblas_zgemv(CblasColMajor,CblasTrans,bus.n,bus.n,&alpha,line.Y,bus.n,V,1,&beta,I,1);
+  for ( int i = 0; i < bus.n; i += 1 ) {
+    Vc[i+i*bus.n]=V[i];
+    Vn[i+i*bus.n]=U[i];
+    Ic[i+i*bus.n]=I[i];
+  }
+    cblas_zgemm(CblasColMajor,CblasNoTrans, CblasNoTrans, bus.n, bus.n, bus.n, &alpha,  line.Y, bus.n, Vn,bus.n, &beta, temp, bus.n);
+    cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,bus.n,bus.n,bus.n,&alpha,Vc,bus.n,conj_(bus.n*bus.n,temp),bus.n,&beta,dS,bus.n);
+    cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,bus.n,bus.n,bus.n,&alpha,conj_(bus.n*bus.n,Ic),bus.n,Vn,bus.n,&beta,temp,bus.n);
+    for ( int i = 0; i < bus.n*bus.n; i += 1 ) {
+     dS[i]=dS[i]+temp[i]; 
+     dae.J12[i]=dS[i].real();
+     dae.J22[i]=dS[i].imag()+1e-6;
+    }
+    /*-----------------------------------------------------------------------------
+     *  with cblasColMajor ,output has been trans,be Carefull!!!
+     *-----------------------------------------------------------------------------*/
+    cblas_zgemm(CblasColMajor,CblasNoTrans, CblasNoTrans, bus.n, bus.n, bus.n, &alpha,  line.Y, bus.n, Vc,bus.n, &beta, temp, bus.n);
+
+    for ( int i = 0; i < bus.n*bus.n; i += 1 ) {
+      temp[i]=conj(Ic[i]-temp[i]);
+    }
+    cblas_zgemm(CblasColMajor,CblasNoTrans, CblasNoTrans, bus.n, bus.n, bus.n, &jay,  Vc, bus.n, temp,bus.n, &beta, dS, bus.n);
+//    for ( int i = 0; i < bus.n; i += 1 ) {
+//      for ( int j = 0; j < bus.n; j += 1 ) {
+//	cout<<dS[i+j*bus.n];
+//	printf("\t");
+//      }
+//      printf("\n");
+//    }
+    for ( int i = 0; i < bus.n*bus.n; i += 1 ) {
+      dae.J11[i]=dS[i].real()+1e-6;
+      dae.J21[i]=dS[i].imag();
+    }
+    delete []dS;
+    delete []temp;
+    delete []U;
+    delete []V;
+    delete []I;
+    delete []Vc;
+    delete []Vn;
+    delete []Ic;
+}
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  fm_pq_2
+ *  Description:  algebraic Jacobian matrices
+ * =====================================================================================
+ */
+void Psat::fm_pq_2(){
+  for ( int i = 0; i < pq.n; i += 1 ) {
+    int h=pq.bus[i];
+    if(dae.V[h]<pq.con[i][6]&&(int)pq.con[i][7]==1){
+      dae.J12[h+h*bus.n]+=2*pq.con[i][3]*dae.V[h]/pq.con[i][6];
+      dae.J22[h+h*bus.n]+=2*pq.con[i][4]*dae.V[h]/pq.con[i][6];
+    }
+    else if(dae.V[h]>pq.con[i][5]&&(int)pq.con[i][7]==1){
+      dae.J12[h+h*bus.n]+=2*pq.con[i][3]*dae.V[h]/pq.con[i][5];
+      dae.J22[h+h*bus.n]+=2*pq.con[i][4]*dae.V[h]/pq.con[i][5];
+    }
+  }
+}
+void Psat::fm_pv_2(){
+  for ( int i = 0; i < pv.n; i += 1 ) {
+    int h=pv.bus[i];
+    for ( int j = 0; j < bus.n; j += 1 ) {
+      dae.J21[h+j*bus.n]=0; 
+      dae.J22[h+j*bus.n]=0;
+      dae.J12[j+h*bus.n]=0;
+      dae.J22[j+h*bus.n]=0;
+    }
+  }
+  for ( int i = 0; i < pv.n; i += 1 ) {
+    int h=pv.bus[i];
+    dae.J22[h+h*bus.n]+=1;
+  }
+}
+void Psat::fm_sw_2(){
+  for ( int i = 0; i < sw.n; i += 1 ) {
+    int h=sw.bus[i];
+    for ( int j = 0; j < bus.n; j += 1 ) {
+      dae.J11[h+j*bus.n]=0;
+      dae.J12[h+j*bus.n]=0;
+      dae.J21[h+j*bus.n]=0;
+      dae.J22[h+j*bus.n]=0;
+      dae.J11[j+h*bus.n]=0;
+      dae.J12[j+h*bus.n]=0;
+      dae.J21[j+h*bus.n]=0;
+      dae.J22[j+h*bus.n]=0;
+    }
+  }
+  for ( int i = 0; i < sw.n; i += 1 ) {
+    int h=sw.bus[i];
+    dae.J11[h+h*bus.n]+=1;
+    dae.J22[h+h*bus.n]+=1;
+  }
+}
+void Psat::fm_dynidx(){
+  dae.n=syn.fm_dynidx(dae);
+  printf("%d\n",dae.n);
+}
 void Psat::fm_synit(){}
 void Psat::fm_excin(){}
 void Psat::fm_syn(int flag){}

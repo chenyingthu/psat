@@ -22,6 +22,7 @@
 //#include <cstdlib>
 #include <iostream>
 #include <lapacke.h>
+#include <cblas.h>
 typedef  complex<double> Complex;
 using namespace std;
 class Psat{
