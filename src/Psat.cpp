@@ -375,22 +375,7 @@ void Psat::fm_spf(){
    
    
 
-//   FILE	*fp;										/* output-file pointer */
-//
-//   fp	= fopen( "Jlfv", "w" );
-//   if ( fp == NULL ) {
-//     exit (EXIT_FAILURE);
-//   }
-//
-//   for ( int i = 0; i < 2*bus.n; i += 1 ) {
-//     for ( int j = 0; j < 2*bus.n; j += 1 ) {
-//       fprintf(fp,"%lf\t",dae.Jlfv[j+i*2*bus.n]);
-//     }
-//     fprintf(fp,"\n");
-//   }
-//   if( fclose(fp) == EOF ) {			/* close output file   */
-//     exit (EXIT_FAILURE);
-//   }
+
 
    iteration++;
    err_max=0;
@@ -433,7 +418,51 @@ void Psat::fm_spf(){
      memset(dae.Gx,0,2*bus.n*dae.n*sizeof(double));
    }
    settings.init=1;
+   fm_synit();
+   fm_excin();
+   fm_syn(0);
 
+   memset(dae.gp,0,bus.n*sizeof(double));
+   memset(dae.gq,0,bus.n*sizeof(double));
+   memset(dae.J11,0,bus.n*bus.n*sizeof(double));
+   memset(dae.J12,0,bus.n*bus.n*sizeof(double));
+   memset(dae.J21,0,bus.n*bus.n*sizeof(double));
+   memset(dae.J22,0,bus.n*bus.n*sizeof(double));
+
+   fm_lf_1();
+   fm_pq_1();
+   fm_syn(1);
+   fm_pv_1();
+   fm_sw_1();
+   for ( int i = 0; i < bus.n; i += 1 ) {
+     dae.g[i]=dae.gp[i];
+     dae.g[i+bus.n]=dae.gq[i];
+   }
+   fm_lf_2();
+   cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlf);
+
+   fm_pq_2();
+
+   fm_syn(2);
+//   fm_pv_2();
+//   fm_sw_2();
+//   cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlfv);
+//   FILE	*fp;										/* output-file pointer */
+//
+//   fp	= fopen( "Jlf", "w" );
+//   if ( fp == NULL ) {
+//     exit (EXIT_FAILURE);
+//   }
+//
+//   for ( int i = 0; i < 2*bus.n; i += 1 ) {
+//     for ( int j = 0; j < 2*bus.n; j += 1 ) {
+//       fprintf(fp,"%lf\t",dae.Jlf[j+i*2*bus.n]);
+//     }
+//     fprintf(fp,"\n");
+//   }
+//   if( fclose(fp) == EOF ) {			/* close output file   */
+//     exit (EXIT_FAILURE);
+//   }
    getchar();
    delete []deltf_nosw;
    delete []tmp_nosw;
@@ -684,10 +713,113 @@ void Psat::fm_dynidx(){
   dae.n=syn.fm_dynidx(dae);
   printf("%d\n",dae.n);
 }
-void Psat::fm_synit(){}
+void Psat::fm_synit(){
+
+  syn.fm_synit(settings,dae,bus);
+  pv.fm_synit(syn.n,syn.bus);
+  sw.fm_synit(syn.n,syn.bus);
+}
 void Psat::fm_excin(){}
-void Psat::fm_syn(int flag){}
-void Psat::fm_syn1(int flag){}
+void Psat::fm_syn(int flag){
+  switch ( flag ) {
+    case 1:
+      fm_syn1(1);
+      break;
+    case 2:      
+      fm_syn2(1);
+      break;
+    case 3:	
+      fm_syn3(1);
+      break;
+    case 4:
+      fm_syn4(1);
+      break;
+    default:	
+      break;
+  }				/* -----  end switch  ----- */
+}
+void Psat::fm_syn1(int flag){
+  double ag,ss,cc;
+  for ( int i = 0; i < syn.n; i += 1 ) {
+    int k1=syn.delta_idx[i];
+    int k2=syn.omega_idx[i];
+    syn.delta[i]=dae.x[k1];
+    syn.omega[i]=dae.x[k2];
+    if(i<syn.is3_n){
+      int k=syn.is3[i];
+      syn.e1q[k]=dae.x[syn.e1q_idx[k]];
+    }
+    if(i<syn.is4_n){
+      int k=syn.is4[i];
+      syn.e1d[k]=dae.x[syn.e1d_idx[k]];
+      syn.e1q[k]=dae.x[syn.e1q_idx[k]];
+    }
+    if(i<syn.is51_n){
+    }
+    if(i<syn.is52_n){
+    }
+    if(i<syn.is53_n){
+    }
+    if(i<syn.is6_n){
+    }
+    if(i<syn.is8_n){
+    }
+
+//    printf("%lf\t%lf\n",syn.delta[i],syn.omega[i]);
+  }
+  for ( int i = 0; i < syn.n; i += 1 ) {
+    int k=syn.bus[i];
+    ag=dae.a[k];
+    ss=sin(syn.delta[i]-ag);
+    cc=cos(syn.delta[i]-ag);
+    syn.Id[i]=-syn.c1[i]*dae.V[k]*ss-syn.c3[i]*dae.V[k]*cc;
+    syn.Iq[i]=syn.c2[i]*dae.V[k]*ss-syn.c1[i]*dae.V[k]*cc;
+//    printf("%lf\t%lf\n",syn.Id[i],syn.Iq[i]);
+  }
+  for ( int i = 0; i < syn.n; i += 1 ) {
+    if(i<syn.is2_n){
+      int k=syn.is2[i];
+      syn.Id[k]+=syn.c3[k]*syn.vf[k];
+      syn.Iq[k]+=syn.c1[k]*syn.vf[k];
+    }
+    if(i<syn.is3_n){
+      int k=syn.is3[i];
+      syn.Id[k]+=syn.c3[k]*syn.e1q[k];
+      syn.Iq[k]+=syn.c1[k]*syn.e1q[k];
+    }
+    if(i<syn.is4_n){
+      int k=syn.is4[i];
+      syn.Id[k]+=syn.c1[k]*syn.e1d[k]+syn.c3[k]*syn.e1q[k];
+      syn.Iq[k]+=syn.c2[k]*syn.e1d[k]+syn.c1[k]*syn.e1q[k];
+    }
+    if(i<syn.is51_n){
+    }
+    if(i<syn.is52_n){
+    }
+    if(i<syn.is53_n){
+    }
+    if(i<syn.is6_n){
+    }
+    if(i<syn.is8_n){
+    }
+  }
+
+  for ( int i = 0; i < syn.n; i += 1 ) {
+    int k=syn.bus[i];
+    ag=dae.a[k];
+    ss=sin(syn.delta[i]-ag);
+    cc=cos(syn.delta[i]-ag);
+    syn.Pg[i]=-dae.V[k]*(syn.Id[i]*ss+syn.Iq[i]*cc);
+    syn.Qg[i]=-dae.V[k]*(syn.Id[i]*cc-syn.Iq[i]*ss);
+    dae.gp[k]+=syn.Pg[i];
+    dae.gq[k]+=syn.Qg[i];
+//    printf("%lf\t%lf\n",syn.Pg[i],syn.Qg[i]);
+  }
+  
+//  for ( int i = 0; i < bus.n; i += 1 ) {
+//    printf("%lf\t%lf\n",dae.gp[i],dae.gq[i]);
+//  }
+}
 void Psat::fm_syn2(int flag){}
 void Psat::fm_syn3(int flag){}
 void Psat::fm_syn4(int flag){}
