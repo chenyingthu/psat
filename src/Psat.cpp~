@@ -22,6 +22,11 @@ Psat::~Psat(){
     syn.synDelete();
     shunt.Shuntdelete(bus.n);
     varout.deleteVarout();
+    delete []fault.dat;
+    delete []fault.V;
+    delete []fault.ang;
+    delete []settings.tempi;
+    delete []ipiv;
 }
 void Psat::specifySystem(){
 	double type=0;
@@ -527,6 +532,10 @@ void Psat::resetBoundNode(){
    if(indexG[i]!=-1)
      boundarynode.indexG[temp++]=i;
  }
+//
+// for ( int i = 0; i < dae.n+2*bus.n-2*boundarynode.n; i += 1 ) {
+//   printf("%d\n",boundarynode.indexAll[i]);
+// }
 // printf("%d\t%d\n",temp,bus.n-boundarynode.n);
  delete []indexAll;
  delete []indexG;
@@ -642,7 +651,7 @@ void Psat::fm_lf_2(){
     for ( int i = 0; i < bus.n*bus.n; i += 1 ) {
      dS[i]=dS[i]+temp[i]; 
      dae.J12[i]=dS[i].real();
-     dae.J22[i]=dS[i].imag()+1e-6;
+     dae.J22[i]=dS[i].imag();
     }
     /*-----------------------------------------------------------------------------
      *  with cblasColMajor ,output has been trans,be Carefull!!!
@@ -661,8 +670,13 @@ void Psat::fm_lf_2(){
 //      printf("\n");
 //    }
     for ( int i = 0; i < bus.n*bus.n; i += 1 ) {
-      dae.J11[i]=dS[i].real()+1e-6;
+      dae.J11[i]=dS[i].real();
       dae.J21[i]=dS[i].imag();
+    }
+
+    for ( int i = 0; i < bus.n; i += 1 ) {
+      dae.J11[i+i*bus.n]+=1e-6;
+      dae.J22[i+i*bus.n]+=1e-6;
     }
     delete []dS;
     delete []temp;
@@ -1107,6 +1121,12 @@ void Psat::fm_int_intial(){
 //      printf("%d\n",mn.bus[i]);
     }
   }
+  for(int i=0;i<bus.n*bus.n;++i){
+    dae.J11[i]=0;
+    dae.J12[i]=0;
+    dae.J21[i]=0;
+    dae.J22[i]=0;
+  }
   dae.t=settings.t0;
   fm_lf_1();
   fm_mn_1();
@@ -1143,6 +1163,13 @@ void Psat::fm_int_intial(){
        dae.Gx[i]=0;
      }
    }
+   fm_syn(4);
+
+     
+   dae.tn=new double [dae.n];
+   for ( int i = 0; i < dae.n; i += 1 ) {
+     dae.tn[i]=dae.f[i];
+   }
    for ( int i = 0; i < bus.n; i += 1 ) {
      dae.g[i]=dae.gp[i];
      dae.g[i+bus.n]=dae.gq[i];
@@ -1152,6 +1179,23 @@ void Psat::fm_int_intial(){
    fm_out_2(settings.t0,1);
    if(fault.n>0)
      fm_fault_0(0);
+   if(fault.n>0){
+     double *tempiguasto=new double [2*fault.n];
+     settings.tempi=new double [4*fault.n];
+     for ( int i = 0; i < fault.n; i += 1 ) {
+       tempiguasto[i]=fault.con[i][4];
+       tempiguasto[i+fault.n]=fault.con[i][5];
+     }
+     tempiguasto=sortD(tempiguasto,2*fault.n);
+     for ( int i = 0; i < 2*fault.n; i += 1 ) {
+       settings.tempi[2*i]=tempiguasto[i]-1e-6;
+       settings.tempi[2*i+1]=tempiguasto[i];
+     }
+//     for ( int i = 0; i < 4*fault.n; i += 1 ) {
+//       printf("%lf\n",settings.tempi[i]);
+//     }
+     delete []tempiguasto;
+   }
 //   FILE	*fp;										/* output-file pointer */
 //
 //   fp	= fopen( "Jlfv", "w" );
@@ -1214,11 +1258,126 @@ void Psat::fm_mn_2(){
 void Psat::fm_mn_0(){}
 void Psat::fm_fault(int flag,double t){}
 void Psat::fm_fault_0(double t){
+  fault.dat=new double [fault.n*5];
+  fault.V=new double [bus.n];
+  fault.ang=new double [bus.n];
+  if(syn.n>0){
+    for ( int i = 0; i < syn.n; i += 1 ) {
+      int k=syn.delta_idx[i];
+      fault.delta+=dae.x[k];
+    }
+    fault.delta/=syn.n;
+  }
+  else
+    fault.delta=0;
+  Complex *x=new Complex [fault.n];
+  Complex *y=new Complex [fault.n];
 
+  for ( int i = 0; i < fault.n; i += 1 ) {
+    int k=fault.bus[i];
+    x[i]=fault.con[i][6]+jay*fault.con[i][7];
+    if(abs(x[i])==0)
+      x[i]=jay*1e-6;
+    y[i]=1.0/x[i];
+    fault.dat[0+i*5]=y[i].real();
+    fault.dat[1+i*5]=y[i].imag();
+    fault.dat[2+i*5]=shunt.g[k];
+    fault.dat[3+i*5]=shunt.b[k];
+  }
+  delete []x;
+  delete []y;
 }
 void Psat::fm_fault_1(double t){}
-double Psat:: fm_tstep(int flag,int convergency,int iteration,double t){return 0.0;}
-void Psat::fm_tstep_1(int convergency,int iteration,double t){}
+double Psat:: fm_tstep(int flag,int convergency,int iteration,double t){
+  switch(flag){
+    case 1:
+      fm_tstep_1(convergency,iteration,t);
+      break;
+    case 2:
+      fm_tstep_2(convergency,iteration,t);
+      break;
+    default:
+      break;
+  }
+  return settings.deltat;
+}
+void Psat::fm_tstep_1(int convergency,int iteration,double t){
+  double *tempJlfv=new double [2*bus.n*2*bus.n];
+  double *tempGx=new double [2*bus.n*dae.n];
+  double *tempFy=new double [dae.n*2*bus.n];
+  double *As=new double [dae.n*dae.n];
+  double *wr=new double [dae.n];
+  double *wi=new double [dae.n];
+  double *vr=new double [dae.n*dae.n];
+  double *vl=new double [dae.n*dae.n];
+  for ( int i = 0; i < 2*bus.n; i += 1 ) {
+    for ( int j = 0; j < 2*bus.n; j += 1 ) {
+      tempJlfv[j+i*2*bus.n]=dae.Jlfv[i+j*2*bus.n];
+    }
+  }
+  for ( int i = 0; i < 2*bus.n; i += 1 ) {
+    for ( int j = 0; j < dae.n; j += 1 ) {
+      tempGx[i+j*2*bus.n]=dae.Gx[j+i*dae.n];
+    }
+  }
+
+
+  for ( int i = 0; i < dae.n; i += 1 ) {
+    for ( int j = 0; j < 2*bus.n; j += 1 ) {
+      tempFy[i+j*dae.n]=dae.Fy[j+i*2*bus.n];
+    }
+  }
+  ipiv=new int[2*bus.n];
+  double alpha1=1;
+  double beta1=0;
+  LAPACKE_dgesv(LAPACK_COL_MAJOR,2*bus.n,dae.n,tempJlfv,2*bus.n,ipiv,tempGx,2*bus.n);
+  cblas_dgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,dae.n,dae.n,2*bus.n,alpha1,tempFy,dae.n,tempGx,2*bus.n,beta1,As,dae.n);
+
+  for ( int i = 0; i < dae.n; i += 1 ) {
+    for ( int j = 0; j < dae.n; j += 1 ) {
+      As[j+i*dae.n]=dae.Fx[i+j*dae.n]-As[j+i*dae.n];
+    }
+  }
+  LAPACKE_dgeev(LAPACK_COL_MAJOR,'N','N',dae.n,As,dae.n,wr,wi,vl,dae.n,vr,dae.n);
+  double freq=0;
+  int freq_max=0;
+  for(int i=0;i<dae.n;++i){
+    if(freq<abs(wi[i])){
+      freq=abs(wi[i]);
+      freq_max=i;
+    }
+  }
+  freq=sqrt(wr[freq_max]*wr[freq_max]+wi[freq_max]*wi[freq_max]);
+  if(freq>settings.freq)
+    freq=settings.freq;
+  double deltaT=abs(settings.tf-settings.t0);
+  double Tstep=1/freq; 
+  if(5*Tstep<deltaT/100)
+    settings.deltamax=5*Tstep;
+  else
+    settings.deltamax=deltaT/100;
+  settings.chunk=100;
+  settings.deltat=Tstep;
+  settings.deltamin=Tstep/64;
+  if(settings.fixt==1){
+    if(settings.tstep<0){
+      printf("Error:fixed time step is negative or zero");
+      settings.fixt=0;
+    }
+    else if(settings.tstep<settings.deltamin)
+      printf("Warning:fixed time stemp is less than estimated minimum time step");
+    else
+      settings.deltat=settings.tstep;
+  }
+  delete []wr;
+  delete []wi;
+  delete []vr;
+  delete []vl;
+  delete []tempJlfv;
+  delete []tempGx;
+  delete []tempFy;
+  delete []As;
+}
 void Psat::fm_tstep_2(int convergency,int iteration,double t){}
 void Psat::fm_out_0(double t,int k){
   int chunk=settings.chunk;
@@ -1271,5 +1430,17 @@ void Psat::fm_out_2(double t,int k){
   }
 }
 void Psat::fm_out_3(double t,int k){}
-void Psat::fm_int_dyn(double t0,double tf,double h){}
+void Psat::fm_int_dyn(double t0,double tf,double h){
+  int k=1;
+  for ( int i = 0; i < settings.chunk; i += 1 ) {
+    if(abs(varout.t[i]-settings.t0)<1e-10){
+      k=i+1;
+      break;
+    }
+  }
+  double t=t0;
+  while(t<tf&&(t+h)>t){
+    fm_int_step(t,h,settings.tempi,k);
+  }
+}
 void Psat::fm_int_step(double t,double h,double *tempi,int k){}
