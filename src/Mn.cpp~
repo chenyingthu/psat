@@ -13,15 +13,13 @@ void Mn::Mndelete(int _n){
 
 	if(init_n!=0){
 		delete []init;
-	}
 		delete []bus;
-    
+    }
 }
 void Mn::Mninit(int _n){
 	if((n+_n)==0)
 		return;
 	con=new double*[n+_n];
-	bus=new int [n+_n];
 	for (int i=0;i<(n+_n);i++)
 	{
 		con[i]=new double[24];

@@ -21,8 +21,7 @@ Psat::~Psat(){
     fault.faultDelete();
     syn.synDelete();
     shunt.Shuntdelete(bus.n);
-    //mn.Mndelete(pq.n);
-   // varout.deleteVarout();
+    varout.deleteVarout();
 }
 void Psat::specifySystem(){
 	double type=0;
@@ -460,7 +459,6 @@ void Psat::fm_spf(){
      dae.Gx=new double [2*bus.n*dae.n];
      for (int i=0;i<dae.n*dae.n;++i)
        dae.Fx[i]=0;
-       
      for(int i=0;i<dae.n*2*bus.n;++i){
        dae.Fy[i]=0;
        dae.Gx[i]=0;
@@ -483,7 +481,6 @@ void Psat::fm_spf(){
 //   if( fclose(fp) == EOF ) {			/* close output file   */
 //     exit (EXIT_FAILURE);
 //   }
-   getchar();
    delete []deltf_nosw;
    delete []tmp_nosw;
    delete []deltf;
@@ -1071,19 +1068,208 @@ void Psat::fm_syn4(int flag){
   delete []M3;
   delete []M4;
 }
-void Psat::fm_int_intial(){}
-void Psat::fm_mn_1(){}
-void Psat::fm_mn_2(){}
+void Psat::fm_int_intial(){
+
+  if(dae.n==0&&clpsat.init==0)
+    printf("Time domain simulation aborted.\n");
+  switch(settings.method){
+    case 1:
+      printf("Implicit Euler integration method\n");
+      break;
+    case 2:
+      printf("Trapezoidal integration method\n");
+      break;
+    default:
+      break;
+  }
+  if(clpsat.pq2z)
+    settings.pq2z=1;
+  if(settings.pq2z&&settings.init<2&&pq.n>0){
+    for ( int i = 0; i < pq.n; i += 1 ) {
+      pq.con[i][3]=pq.con[i][3]/(dae.V[bus.internel[(int)pq.con[i][0]-1]]*dae.V[bus.internel[(int)pq.con[i][0]-1]]);
+      pq.con[i][4]=pq.con[i][4]/(dae.V[bus.internel[(int)pq.con[i][0]-1]]*dae.V[bus.internel[(int)pq.con[i][0]-1]]);
+      for ( int j = 0; j < 8; j += 1 ) {
+	if(j<5){
+	  mn.con[mn.n+i][j]=pq.con[i][j];
+	}
+	else if(j<7){
+	  mn.con[mn.n+i][j]=2;
+	}
+	else if(j<8){
+	  mn.con[mn.n+i][j]=1;
+	}
+      }
+    }
+    mn.n+=pq.n;
+    pq.n=0;
+    for ( int i = 0; i < mn.n; i += 1 ) {
+      mn.bus[i]=bus.internel[(int)mn.con[i][0]-1];
+//      printf("%d\n",mn.bus[i]);
+    }
+  }
+  dae.t=settings.t0;
+  fm_lf_1();
+  fm_mn_1();
+  fm_syn(1);
+  for ( int i = 0; i < boundarynode.n; i += 1 ) {
+    int k=boundarynode.bnode[i];
+    boundarynode.P[i]=dae.gp[k];
+    boundarynode.Q[i]=dae.gq[k];
+  }
+  fm_sw_1();
+  for ( int i = 0; i < bus.n; i += 1 ) {
+     dae.g[i]=dae.gp[i];
+     dae.g[i+bus.n]=dae.gq[i];
+//     printf("%lf\t%lf\n",dae.g[i],dae.g[i+bus.n]);
+  }
+  fm_lf_2();
+   cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlf);
+
+   fm_mn_2();
+   fm_syn(2);
+   fm_sw_2();
+
+   cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlfv);
+   fm_syn(3);
+   if(dae.n>0){
+     dae.Fx=new double [dae.n*dae.n];
+     dae.Fy=new double [dae.n*2*bus.n];
+     dae.Gx=new double [2*bus.n*dae.n];
+     for ( int i = 0; i < dae.n*dae.n; i += 1 ) {
+       dae.Fx[i]=0;
+     }
+     for ( int i = 0; i < dae.n*2*bus.n; i += 1 ) {
+       dae.Fy[i]=0;
+       dae.Gx[i]=0;
+     }
+   }
+   for ( int i = 0; i < bus.n; i += 1 ) {
+     dae.g[i]=dae.gp[i];
+     dae.g[i+bus.n]=dae.gq[i];
+  }
+
+   fm_out_0(0,0);
+   fm_out_2(settings.t0,1);
+   if(fault.n>0)
+     fm_fault_0(0);
+//   FILE	*fp;										/* output-file pointer */
+//
+//   fp	= fopen( "Jlfv", "w" );
+//   if ( fp == NULL ) {
+//     exit (EXIT_FAILURE);
+//   }
+//
+//   for ( int i = 0; i < 2*bus.n; i += 1 ) {
+//     for ( int j = 0; j <2*bus.n; j += 1 ) {
+//       fprintf(fp,"%lf\t",dae.Jlfv[j+i*(2*bus.n)]);
+//     }
+//     fprintf(fp,"\n");
+//   }
+//   if( fclose(fp) == EOF ) {			/* close output file   */
+//     exit (EXIT_FAILURE);
+//   }
+}
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  fm_mn
+ *  Description:  flag = 0 initialization
+ *                flag = 1 algebraic equations
+ *                flag =2 algebraic jacobians
+ * =====================================================================================
+ */
+void Psat::fm_mn_1(){
+  if(settings.init){
+    for ( int i = 0; i < mn.n; i += 1 ) {
+       int k=mn.bus[i];
+       dae.gp[k]+=mn.con[i][3]*pow(dae.V[k],(int)mn.con[i][5]);
+       dae.gq[k]+=mn.con[i][4]*pow(dae.V[k],(int)mn.con[i][6]);
+    }
+  }
+  else if(mn.init_n>0){
+    for ( int i = 0; i < mn.init_n; i += 1 ) {
+      int k=mn.init[i];
+      int h=mn.bus[k];
+      dae.gp[h]+=mn.con[k][3]*pow(dae.V[h],(int)mn.con[k][5]);
+      dae.gq[h]+=mn.con[k][4]*pow(dae.V[h],(int)mn.con[k][6]);
+    }
+  }
+}
+void Psat::fm_mn_2(){
+  if(settings.init){
+    for ( int i = 0; i < mn.n; i += 1 ) {
+      int k=mn.bus[i];
+      dae.J12[k+k*bus.n]+=mn.con[i][3]*mn.con[i][5]*pow(dae.V[k],(int)mn.con[i][5]-1);
+      dae.J22[k+k*bus.n]+=mn.con[i][4]*mn.con[i][6]*pow(dae.V[k],(int)mn.con[i][6]-1);
+    }
+  }
+  else if(mn.init_n>0){
+    for ( int i = 0; i < mn.init_n; i += 1 ) {
+      int k=mn.init[i];
+      int h=mn.bus[k];
+      dae.J12[h+h*bus.n]+=mn.con[k][3]*mn.con[k][5]*pow(dae.V[h],(int)mn.con[i][5]-1);
+      dae.J22[h+h*bus.n]+=mn.con[k][4]*mn.con[k][6]*pow(dae.V[k],(int)mn.con[i][6]-1);
+    }
+  }
+}
 void Psat::fm_mn_0(){}
 void Psat::fm_fault(int flag,double t){}
-void Psat::fm_fault_0(double t){}
+void Psat::fm_fault_0(double t){
+
+}
 void Psat::fm_fault_1(double t){}
 double Psat:: fm_tstep(int flag,int convergency,int iteration,double t){return 0.0;}
 void Psat::fm_tstep_1(int convergency,int iteration,double t){}
 void Psat::fm_tstep_2(int convergency,int iteration,double t){}
-void Psat::fm_out_0(double t,int k){}
+void Psat::fm_out_0(double t,int k){
+  int chunk=settings.chunk;
+  varout.t=new double [chunk];
+  varout.numOfStep=0;
+  if(dae.n>0){
+    varout.x=new double [chunk*dae.n];
+    varout.f=new double [chunk*dae.n];
+
+    for ( int i = 0; i < chunk*dae.n; i += 1 ) {
+      varout.x[i]=0;
+      varout.f[i]=0;
+    }
+  }
+  varout.V=new double [chunk*bus.n];
+  varout.ang=new double [chunk*bus.n];
+  for ( int i = 0; i < chunk*bus.n; i += 1 ) {
+    varout.V[i]=0;
+    varout.ang[i]=0;
+  }
+  if(syn.n>0){
+    varout.Pm=new double [chunk*syn.n];
+    varout.Vf=new double [chunk*syn.n];
+    for ( int i = 0; i < chunk*syn.n; i += 1 ) {
+      varout.Pm[i]=0;
+      varout.Vf[i]=0;
+    }
+  }
+}
 void Psat::fm_out_1(double t,int k){}
-void Psat::fm_out_2(double t,int k){}
+void Psat::fm_out_2(double t,int k){
+  int kk=k-1;//for array start with zero
+  if((int)varout.t[kk]==0){
+    varout.numOfStep++;
+    if(varout.numOfStep>40)
+      varout.numOfStep=1;
+  }
+  varout.t[kk]=t;
+  for ( int i = 0; i < dae.n; i += 1 ) {
+    varout.x[i+kk*dae.n]=dae.x[i];
+    varout.f[i+kk*dae.n]=dae.f[i];
+  }
+  for ( int i = 0; i < bus.n; i += 1 ) {
+    varout.V[i+kk*bus.n]=dae.V[i];
+    varout.ang[i+kk*bus.n]=dae.a[i];
+  }
+  for ( int i = 0; i < syn.n; i += 1 ) {
+    varout.Pm[i+kk*bus.n]=syn.pm[i];
+    varout.Vf[i+kk*bus.n]=syn.vf[i];
+  }
+}
 void Psat::fm_out_3(double t,int k){}
 void Psat::fm_int_dyn(double t0,double tf,double h){}
 void Psat::fm_int_step(double t,double h,double *tempi,int k){}
