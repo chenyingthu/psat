@@ -411,11 +411,16 @@ void Psat::fm_spf(){
      dae.Fx=new double [dae.n*dae.n];
      dae.Fy=new double [dae.n*2*bus.n];
      dae.Gx=new double [2*bus.n*dae.n];
-     memset(dae.f,1,(dae.n-dynordold)*sizeof(double));
      memset(dae.x,1,(dae.n-dynordold)*sizeof(double));
      memset(dae.Fx,0,dae.n*dae.n*sizeof(double));
      memset(dae.Fy,0,dae.n*2*bus.n*sizeof(double));
      memset(dae.Gx,0,2*bus.n*dae.n*sizeof(double));
+   }
+   for ( int i = 0; i < dae.n; i += 1 ) {
+     dae.f[i]=1;
+     dae.x[i]=1;
+
+     printf("x:\t%lf\n",dae.x[i]);
    }
    settings.init=1;
    fm_synit();
@@ -444,19 +449,28 @@ void Psat::fm_spf(){
    fm_pq_2();
 
    fm_syn(2);
-//   fm_pv_2();
-//   fm_sw_2();
-//   cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlfv);
+   fm_pv_2();
+   fm_sw_2();
+
+   cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlfv);
+
+   fm_syn(3);
+   if(dae.n>0){
+     dae.Fx=new double [dae.n*dae.n];
+     dae.Fy=new double [dae.n*2*bus.n];
+     dae.Gx=new double [2*bus.n*dae.n];
+   }
+   fm_syn(4);
 //   FILE	*fp;										/* output-file pointer */
 //
-//   fp	= fopen( "Jlf", "w" );
+//   fp	= fopen( "Jlfv", "w" );
 //   if ( fp == NULL ) {
 //     exit (EXIT_FAILURE);
 //   }
 //
 //   for ( int i = 0; i < 2*bus.n; i += 1 ) {
 //     for ( int j = 0; j < 2*bus.n; j += 1 ) {
-//       fprintf(fp,"%lf\t",dae.Jlf[j+i*2*bus.n]);
+//       fprintf(fp,"%lf\t",dae.Jlfv[j+i*2*bus.n]);
 //     }
 //     fprintf(fp,"\n");
 //   }
@@ -475,6 +489,8 @@ void Psat::resetBoundNode(){
  int *indexAll=new int [dae.n+2*bus.n]; 
  int *indexG=new int [bus.n];
  
+ boundarynode.indexAll=new int [dae.n+2*bus.n-2*boundarynode.n];
+ boundarynode.indexG=new int[bus.n-boundarynode.n];
  for (int i = 0; i < dae.n+2*bus.n; i += 1 ) {
    indexAll[i]=i;
    if(i<bus.n)
@@ -711,7 +727,7 @@ void Psat::fm_sw_2(){
 }
 void Psat::fm_dynidx(){
   dae.n=syn.fm_dynidx(dae);
-  printf("%d\n",dae.n);
+//  printf("%d\n",dae.n);
 }
 void Psat::fm_synit(){
 
@@ -720,6 +736,15 @@ void Psat::fm_synit(){
   sw.fm_synit(syn.n,syn.bus);
 }
 void Psat::fm_excin(){}
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  fm_syn
+ *  Description:  flag = 1 algebraic equations
+ *                flag = 2 algebraic jacobians
+ *                flag = 3 differential equations;
+ *                flag = 4 state matrix
+ * =====================================================================================
+ */
 void Psat::fm_syn(int flag){
   switch ( flag ) {
     case 1:
@@ -765,7 +790,7 @@ void Psat::fm_syn1(int flag){
     if(i<syn.is8_n){
     }
 
-//    printf("%lf\t%lf\n",syn.delta[i],syn.omega[i]);
+    printf("%lf\t%lf\n",syn.delta[i],syn.omega[i]);
   }
   for ( int i = 0; i < syn.n; i += 1 ) {
     int k=syn.bus[i];
@@ -820,9 +845,107 @@ void Psat::fm_syn1(int flag){
 //    printf("%lf\t%lf\n",dae.gp[i],dae.gq[i]);
 //  }
 }
-void Psat::fm_syn2(int flag){}
-void Psat::fm_syn3(int flag){}
-void Psat::fm_syn4(int flag){}
+void Psat::fm_syn2(int flag){
+  double ag,ss,cc;
+  double M1,M2,M3,M4;
+  for ( int i = 0; i < syn.n; i += 1 ) {
+    int k=syn.bus[i];
+    ag=dae.a[k];
+    ss=sin(syn.delta[i]-ag);
+    cc=cos(syn.delta[i]-ag);
+
+    M1=dae.V[k]*(syn.c1[i]*cc-syn.c3[i]*ss);
+    M2=-dae.V[k]*(syn.c2[i]*cc+syn.c1[i]*ss);
+    M3=-(syn.c1[i]*ss+syn.c3[i]*cc);
+    M4=syn.c2[i]*ss-syn.c1[i]*cc;
+
+    syn.J11[i]=dae.V[k]*(-M1*ss+syn.Id[i]*cc-M2*cc-syn.Iq[i]*ss);
+    syn.J12[i]=-syn.Id[i]*ss-syn.Iq[i]*cc-dae.V[k]*(M3*ss+M4*cc);
+    syn.J21[i]=dae.V[k]*(-M1*cc-syn.Id[i]*ss+M2*ss-syn.Iq[i]*cc);
+    syn.J22[i]=-syn.Id[i]*cc+syn.Iq[i]*ss-dae.V[k]*(M3*cc-M4*ss);
+
+    dae.J11[k+k*bus.n]+=syn.J11[i];
+    dae.J12[k+k*bus.n]+=syn.J12[i];
+    dae.J21[k+k*bus.n]+=syn.J21[i];
+    dae.J22[k+k*bus.n]+=syn.J22[i];
+
+//    printf("%lf\t%lf\t%lf\t%lf\n",syn.J11[i],syn.J12[i],syn.J21[i],syn.J22[i]);
+
+  }
+}
+void Psat::fm_syn3(int flag){
+  double iM,D;
+  double ra,xd,xq,xd1,xq1,Td10,Tq10,K0,Kp;
+  double a34,a35,a45,a44,b43,b44;
+  double *Vf=new double [syn.n];
+
+  for ( int i = 0; i < syn.n; i += 1 ) {
+    ra=syn.con[i][6];
+    D=syn.con[i][18];
+    iM=1/syn.con[i][17];
+    K0=syn.con[i][19];
+    Kp=syn.con[i][20];
+    dae.f[syn.delta_idx[i]]=settings.rad*(syn.omega[i]-1);
+    dae.f[syn.omega_idx[i]]=(syn.pm[i]+syn.Pg[i]-ra*(syn.Id[i]*syn.Id[i]+syn.Iq[i]*syn.Iq[i])-D*(syn.omega[i]-1))*iM;
+    Vf[i]=syn.vf[i]+K0*(syn.omega[i]-1)-Kp*(syn.pm[i]+syn.Pg[i]);
+  }
+//  for ( int i = 0; i < dae.n; i += 1 ) {
+//    printf("%lf\n",dae.f[i]);
+//  }
+  for ( int i = 0; i < syn.n; i += 1 ) {
+    if(i<syn.is3_n){
+      int k=syn.is3[i];
+      Td10=syn.con[k][10];
+      xd=syn.con[k][7];
+      xd1=syn.con[k][8];
+      a34=1/Td10;
+      a35=a34*(xd-xd1);
+      dae.f[syn.e1q_idx[k]]=-a34*syn.e1q[k]-a35*syn.Id[k]+a34*Vf[k];
+    }
+    if(i<syn.is4_n){
+      int k=syn.is4[i];
+      Td10=syn.con[k][10];
+      xd=syn.con[k][7];
+      xd1=syn.con[k][8];
+      xq=syn.con[k][12];
+      xq1=syn.con[k][13];
+      Tq10=syn.con[k][15];
+      a44=1/Td10;
+      a45=a44*(xd-xd1);
+      b43=1/Tq10;
+      b44=b43*(xq-xq1);
+      dae.f[syn.e1q_idx[k]]=-a44*syn.e1q[k]-a45*syn.Id[k]+a44*Vf[k];
+      dae.f[syn.e1d_idx[k]]=-b43*syn.e1d[k]+b44*syn.Iq[k];
+    }
+    if(i<syn.is51_n){
+    }
+    if(i<syn.is52_n){
+    }
+    if(i<syn.is53_n){
+    }
+    if(i<syn.is6_n){
+    }
+    if(i<syn.is8_n){
+    }
+  }
+//  
+//  for ( int i = 0; i < dae.n; i += 1 ) {
+//    printf("%lf\n",dae.f[i]);
+//  }
+  delete []Vf;
+}
+void Psat::fm_syn4(int flag){
+  double ag,ss,cc,iM,D;
+  double *M1=new double [syn.n];
+  double *M2=new double [syn.n];
+  double *M3=new double [syn.n];
+  double *M4=new double [syn.n];
+
+  delete []M1;
+  delete []M2;
+  delete []M3;
+  delete []M4;
+}
 void Psat::fm_int_intial(){}
 void Psat::fm_mn_1(){}
 void Psat::fm_mn_2(){}
