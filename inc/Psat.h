@@ -96,5 +96,6 @@ public:
 	void fm_out_3(double t,int k);
 	void fm_int_dyn(double t0,double tf,double h);
 	void fm_int_step(double t,double h,double *tempi,int k);
+	int fm_nrlf(int iter_max,double tol);
 };
 #endif

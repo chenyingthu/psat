@@ -1288,7 +1288,19 @@ void Psat::fm_fault_0(double t){
   delete []y;
 }
 void Psat::fm_fault_1(double t){
+  for ( int i = 0; i < fault.n; i += 1 ) {
+    int h=fault.bus[i];
+    if(abs(t-fault.con[i][4])<1e-8){
+      printf("applying fault at t = %lf s",t);
+      shunt.g[h]=fault.dat[2+i*5]+fault.dat[0+i*5];
+      shunt.b[h]=fault.dat[3+i*5]+fault.dat[1+i*5];
+      fm_y();
+      int conv=fm_nrlf(40,1e-4);
+      if(conv)
+	printf("i am here\n");
+    }// fault intervention
 
+  }
 }
 double Psat:: fm_tstep(int flag,int convergency,int iteration,double t){
   switch(flag){
@@ -1520,4 +1532,47 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
   delete []xa;
   delete []anga;
   delete []Va;
+}
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  fm_nrlf
+ *  Description:  solve power flow with locked ste variables
+ *                itermax=max number of iteraions
+ *                tol= convergence tolerance
+ *                conv =1 if convergence reached ,0 otherwise
+ *
+ * =====================================================================================
+ */
+int Psat::fm_nrlf(int iter_max,double tol){
+  int conv=1;
+  int iteration=0;
+  double *inc=new double [2*bus.n];
+  int rbus=settings.refbus;
+  double *Vguess=new double [bus.n];
+  double *y2=new double [2*bus.n]; 
+  for ( int i = 0; i < bus.n; i += 1 ) {
+    inc[2*i]=1;
+    inc[2*i+1]=1;
+    Vguess[i]=1;
+  }
+  for ( int i = 0; i < sw.n; i += 1 ) {
+    int k=sw.bus[i];
+    Vguess[k]=dae.V[k];
+  }
+  for ( int i = 0; i < pv.n; i += 1 ) {
+    int k=pv.bus[i];
+    Vguess[k]=dae.V[k];
+  }
+  
+  for ( int i = 0; i < bus.n-boundarynode.n; i += 1 ) {
+    int k=boundarynode.indexG[i];
+    dae.V[k]=Vguess[k];
+  }
+  for ( int i = 0; i < bus.n; i += 1 ) {
+    y2[i]=dae.a[i];
+    y2[i+bus.n]=dae.V[i];
+  }
+  delete []Vguess;
+  delete []inc;
+  return conv;
 }
