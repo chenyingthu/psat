@@ -1291,7 +1291,7 @@ void Psat::fm_fault_1(double t){
   for ( int i = 0; i < fault.n; i += 1 ) {
     int h=fault.bus[i];
     if(abs(t-fault.con[i][4])<1e-8){
-      printf("applying fault at t = %lf s",t);
+      printf("applying fault at t = %lf s\n",t);
       shunt.g[h]=fault.dat[2+i*5]+fault.dat[0+i*5];
       shunt.b[h]=fault.dat[3+i*5]+fault.dat[1+i*5];
       fm_y();
@@ -1299,8 +1299,35 @@ void Psat::fm_fault_1(double t){
       if(conv)
 	printf("i am here\n");
     }// fault intervention
+    else if(abs(t-fault.con[i][5])<1e-8){
+      printf("Clearing fault at t = %lf s\n",t);
+      shunt.g[h]=fault.dat[2+i*5];
+      shunt.b[h]=fault.dat[3+i*5];
+      fm_y();
+      if(syn.n>0){
+	double mean_delta=0;
+	for ( int i = 0; i < syn.n; i += 1 ) {
+	  int k=syn.delta_idx[i];
+	  mean_delta+=dae.x[k];
+	}
+	mean_delta=mean_delta/syn.n;
+	for ( int i = 0; i < bus.n-boundarynode.n; i += 1 ) {
+	  int k=boundarynode.indexG[i];
+	  dae.a[k]=mean_delta-fault.delta+fault.ang[k];
+	}
+      }
+      else{
+	for ( int i = 0; i < bus.n; i += 1 ) {
+	  dae.a[i]=fault.ang[i];
+	}
+      }
+      int conv=fm_nrlf(40,1e-4);
+      if(conv){
+	printf("i am here too\n");
+      }
+    }//end of else if
 
-  }
+  }//end of for
 }
 double Psat:: fm_tstep(int flag,int convergency,int iteration,double t){
   switch(flag){
@@ -1522,13 +1549,22 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
 
   for ( int i = 0; i < 4*fault.n; i += 1 ) {
     if(abs(tempi[i]-tempo)<1e-5){
-      if(fault.n>0)
+      if(fault.n>0){
 	fm_fault_1(tempo);
+	break;
+      }
     }
   }
+  double err_max=1;
+  int iterazione=1;
+  int AllN=dae.n+2*bus.n-2*boundarynode.n;
+  int GN=bus.n-boundarynode.n;
+  double *inc=new double [AllN];
+  while(err_max>settings.dyntol&&iterazione<=settings.dynmit){}
   printf("%lf\n",tempo);
   getchar();
   h=tempo-t;
+  delete []inc;
   delete []xa;
   delete []anga;
   delete []Va;
@@ -1546,10 +1582,15 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
 int Psat::fm_nrlf(int iter_max,double tol){
   int conv=1;
   int iteration=0;
-  double *inc=new double [2*bus.n];
-  int rbus=settings.refbus;
   double *Vguess=new double [bus.n];
-  
+  double *y2=new double [2*bus.n]; 
+  int *index=new int [2*bus.n-2*boundarynode.n];
+  double *tempJlfv=new double [(2*bus.n-2*boundarynode.n)*(2*bus.n-2*boundarynode.n)];
+  double *inc=new double [2*bus.n-2*boundarynode.n];
+  for ( int i = 0; i < bus.n-boundarynode.n; i += 1 ) {
+    index[i]=boundarynode.indexG[i];
+    index[i+bus.n-boundarynode.n]=boundarynode.indexG[i]+bus.n;
+  }
   for ( int i = 0; i < bus.n; i += 1 ) {
     inc[2*i]=1;
     inc[2*i+1]=1;
@@ -1568,7 +1609,92 @@ int Psat::fm_nrlf(int iter_max,double tol){
     int k=boundarynode.indexG[i];
     dae.V[k]=Vguess[k];
   }
+  for ( int i = 0; i < bus.n; i += 1 ) {
+    y2[i]=dae.a[i];
+    y2[i+bus.n]=dae.V[i];
+  }
+  double err_max=1;
+  int *ipiv=new int[2*(bus.n-boundarynode.n)];
+  while(err_max>tol&&iteration<iter_max){
+    fm_lf_1();
+    fm_mn_1();
+    fm_syn(1);
+    for ( int i = 0; i < bus.n; i += 1 ) {
+      dae.g[i]=dae.gp[i];
+      dae.g[i+bus.n]=dae.gq[i];
+    }
+    fm_lf_2();
+   cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlf);
+   fm_mn_2();
+   fm_syn(2);
+   cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlfv);
+   for ( int i = 0; i < bus.island_n; i += 1 ) {
+     int k=bus.island[i];
+     for ( int j = 0; j < 2*bus.n; j += 1 ) {
+       dae.Jlfv[j+k*2*bus.n]=0;
+       dae.Jlfv[k+j*2*bus.n]=0;
+       dae.Jlfv[j+(k+bus.n)*2*bus.n]=0;
+       dae.Jlfv[k+bus.n+j*2*bus.n]=0;
+       dae.Jlfv[k+k*2*bus.n]=0;
+       dae.Jlfv[k+bus.n+(k+bus.n)*2*bus.n]=0;
+       dae.g[k]=0;
+       dae.g[k+bus.n]=0;
+       dae.V[k]=0;
+       dae.a[k]=0;
+     }
+   }
+   for ( int i = 0; i < 2*(bus.n-boundarynode.n); i += 1 ) {
+     int row=index[i];
+     for ( int j = 0; j < 2*(bus.n-boundarynode.n); j += 1 ) {
+       int col=index[j];
+       tempJlfv[i+j*2*(bus.n-boundarynode.n)]=dae.Jlfv[col+row*2*(bus.n-boundarynode.n)];
+     }
+   }
+   for (int i=0;i < 2*(bus.n-boundarynode.n); i +=1 ){
+     int k=index[i];
+     inc[i]=dae.g[k];
+   }
+   LAPACKE_dgesv(LAPACK_COL_MAJOR,2*bus.n-2*boundarynode.n,1,tempJlfv,2*bus.n-2*boundarynode.n,ipiv,inc,2*bus.n-2*boundarynode.n);
+   for (int i=0;i < 2*(bus.n-boundarynode.n); i +=1 ){
+     int k=index[i];
+     y2[k]+=inc[i];
+   }
+   for ( int i = 0; i < bus.n; i += 1 ) {
+     dae.a[i]=y2[i];
+     dae.V[i]=y2[i+bus.n];
+   }
+   err_max=0;
+   for(int i=0;i<2*(bus.n-boundarynode.n);++i){
+     if(abs(inc[i])>err_max)
+       err_max=abs(inc[i]);
+   }
+   iteration++;
+  }
+  for ( int i = 0; i < bus.n; i += 1 ) {
+    if(dae.V[i]<=1e-6)
+      dae.a[i]=0;
+  }
+  for ( int i = 0; i < bus.n; i += 1 ) {
+    if(abs(dae.V[i])<1e-4&&(abs(dae.a[i]))>2*pi){
+      while(abs(dae.a[i])>2*pi){
+	if( dae.a[i]<0)
+	  dae.a[i]+=2*pi;
+	else
+	  dae.a[i]=dae.a[i]-2*pi;
+      }
+    }
+  }
+  if(iteration>=iter_max){
+    printf("Solution of algebraic equations failed.\n");
+    conv=0;
+  }
+  else{
+    printf("Solution of algebraic equations completed in %d iterations",iteration);
+  }
+  fm_syn(3);
+  delete []index;
   delete []Vguess;
   delete []inc;
+  delete []ipiv;
   return conv;
 }
