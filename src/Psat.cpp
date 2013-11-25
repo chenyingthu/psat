@@ -1287,7 +1287,9 @@ void Psat::fm_fault_0(double t){
   delete []x;
   delete []y;
 }
-void Psat::fm_fault_1(double t){}
+void Psat::fm_fault_1(double t){
+
+}
 double Psat:: fm_tstep(int flag,int convergency,int iteration,double t){
   switch(flag){
     case 1:
@@ -1443,4 +1445,79 @@ void Psat::fm_int_dyn(double t0,double tf,double h){
     fm_int_step(t,h,settings.tempi,k);
   }
 }
-void Psat::fm_int_step(double t,double h,double *tempi,int k){}
+void Psat::fm_int_step(double t,double h,double *tempi,int k){
+//  double h_old=h;
+  if((t+h)>settings.tf)
+    h=settings.tf-t;
+  double tempo=t+h;
+  double tempo_min=tempo;
+  for ( int i = 0; i < 4*fault.n; i += 1 ) {
+    if(tempi[i]-t>1e-6&&tempo-tempi[i]>1e-6)
+      if(tempo_min>tempi[i])
+	tempo_min=tempi[i];
+  }
+  tempo=tempo_min;
+  dae.t=tempo;
+  int kk=k-1; 
+  double *xa=new double [dae.n];
+  double *anga=new double [bus.n];
+  double *Va=new double [bus.n];
+  for ( int i = 0; i < dae.n; i += 1 ) {
+    dae.x[i]=varout.x[i+kk*dae.n];
+    dae.f[i]=varout.f[i+kk*dae.n];
+    xa[i]=dae.x[i];
+  }
+  for ( int i = 0; i < bus.n; i += 1 ) {
+    dae.V[i]=varout.V[i+kk*bus.n];
+    dae.a[i]=varout.ang[i+kk*bus.n];
+    anga[i]=dae.a[i];
+    Va[i]=dae.V[i];
+  }
+  fault.tFaultStart=fault.con[0][4];
+  fault.tFaultEnd=fault.con[0][5];
+  if(k<settings.chunk&&varout.t[kk+1]==tempo){
+    for ( int i = 0; i < dae.n; i += 1 ) {
+      dae.x[i]=varout.x[i+k*dae.n];
+    }
+    for ( int i = 0; i < bus.n; i += 1 ) {
+      dae.V[i]=varout.V[i+k*bus.n];
+      dae.a[i]=varout.ang[i+k*bus.n];
+    }
+  }
+  else{
+    if(settings.t0>fault.tFaultEnd+3*h)
+      for ( int i = 0; i < dae.n; i += 1 ) {
+	dae.x[i]=3*varout.x[i+kk*dae.n]-3*varout.x[i+(kk-1)*dae.n]+varout.x[i+(kk-2)*dae.n];
+      }
+      for ( int i = 0; i < bus.n; i += 1 ) {
+	dae.V[i]=3*varout.V[i+kk*bus.n]-3*varout.V[i+(kk-1)*bus.n]+varout.V[i+(kk-2)*bus.n];
+	dae.a[i]=3*varout.ang[i+kk*bus.n]-3*varout.ang[i+(kk-1)*bus.n]+varout.ang[i+(kk-2)*bus.n];
+      }
+  }
+  if(abs(tempo-fault.tFaultEnd)<1e-8){
+    for ( int i = 0; i < settings.chunk; i += 1 ) {
+      if(abs(varout.t[i]-fault.tFaultStart)<1e-10){
+	kk=i;
+	for ( int i = 0; i < bus.n; i += 1 ) {
+	  dae.V[i]=varout.V[i+kk*bus.n];
+	  dae.a[i]=varout.ang[i+kk*bus.n];
+	}
+	break;
+      }
+    }
+  }
+  resetBoundNode();
+
+  for ( int i = 0; i < 4*fault.n; i += 1 ) {
+    if(abs(tempi[i]-tempo)<1e-5){
+      if(fault.n>0)
+	fm_fault_1(tempo);
+    }
+  }
+  printf("%lf\n",tempo);
+  getchar();
+  h=tempo-t;
+  delete []xa;
+  delete []anga;
+  delete []Va;
+}
