@@ -1,4 +1,5 @@
 #include "../inc/Psat.h"
+#define pi 3.141592653589793
 Psat::Psat(){
     jay=Complex(0,1);
     nBus=0;
@@ -1480,9 +1481,13 @@ void Psat::fm_int_dyn(double t0,double tf,double h){
     }
   }
   double t=t0;
+  dae.Ac=new double [(dae.n+2*bus.n)*(dae.n+2*bus.n)];
+  dae.tn=new double [dae.n+2*bus.n];
   while(t<tf&&(t+h)>t){
     fm_int_step(t,h,settings.tempi,k);
   }
+  delete []dae.Ac;
+  delete []dae.tn;
 }
 void Psat::fm_int_step(double t,double h,double *tempi,int k){
 //  double h_old=h;
@@ -1524,7 +1529,7 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
     }
   }
   else{
-    if(settings.t0>fault.tFaultEnd+3*h)
+    if(settings.t0>fault.tFaultEnd+3*h){
       for ( int i = 0; i < dae.n; i += 1 ) {
 	dae.x[i]=3*varout.x[i+kk*dae.n]-3*varout.x[i+(kk-1)*dae.n]+varout.x[i+(kk-2)*dae.n];
       }
@@ -1532,6 +1537,7 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
 	dae.V[i]=3*varout.V[i+kk*bus.n]-3*varout.V[i+(kk-1)*bus.n]+varout.V[i+(kk-2)*bus.n];
 	dae.a[i]=3*varout.ang[i+kk*bus.n]-3*varout.ang[i+(kk-1)*bus.n]+varout.ang[i+(kk-2)*bus.n];
       }
+    }
   }
   if(abs(tempo-fault.tFaultEnd)<1e-8){
     for ( int i = 0; i < settings.chunk; i += 1 ) {
@@ -1558,9 +1564,86 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
   double err_max=1;
   int iterazione=1;
   int AllN=dae.n+2*bus.n-2*boundarynode.n;
-  int GN=bus.n-boundarynode.n;
+//  int GN=bus.n-boundarynode.n;
   double *inc=new double [AllN];
-  while(err_max>settings.dyntol&&iterazione<=settings.dynmit){}
+  while(err_max>settings.dyntol&&iterazione<=settings.dynmit){
+    fm_lf_1();
+    fm_mn_1();
+    fm_syn(1);
+
+    for ( int i = 0; i < boundarynode.n; i += 1 ) {
+      int k=boundarynode.bnode[i];
+      boundarynode.P[i]=dae.gp[k];
+      boundarynode.Q[i]=dae.gq[k];
+    }
+    fm_sw_1();
+    for ( int i = 0; i < bus.n; i += 1 ) {
+      dae.g[i]=dae.gp[i];
+      dae.g[i+bus.n]=dae.gq[i];
+    }
+    fm_syn(3);
+    if(iterazione%3==1){
+      fm_lf_2();
+      cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlf);
+
+      fm_mn_2();
+      fm_syn(2);
+      fm_sw_2();
+
+      cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlfv);
+      for ( int i = 0; i < dae.n*dae.n; i += 1 ) {
+	dae.Fx[i]=0;
+      }
+      for ( int i = 0; i < dae.n*2*bus.n; i += 1 ) {
+	dae.Fy[i]=0;
+	dae.Gx[i]=0;
+      }
+      fm_syn(4);
+      for ( int i = 0; i < sw.n; i += 1 ) {
+	int k=sw.bus[i];
+	for ( int j = 0; j < dae.n; j += 1 ) {
+	  dae.Fy[k+j*2*bus.n]=0;
+	  dae.Fy[k+bus.n+j*2*bus.n]=0;
+	  dae.Gx[j+k*dae.n]=0;
+	  dae.Gx[j+(k+bus.n)*dae.n]=0;
+	}
+      }
+      for ( int i = 0; i >= pv.n; i -= 1 ) {
+	int k=pv.bus[i];
+	for ( int j = 0; j < dae.n; j += 1 ) {
+	  dae.Fy[k+bus.n+j*2*bus.n]=0;
+	  dae.Gx[j+(k+bus.n)*dae.n]=0;
+	}
+      }
+      h=0.009999;
+      switch(settings.method){
+	case 1:
+	  cat4matrix_Ac(dae.Fx,dae.n,dae.n,dae.Gx,dae.n,2*bus.n,dae.Fy,2*bus.n,dae.n,dae.Jlfv,2*bus.n,2*bus.n,dae.Ac,h);
+	  break;
+	case 2:
+	  cat4matrix_Ac(dae.Fx,dae.n,dae.n,dae.Gx,dae.n,2*bus.n,dae.Fy,2*bus.n,dae.n,dae.Jlfv,2*bus.n,2*bus.n,dae.Ac,0.5*h);
+//	  cat4matrix(dae.Fx,dae.n,dae.n,dae.Gx,dae.n,2*bus.n,dae.Fy,2*bus.n,dae.n,dae.Jlfv,2*bus.n,2*bus.n,dae.Ac);
+	FILE	*fp;	
+	fp	= fopen( "Ac", "w" );
+	if ( fp == NULL ) {
+	  exit (EXIT_FAILURE);
+	}
+
+	for ( int i = 0; i <dae.n+ 2*bus.n; i += 1 ) {
+	  for ( int j = 0; j <dae.n+2*bus.n; j += 1 ) {
+	    fprintf(fp,"%lf\t",dae.Ac[i+j*(dae.n+2*bus.n)]);
+	  }
+	  fprintf(fp,"\n");
+	}
+	if( fclose(fp) == EOF ) {			/* close output file   */
+	  exit (EXIT_FAILURE);
+	}
+	printf("done\n");
+	getchar();
+	  break;
+      }
+    }//den of if iterazione
+  }
   printf("%lf\n",tempo);
   getchar();
   h=tempo-t;

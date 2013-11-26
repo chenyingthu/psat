@@ -53,10 +53,23 @@ void cat4matrix_Ac(double *A,int na,int ma,double *B,int nb,int mb,double *C,int
 {
 	int n=na+nc;
 	int m=ma+mb;
+	for ( int i = 0; i < na; i += 1 ) {
+	  for ( int j = 0; j < ma; j += 1 ) {
+	    if(abs(A[j+i*ma])>1e-9)
+	      printf("%d\t%d\t%lf\n",i,j,A[j+i*ma]);
+	  }
+	}
+	for ( int i = 0; i < na; i += 1 ) {
+	  for ( int j = 0; j < ma; j += 1 ) {
+	    A[j+i*ma]=-h*A[j+i*ma];
+	    if(abs(A[j+i*ma])>1e-9)
+	      printf("%d\t%d\t%lf\n",i,j,A[j+i*ma]);
+	  }
+	}
 	for (int i=0;i<n;++i){
 		for(int j=0;j<m;++j){
 			if(i<na&&j<ma){
-				Result[j+i*m]=-h*A[i+j*na];
+				Result[j+i*m]=A[i+j*na];
 				if(i==j)
 				  Result[j+i*m]=1+Result[j+i*m];
 				else

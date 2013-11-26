@@ -3,6 +3,7 @@
 Bus::Bus()
 {
 	n=0;
+	island_n=0;
 }
 Bus::~Bus()
 {
