@@ -27,7 +27,6 @@ Psat::~Psat(){
     delete []fault.V;
     delete []fault.ang;
     delete []settings.tempi;
-    delete []ipiv;
 }
 void Psat::specifySystem(){
 	double type=0;
@@ -1262,6 +1261,9 @@ void Psat::fm_fault_0(double t){
   fault.dat=new double [fault.n*5];
   fault.V=new double [bus.n];
   fault.ang=new double [bus.n];
+  for ( int i = 0; i < bus.n; i += 1 ) {
+    fault.ang[i]=dae.a[i];
+  }
   if(syn.n>0){
     for ( int i = 0; i < syn.n; i += 1 ) {
       int k=syn.delta_idx[i];
@@ -1305,6 +1307,7 @@ void Psat::fm_fault_1(double t){
       shunt.g[h]=fault.dat[2+i*5];
       shunt.b[h]=fault.dat[3+i*5];
       fm_y();
+      printf("LY done\n");
       if(syn.n>0){
 	double mean_delta=0;
 	for ( int i = 0; i < syn.n; i += 1 ) {
@@ -1422,6 +1425,7 @@ void Psat::fm_tstep_1(int convergency,int iteration,double t){
 }
 void Psat::fm_tstep_2(int convergency,int iteration,double t){}
 void Psat::fm_out_0(double t,int k){
+  settings.chunk=200;
   int chunk=settings.chunk;
   varout.t=new double [chunk];
   varout.numOfStep=0;
@@ -1465,7 +1469,7 @@ void Psat::fm_out_2(double t,int k){
   for ( int i = 0; i < bus.n; i += 1 ) {
     varout.V[i+kk*bus.n]=dae.V[i];
     varout.ang[i+kk*bus.n]=dae.a[i];
-    printf("%lf\t%lf\n",dae.V[i],dae.a[i]);
+    printf("out %lf\t%lf\n",dae.V[i],dae.a[i]);
   }
   for ( int i = 0; i < syn.n; i += 1 ) {
     varout.Pm[i+kk*bus.n]=syn.pm[i];
@@ -1487,9 +1491,11 @@ void Psat::fm_int_dyn(double t0,double tf,double h){
   t_end=t;
   nrecord=k;
   nexttstep=h;
-  while(t<tf&&(t+h)>t){
+  while(t_end<tf&&(t_end+nexttstep)>t){
     fm_int_step(t_end,nexttstep,settings.tempi,nrecord);
+    printf("k:\t%d\n",nrecord);
   }
+  printf("i am out\n");
   delete []dae.Ac;
   delete []dae.tn;
 }
@@ -1563,6 +1569,7 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
   for ( int i = 0; i < 4*fault.n; i += 1 ) {
     if(abs(tempi[i]-tempo)<1e-5){
       if(fault.n>0){
+	printf("fault\t%lf\n",tempo);
 	fm_fault_1(tempo);
 	break;
       }
@@ -1671,6 +1678,7 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
    LAPACKE_dgesv(LAPACK_COL_MAJOR,AllN,1,tempAc,AllN,ipiv,inc,AllN);
    err_max=0;
    for ( int i = 0; i <AllN; i += 1 ) {
+     inc[i]=-inc[i];
      if(abs(inc[i])>err_max)
        err_max=abs(inc[i]);
      if(i<dae.n){
@@ -1708,7 +1716,6 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
     fm_out_2(t,k);
   }
   printf("%lf\n",tempo);
-  getchar();
   t_end=t;
   nrecord=k;
   nexttstep=h;
@@ -1738,6 +1745,13 @@ int Psat::fm_nrlf(int iter_max,double tol){
   int *index=new int [2*bus.n-2*boundarynode.n];
   double *tempJlfv=new double [(2*bus.n-2*boundarynode.n)*(2*bus.n-2*boundarynode.n)];
   double *inc=new double [2*bus.n-2*boundarynode.n];
+  for ( int i = 0; i < bus.n*bus.n; i += 1 ) {
+    dae.J11[i]=0;
+    dae.J12[i]=0;
+    dae.J21[i]=0;
+    dae.J22[i]=0;
+
+  }
   for ( int i = 0; i < bus.n-boundarynode.n; i += 1 ) {
     index[i]=boundarynode.indexG[i];
     index[i+bus.n-boundarynode.n]=boundarynode.indexG[i]+bus.n;
@@ -1767,6 +1781,10 @@ int Psat::fm_nrlf(int iter_max,double tol){
   double err_max=1;
   int *ipiv=new int[2*(bus.n-boundarynode.n)];
   while(err_max>tol&&iteration<iter_max){
+    for(int i=0;i<bus.n;++i){
+      dae.gp[i]=0;
+      dae.gq[i]=0;
+    }
     fm_lf_1();
     fm_mn_1();
     fm_syn(1);
@@ -1779,6 +1797,7 @@ int Psat::fm_nrlf(int iter_max,double tol){
    fm_mn_2();
    fm_syn(2);
    cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlfv);
+   getchar();
    for ( int i = 0; i < bus.island_n; i += 1 ) {
      int k=bus.island[i];
      for ( int j = 0; j < 2*bus.n; j += 1 ) {
@@ -1798,7 +1817,7 @@ int Psat::fm_nrlf(int iter_max,double tol){
      int row=index[i];
      for ( int j = 0; j < 2*(bus.n-boundarynode.n); j += 1 ) {
        int col=index[j];
-       tempJlfv[i+j*2*(bus.n-boundarynode.n)]=dae.Jlfv[col+row*2*(bus.n-boundarynode.n)];
+       tempJlfv[i+j*2*(bus.n-boundarynode.n)]=dae.Jlfv[col+row*2*(bus.n)];
      }
    }
    for (int i=0;i < 2*(bus.n-boundarynode.n); i +=1 ){
@@ -1808,7 +1827,7 @@ int Psat::fm_nrlf(int iter_max,double tol){
    LAPACKE_dgesv(LAPACK_COL_MAJOR,2*bus.n-2*boundarynode.n,1,tempJlfv,2*bus.n-2*boundarynode.n,ipiv,inc,2*bus.n-2*boundarynode.n);
    for (int i=0;i < 2*(bus.n-boundarynode.n); i +=1 ){
      int k=index[i];
-     y2[k]+=inc[i];
+     y2[k]+=-inc[i];
    }
    for ( int i = 0; i < bus.n; i += 1 ) {
      dae.a[i]=y2[i];

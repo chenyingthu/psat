@@ -95,6 +95,10 @@ void Line::fm_y_line(int nodes,Shunt shunt)
 	complex<double> *y=new complex<double>[n]; 
 	complex<double> *ts=new complex<double>[n]; 
 	double *ts2=new double[n]; 
+
+	for ( int i = 0; i < nodes*nodes; i += 1 ) {
+	  Y[i]=complex<double>(0,0);
+	}
 	for (int i=0;i<n;++i){
 		chrg[i]=con[i][9];
 		//printf("%lf\n",chrg[i]);
