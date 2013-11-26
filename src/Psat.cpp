@@ -1465,6 +1465,7 @@ void Psat::fm_out_2(double t,int k){
   for ( int i = 0; i < bus.n; i += 1 ) {
     varout.V[i+kk*bus.n]=dae.V[i];
     varout.ang[i+kk*bus.n]=dae.a[i];
+    printf("%lf\t%lf\n",dae.V[i],dae.a[i]);
   }
   for ( int i = 0; i < syn.n; i += 1 ) {
     varout.Pm[i+kk*bus.n]=syn.pm[i];
@@ -1482,15 +1483,18 @@ void Psat::fm_int_dyn(double t0,double tf,double h){
   }
   double t=t0;
   dae.Ac=new double [(dae.n+2*bus.n)*(dae.n+2*bus.n)];
-  dae.tn=new double [dae.n+2*bus.n];
+  dae.tn=new double [dae.n];
+  t_end=t;
+  nrecord=k;
+  nexttstep=h;
   while(t<tf&&(t+h)>t){
-    fm_int_step(t,h,settings.tempi,k);
+    fm_int_step(t_end,nexttstep,settings.tempi,nrecord);
   }
   delete []dae.Ac;
   delete []dae.tn;
 }
 void Psat::fm_int_step(double t,double h,double *tempi,int k){
-//  double h_old=h;
+  double h_old=h;
   if((t+h)>settings.tf)
     h=settings.tf-t;
   double tempo=t+h;
@@ -1501,15 +1505,18 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
 	tempo_min=tempi[i];
   }
   tempo=tempo_min;
+  h=tempo-t;
   dae.t=tempo;
   int kk=k-1; 
   double *xa=new double [dae.n];
   double *anga=new double [bus.n];
   double *Va=new double [bus.n];
+  double *fn=new double [dae.n];
   for ( int i = 0; i < dae.n; i += 1 ) {
     dae.x[i]=varout.x[i+kk*dae.n];
     dae.f[i]=varout.f[i+kk*dae.n];
     xa[i]=dae.x[i];
+    fn[i]=dae.f[i];
   }
   for ( int i = 0; i < bus.n; i += 1 ) {
     dae.V[i]=varout.V[i+kk*bus.n];
@@ -1564,8 +1571,11 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
   double err_max=1;
   int iterazione=1;
   int AllN=dae.n+2*bus.n-2*boundarynode.n;
-//  int GN=bus.n-boundarynode.n;
+  int GN=bus.n-boundarynode.n;
   double *inc=new double [AllN];
+  double *tempAc=new double [AllN*AllN];
+  double *deltf=new double [dae.n+2*bus.n];
+  int *ipiv=new int[AllN];
   while(err_max>settings.dyntol&&iterazione<=settings.dynmit){
     fm_lf_1();
     fm_mn_1();
@@ -1615,7 +1625,6 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
 	  dae.Gx[j+(k+bus.n)*dae.n]=0;
 	}
       }
-      h=0.009999;
       switch(settings.method){
 	case 1:
 	  cat4matrix_Ac(dae.Fx,dae.n,dae.n,dae.Gx,dae.n,2*bus.n,dae.Fy,2*bus.n,dae.n,dae.Jlfv,2*bus.n,2*bus.n,dae.Ac,h);
@@ -1623,12 +1632,89 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
 	case 2:
 	  cat4matrix_Ac(dae.Fx,dae.n,dae.n,dae.Gx,dae.n,2*bus.n,dae.Fy,2*bus.n,dae.n,dae.Jlfv,2*bus.n,2*bus.n,dae.Ac,0.5*h);
 	  break;
+	default:
+	  break;
       }
     }//den of if iterazione
+    switch(settings.method){
+      case 1:
+	for ( int i = 0; i < dae.n; i += 1 ) {
+	  dae.tn[i]=dae.x[i]-xa[i]-h*dae.f[i];
+	}
+	break;
+      case 2:
+	for ( int i = 0; i < dae.n; i += 1 ) {
+	  dae.tn[i]=dae.x[i]-xa[i]-h*0.5*dae.f[i];
+	}
+	break;
+      default:
+	break;
+    }
+    for ( int i = 0; i < dae.n+2*bus.n; i += 1 ) {
+      if(i<dae.n)
+	deltf[i]=dae.tn[i];
+      else
+	deltf[i]=dae.g[i-dae.n];
+    }
+    for ( int i = 0; i < dae.n+2*bus.n-2*boundarynode.n; i += 1 ) {
+      int k=boundarynode.indexAll[i];
+      inc[i]=deltf[k];
+    }
+
+    for ( int i = 0; i < dae.n+2*bus.n-2*boundarynode.n; i += 1 ) {
+      int row=boundarynode.indexAll[i];
+      for ( int j = 0; j < dae.n+2*bus.n-2*boundarynode.n; j += 1 ) {
+	int col=boundarynode.indexAll[j];
+	tempAc[j+i*(dae.n+2*bus.n-2*boundarynode.n)]=dae.Ac[col+row*(dae.n+2*bus.n)];
+      }
+    }
+   LAPACKE_dgesv(LAPACK_COL_MAJOR,AllN,1,tempAc,AllN,ipiv,inc,AllN);
+   err_max=0;
+   for ( int i = 0; i <AllN; i += 1 ) {
+     if(abs(inc[i])>err_max)
+       err_max=abs(inc[i]);
+     if(i<dae.n){
+       dae.x[i]+=inc[i];
+     }
+     else if(i<dae.n+GN){
+       int k=boundarynode.indexG[i-dae.n];
+       dae.a[k]+=inc[i];
+     }
+     else{
+       int k=boundarynode.indexG[i-dae.n-GN];
+       dae.V[k]+=inc[i];
+     }
+   }
+   iterazione++;
+  }//end of while
+  if(iterazione>settings.dynmit){
+    h=fm_tstep(2,0,iterazione,t);
+    for ( int i = 0; i < dae.n; i += 1 ) {
+      dae.x[i]=xa[i];
+      dae.f[i]=fn[i];
+    }
+    for ( int i = 0; i < bus.n; i += 1 ) {
+      dae.a[i]=anga[i];
+      dae.V[i]=Va[i];
+    }
+    printf("Error::new ton iteration for dynamic not converged\n");
+  }
+  else{
+    h=h_old;
+    t=tempo;
+    k=k+1;
+    if(k>settings.chunk)
+      fm_out_1(t,k);
+    fm_out_2(t,k);
   }
   printf("%lf\n",tempo);
   getchar();
-  h=tempo-t;
+  t_end=t;
+  nrecord=k;
+  nexttstep=h;
+  delete []deltf;
+  delete []ipiv;
+  delete []fn;
   delete []inc;
   delete []xa;
   delete []anga;

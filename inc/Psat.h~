@@ -43,6 +43,8 @@ public:
 	BoundaryNode boundarynode;
 	int *ipiv;
 	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;
+	double t_end,nexttsstep;
+	int nrecord;
 	complex<double> jay;
 	complex<double>alpha;
 	complex<double>beta;
@@ -96,5 +98,6 @@ public:
 	void fm_out_3(double t,int k);
 	void fm_int_dyn(double t0,double tf,double h);
 	void fm_int_step(double t,double h,double *tempi,int k);
+	int fm_nrlf(int iter_max,double tol);
 };
 #endif

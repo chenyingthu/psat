@@ -43,6 +43,8 @@ public:
 	BoundaryNode boundarynode;
 	int *ipiv;
 	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;
+	double t_end,nexttstep;
+	int nrecord;
 	complex<double> jay;
 	complex<double>alpha;
 	complex<double>beta;
