@@ -53,7 +53,6 @@ int main()
 	double h;
 	h=psat.fm_tstep(1,1,0,psat.settings.t0);
 	psat.fm_int_dyn(psat.settings.t0,psat.settings.tf,h);
-	getchar();
 
 //	culaShutdown();
 	return 0;

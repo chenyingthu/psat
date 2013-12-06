@@ -410,11 +410,17 @@ void Psat::fm_spf(){
    dae.npf=dae.n;
    fm_dynidx();
    if(dae.n!=0){
-     dae.f=new double [dae.n-dynordold];
-     dae.x=new double [dae.n-dynordold];
-     dae.Fx=new double [dae.n*dae.n];
-     dae.Fy=new double [dae.n*2*bus.n];
-     dae.Gx=new double [2*bus.n*dae.n];
+//     dae.f=new double [dae.n-dynordold];
+//     dae.x=new double [dae.n-dynordold];
+//     dae.Fx=new double [dae.n*dae.n];
+//     dae.Fy=new double [dae.n*2*bus.n];
+//     dae.Gx=new double [2*bus.n*dae.n];
+    
+     dae.Gx=(double *)realloc(dae.Gx,(bus.n*2*dae.n)*sizeof(double));
+     dae.Fx=(double *)realloc(dae.Fx,(dae.n*dae.n)*sizeof(double));
+     dae.Fy=(double *)realloc(dae.Fy,(bus.n*2*dae.n)*sizeof(double));
+     dae.x=(double *)realloc(dae.x,(dae.n-dynordold)*sizeof(double));
+     dae.f=(double *)realloc(dae.f,(dae.n-dynordold)*sizeof(double));
      memset(dae.x,1,(dae.n-dynordold)*sizeof(double));
      memset(dae.Fx,0,dae.n*dae.n*sizeof(double));
      memset(dae.Fy,0,dae.n*2*bus.n*sizeof(double));
@@ -459,9 +465,12 @@ void Psat::fm_spf(){
 
    fm_syn(3);
    if(dae.n>0){
-     dae.Fx=new double [dae.n*dae.n];
-     dae.Fy=new double [dae.n*2*bus.n];
-     dae.Gx=new double [2*bus.n*dae.n];
+//     dae.Fx=new double [dae.n*dae.n];
+//     dae.Fy=new double [dae.n*2*bus.n];
+//     dae.Gx=new double [2*bus.n*dae.n];
+     dae.Gx=(double *)realloc(dae.Gx,(bus.n*2*dae.n)*sizeof(double));
+     dae.Fx=(double *)realloc(dae.Fx,(dae.n*dae.n)*sizeof(double));
+     dae.Fy=(double *)realloc(dae.Fy,(bus.n*2*dae.n)*sizeof(double));
      for (int i=0;i<dae.n*dae.n;++i)
        dae.Fx[i]=0;
      for(int i=0;i<dae.n*2*bus.n;++i){
@@ -496,7 +505,11 @@ void Psat::fm_spf(){
 void Psat::resetBoundNode(){
  int *indexAll=new int [dae.n+2*bus.n]; 
  int *indexG=new int [bus.n];
- 
+// 
+// if((dae.n+2*bus.n-2*boundarynode.n)!=0){
+//   delete []boundarynode.indexAll;
+//   delete []boundarynode.indexG;
+// }
  boundarynode.indexAll=new int [dae.n+2*bus.n-2*boundarynode.n];
  boundarynode.indexG=new int[bus.n-boundarynode.n];
  for (int i = 0; i < dae.n+2*bus.n; i += 1 ) {
@@ -565,6 +578,8 @@ void Psat::fm_lf_1(){
     dae.glfq[i]=dae.gq[i];
 //    printf ( "%lf\t%lf\n",dae.glfp[i],dae.glfq[i] );
   }
+  delete []Vc;
+  delete []S;
 //  cout<<"test"<<endl;
 }
 /* 
@@ -635,6 +650,8 @@ void Psat::fm_lf_2(){
   Complex *Ic=new Complex [bus.n*bus.n];
   Complex *temp=new Complex [bus.n*bus.n];
   Complex *dS=new Complex[bus.n*bus.n];
+  Complex *tempConj;
+  Complex *IcConj;
   for ( int i = 0; i < bus.n; i += 1 ) {
     U[i]=exp(jay*dae.a[i]);
     V[i]=dae.V[i]*U[i];
@@ -646,8 +663,10 @@ void Psat::fm_lf_2(){
     Ic[i+i*bus.n]=I[i];
   }
     cblas_zgemm(CblasColMajor,CblasNoTrans, CblasNoTrans, bus.n, bus.n, bus.n, &alpha,  line.Y, bus.n, Vn,bus.n, &beta, temp, bus.n);
-    cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,bus.n,bus.n,bus.n,&alpha,Vc,bus.n,conj_(bus.n*bus.n,temp),bus.n,&beta,dS,bus.n);
-    cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,bus.n,bus.n,bus.n,&alpha,conj_(bus.n*bus.n,Ic),bus.n,Vn,bus.n,&beta,temp,bus.n);
+    tempConj=conj_(bus.n*bus.n,temp);
+    cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,bus.n,bus.n,bus.n,&alpha,Vc,bus.n,tempConj,bus.n,&beta,dS,bus.n);
+    IcConj=conj_(bus.n*bus.n,Ic);
+    cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,bus.n,bus.n,bus.n,&alpha,IcConj,bus.n,Vn,bus.n,&beta,temp,bus.n);
     for ( int i = 0; i < bus.n*bus.n; i += 1 ) {
      dS[i]=dS[i]+temp[i]; 
      dae.J12[i]=dS[i].real();
@@ -678,6 +697,9 @@ void Psat::fm_lf_2(){
       dae.J11[i+i*bus.n]+=1e-6;
       dae.J22[i+i*bus.n]+=1e-6;
     }
+  
+    delete []tempConj;
+    delete []IcConj;  
     delete []dS;
     delete []temp;
     delete []U;
@@ -1152,9 +1174,12 @@ void Psat::fm_int_intial(){
    cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlfv);
    fm_syn(3);
    if(dae.n>0){
-     dae.Fx=new double [dae.n*dae.n];
-     dae.Fy=new double [dae.n*2*bus.n];
-     dae.Gx=new double [2*bus.n*dae.n];
+//     dae.Gx=(double *)realloc(dae.Gx,(bus.n*2*dae.n)*sizeof(double));
+//     dae.Fx=(double *)realloc(dae.Fx,(dae.n*dae.n)*sizeof(double));
+//     dae.Fy=(double *)realloc(dae.Fy,(bus.n*2*dae.n)*sizeof(double));
+//     dae.Fx=new double [dae.n*dae.n];
+//     dae.Fy=new double [dae.n*2*bus.n];
+//     dae.Gx=new double [2*bus.n*dae.n];
      for ( int i = 0; i < dae.n*dae.n; i += 1 ) {
        dae.Fx[i]=0;
      }
@@ -1428,6 +1453,9 @@ void Psat::fm_out_0(double t,int k){
   settings.chunk=200;
   int chunk=settings.chunk;
   varout.t=new double [chunk];
+  for ( int i = 0; i < chunk; i += 1 ) {
+    varout.t[i]=0;
+  }
   varout.numOfStep=0;
   if(dae.n>0){
     varout.x=new double [chunk*dae.n];
@@ -1465,15 +1493,16 @@ void Psat::fm_out_2(double t,int k){
   for ( int i = 0; i < dae.n; i += 1 ) {
     varout.x[i+kk*dae.n]=dae.x[i];
     varout.f[i+kk*dae.n]=dae.f[i];
+    printf("out %lf\t%lf\n",dae.x[i],dae.f[i]);
   }
+//  getchar();
   for ( int i = 0; i < bus.n; i += 1 ) {
     varout.V[i+kk*bus.n]=dae.V[i];
     varout.ang[i+kk*bus.n]=dae.a[i];
-    printf("out %lf\t%lf\n",dae.V[i],dae.a[i]);
   }
   for ( int i = 0; i < syn.n; i += 1 ) {
-    varout.Pm[i+kk*bus.n]=syn.pm[i];
-    varout.Vf[i+kk*bus.n]=syn.vf[i];
+    varout.Pm[i+kk*syn.n]=syn.pm[i];
+    varout.Vf[i+kk*syn.n]=syn.vf[i];
   }
 }
 void Psat::fm_out_3(double t,int k){}
@@ -1726,6 +1755,7 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
   delete []xa;
   delete []anga;
   delete []Va;
+  delete []tempAc;
 }
 /* 
  * ===  FUNCTION  ======================================================================
@@ -1797,7 +1827,7 @@ int Psat::fm_nrlf(int iter_max,double tol){
    fm_mn_2();
    fm_syn(2);
    cat4matrix(dae.J11,bus.n,bus.n,dae.J12,bus.n,bus.n,dae.J21,bus.n,bus.n,dae.J22,bus.n,bus.n,dae.Jlfv);
-   getchar();
+
    for ( int i = 0; i < bus.island_n; i += 1 ) {
      int k=bus.island[i];
      for ( int j = 0; j < 2*bus.n; j += 1 ) {
@@ -1866,5 +1896,6 @@ int Psat::fm_nrlf(int iter_max,double tol){
   delete []Vguess;
   delete []inc;
   delete []ipiv;
+  delete []tempJlfv;
   return conv;
 }

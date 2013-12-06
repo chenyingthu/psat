@@ -118,7 +118,12 @@ void Line::fm_y_line(int nodes,Shunt shunt)
 		//printf("%lf\t%lf\t",shunt.g[i],shunt.b[i]);
 //		cout<<Y[i+i*nodes]<<endl;
 	}
+	delete []chrg;
+	delete []y;
+	delete []ts;
+	delete []ts2;
 
+      
 	//getchar();
 //FILE *fp=fopen("Y.txt","w");
 //for (int i=0;i<nodes;++i){

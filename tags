@@ -149,6 +149,7 @@ c1	inc/Syn.h	/^	double *c1;$/;"	m	class:Syn
 c2	inc/Syn.h	/^	double *c2;$/;"	m	class:Syn
 c3	inc/Syn.h	/^	double *c3;$/;"	m	class:Syn
 cat4matrix	lib/myLib.cpp	/^void cat4matrix(double *A,int na,int ma,double *B,int nb,int mb,double *C,int nc,int mc,double *D,int nd,int md,double *Result)$/;"	f
+cat4matrix_Ac	lib/myLib.cpp	/^void cat4matrix_Ac(double *A,int na,int ma,double *B,int nb,int mb,double *C,int nc,int mc,double *D,int nd,int md,double *Result,double h)$/;"	f
 check	src/Bus.cpp	/^int Bus::check()$/;"	f	class:Bus
 check	src/DAE.cpp	/^int DAE::check(Bus bus)$/;"	f	class:DAE
 check	src/Fault.cpp	/^int Fault::check(Bus _bus)$/;"	f	class:Fault
@@ -218,20 +219,21 @@ fm_dynidx	src/Syn.cpp	/^int Syn::fm_dynidx(DAE dae)$/;"	f	class:Syn
 fm_dynlf	src/Psat.cpp	/^void Psat::fm_dynlf(){}$/;"	f	class:Psat
 fm_excin	src/Psat.cpp	/^void Psat::fm_excin(){}$/;"	f	class:Psat
 fm_fault	src/Psat.cpp	/^void Psat::fm_fault(int flag,double t){}$/;"	f	class:Psat
-fm_fault_0	src/Psat.cpp	/^void Psat::fm_fault_0(double t){}$/;"	f	class:Psat
-fm_fault_1	src/Psat.cpp	/^void Psat::fm_fault_1(double t){}$/;"	f	class:Psat
-fm_int_dyn	src/Psat.cpp	/^void Psat::fm_int_dyn(double t0,double tf,double h){}$/;"	f	class:Psat
-fm_int_intial	src/Psat.cpp	/^void Psat::fm_int_intial(){}$/;"	f	class:Psat
-fm_int_step	src/Psat.cpp	/^void Psat::fm_int_step(double t,double h,double *tempi,int k){}$/;"	f	class:Psat
+fm_fault_0	src/Psat.cpp	/^void Psat::fm_fault_0(double t){$/;"	f	class:Psat
+fm_fault_1	src/Psat.cpp	/^void Psat::fm_fault_1(double t){$/;"	f	class:Psat
+fm_int_dyn	src/Psat.cpp	/^void Psat::fm_int_dyn(double t0,double tf,double h){$/;"	f	class:Psat
+fm_int_intial	src/Psat.cpp	/^void Psat::fm_int_intial(){$/;"	f	class:Psat
+fm_int_step	src/Psat.cpp	/^void Psat::fm_int_step(double t,double h,double *tempi,int k){$/;"	f	class:Psat
 fm_lf_1	src/Psat.cpp	/^void Psat::fm_lf_1(){$/;"	f	class:Psat
 fm_lf_2	src/Psat.cpp	/^void Psat::fm_lf_2(){$/;"	f	class:Psat
 fm_mn_0	src/Psat.cpp	/^void Psat::fm_mn_0(){}$/;"	f	class:Psat
-fm_mn_1	src/Psat.cpp	/^void Psat::fm_mn_1(){}$/;"	f	class:Psat
-fm_mn_2	src/Psat.cpp	/^void Psat::fm_mn_2(){}$/;"	f	class:Psat
+fm_mn_1	src/Psat.cpp	/^void Psat::fm_mn_1(){$/;"	f	class:Psat
+fm_mn_2	src/Psat.cpp	/^void Psat::fm_mn_2(){$/;"	f	class:Psat
 fm_ncomp	src/Psat.cpp	/^int Psat::fm_ncomp(){$/;"	f	class:Psat
-fm_out_0	src/Psat.cpp	/^void Psat::fm_out_0(double t,int k){}$/;"	f	class:Psat
+fm_nrlf	src/Psat.cpp	/^int Psat::fm_nrlf(int iter_max,double tol){$/;"	f	class:Psat
+fm_out_0	src/Psat.cpp	/^void Psat::fm_out_0(double t,int k){$/;"	f	class:Psat
 fm_out_1	src/Psat.cpp	/^void Psat::fm_out_1(double t,int k){}$/;"	f	class:Psat
-fm_out_2	src/Psat.cpp	/^void Psat::fm_out_2(double t,int k){}$/;"	f	class:Psat
+fm_out_2	src/Psat.cpp	/^void Psat::fm_out_2(double t,int k){$/;"	f	class:Psat
 fm_out_3	src/Psat.cpp	/^void Psat::fm_out_3(double t,int k){}$/;"	f	class:Psat
 fm_pq_1	src/Psat.cpp	/^void Psat::fm_pq_1(){$/;"	f	class:Psat
 fm_pq_2	src/Psat.cpp	/^void Psat::fm_pq_2(){$/;"	f	class:Psat
@@ -242,9 +244,9 @@ fm_sw_1	src/Psat.cpp	/^void Psat::fm_sw_1(){$/;"	f	class:Psat
 fm_sw_2	src/Psat.cpp	/^void Psat::fm_sw_2(){$/;"	f	class:Psat
 fm_syn	src/Psat.cpp	/^void Psat::fm_syn(int flag){$/;"	f	class:Psat
 fm_syn1	src/Psat.cpp	/^void Psat::fm_syn1(int flag){$/;"	f	class:Psat
-fm_syn2	src/Psat.cpp	/^void Psat::fm_syn2(int flag){}$/;"	f	class:Psat
-fm_syn3	src/Psat.cpp	/^void Psat::fm_syn3(int flag){}$/;"	f	class:Psat
-fm_syn4	src/Psat.cpp	/^void Psat::fm_syn4(int flag){}$/;"	f	class:Psat
+fm_syn2	src/Psat.cpp	/^void Psat::fm_syn2(int flag){$/;"	f	class:Psat
+fm_syn3	src/Psat.cpp	/^void Psat::fm_syn3(int flag){$/;"	f	class:Psat
+fm_syn4	src/Psat.cpp	/^void Psat::fm_syn4(int flag){$/;"	f	class:Psat
 fm_synit	src/PV.cpp	/^void PV::fm_synit(int _n,int *_bus){$/;"	f	class:PV
 fm_synit	src/Psat.cpp	/^void Psat::fm_synit(){$/;"	f	class:Psat
 fm_synit	src/SW.cpp	/^void SW::fm_synit(int _n,int *_bus){$/;"	f	class:SW
@@ -257,8 +259,8 @@ fm_synit_mod52	src/Syn.cpp	/^void Syn::fm_synit_mod52(int is52_n,int *is52,doubl
 fm_synit_mod53	src/Syn.cpp	/^void Syn::fm_synit_mod53(int is53_n,int *is53,double *vd,double *vq){$/;"	f	class:Syn
 fm_synit_mod6	src/Syn.cpp	/^void Syn::fm_synit_mod6(int is6_n,int *is6,double *vd,double *vq){$/;"	f	class:Syn
 fm_synit_mod8	src/Syn.cpp	/^void Syn::fm_synit_mod8(int is8_n,int *is8,double *vd,double *vq){$/;"	f	class:Syn
-fm_tstep	src/Psat.cpp	/^double Psat:: fm_tstep(int flag,int convergency,int iteration,double t){return 0.0;}$/;"	f	class:Psat
-fm_tstep_1	src/Psat.cpp	/^void Psat::fm_tstep_1(int convergency,int iteration,double t){}$/;"	f	class:Psat
+fm_tstep	src/Psat.cpp	/^double Psat:: fm_tstep(int flag,int convergency,int iteration,double t){$/;"	f	class:Psat
+fm_tstep_1	src/Psat.cpp	/^void Psat::fm_tstep_1(int convergency,int iteration,double t){$/;"	f	class:Psat
 fm_tstep_2	src/Psat.cpp	/^void Psat::fm_tstep_2(int convergency,int iteration,double t){}$/;"	f	class:Psat
 fm_y	src/Psat.cpp	/^void Psat::fm_y(){$/;"	f	class:Psat
 fm_y_line	src/Line.cpp	/^void Line::fm_y_line(int nodes,Shunt shunt)$/;"	f	class:Line
@@ -308,6 +310,7 @@ is8	inc/Syn.h	/^	int *is8;$/;"	m	class:Syn
 is8_n	inc/Syn.h	/^	int is8_n;$/;"	m	class:Syn
 isStatic	inc/settings.h	/^	int isStatic;$/;"	m	class:Settings
 island	inc/Bus.h	/^	double *island;$/;"	m	class:Bus
+island_n	inc/Bus.h	/^	int island_n;$/;"	m	class:Bus
 iter	inc/settings.h	/^	int iter;$/;"	m	class:Settings
 jay	inc/Psat.h	/^	complex<double> jay;$/;"	m	class:Psat
 jay	inc/Syn.h	/^	complex<double> jay;$/;"	m	class:Syn
@@ -320,7 +323,6 @@ lineDelete	src/Line.cpp	/^void Line::lineDelete()$/;"	f	class:Line
 local	inc/settings.h	/^	int local;$/;"	m	class:Settings
 locksnap	inc/settings.h	/^	int locksnap;$/;"	m	class:Settings
 main	src/main.cpp	/^int main()$/;"	f
-main1	lib/myLib.cpp	/^void main1(){$/;"	f
 mesg	inc/Clpsat.h	/^	int mesg;$/;"	m	class:Clpsat
 method	inc/settings.h	/^	int method;$/;"	m	class:Settings
 mn	inc/Psat.h	/^	Mn mn;$/;"	m	class:Psat
@@ -346,7 +348,9 @@ nPV	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class
 nSW	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
 nShunt	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
 nSyn	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
+nexttstep	inc/Psat.h	/^	double t_end,nexttstep;$/;"	m	class:Psat
 npf	inc/DAE.h	/^	int npf;$/;"	m	class:DAE
+nrecord	inc/Psat.h	/^	int nrecord;$/;"	m	class:Psat
 numOfStep	inc/Varout.h	/^	int numOfStep;$/;"	m	class:Varout
 octave	inc/settings.h	/^	int octave;$/;"	m	class:Settings
 ok	inc/settings.h	/^	int ok;$/;"	m	class:Settings
@@ -354,7 +358,7 @@ omega	inc/Syn.h	/^	double *omega;$/;"	m	class:Syn
 omega_idx	inc/Syn.h	/^	int *omega_idx;$/;"	m	class:Syn
 ord	inc/Syn.h	/^	int *ord;$/;"	m	class:Syn
 pfsolver	inc/settings.h	/^	int pfsolver;$/;"	m	class:Settings
-pi	inc/Syn.h	11;"	d
+pi	src/Psat.cpp	2;"	d	file:
 plot	inc/settings.h	/^	int plot;$/;"	m	class:Settings
 plottype	inc/settings.h	/^	int plottype;$/;"	m	class:Settings
 pm	inc/Syn.h	/^	double *pm;$/;"	m	class:Syn
@@ -398,6 +402,7 @@ t	inc/Varout.h	/^	double *t;$/;"	m	class:Varout
 t0	inc/settings.h	/^	double t0;$/;"	m	class:Settings
 tFaultEnd	inc/Fault.h	/^	double tFaultEnd;$/;"	m	class:Fault
 tFaultStart	inc/Fault.h	/^	double tFaultStart;$/;"	m	class:Fault
+t_end	inc/Psat.h	/^	double t_end,nexttstep;$/;"	m	class:Psat
 tempi	inc/settings.h	/^	double *tempi;$/;"	m	class:Settings
 tf	inc/settings.h	/^	double tf;$/;"	m	class:Settings
 tn	inc/DAE.h	/^	double *tn;$/;"	m	class:DAE
