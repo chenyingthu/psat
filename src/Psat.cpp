@@ -378,6 +378,7 @@ void Psat::fm_spf(){
    }
    
    
+   
 
 
 
@@ -479,6 +480,16 @@ void Psat::fm_spf(){
      }
    }
    fm_syn(4);
+  for ( int i = 0; i < dae.n; i += 1 ) {
+     printf("%lf\n",dae.x[i]);
+   }
+for ( int i = 0; i < bus.n; i += 1 ) {
+     printf("%lf\n",dae.a[i]);
+   }
+for ( int i = 0; i < bus.n; i += 1 ) {
+     printf("%lf\n",dae.V[i]);
+   }
+   getchar();
 //   FILE	*fp;										/* output-file pointer */
 //
 //   fp	= fopen( "tmp", "w" );

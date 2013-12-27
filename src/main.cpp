@@ -39,25 +39,35 @@
 	//	output<<"("<<d.x<<","<<d.y<<") ";
 	//	output<<endl;
 	//}
+int dyn_main();
 int main()
 {
 //	culaInitialize();
-	Psat psat;
-	psat.specifySystem();
-	psat.init();
-	psat.formConMatrix();
-	psat.initialLF();
-	psat.fm_spf();
-	psat.fm_int_intial();
-	psat.resetBoundNode();
-	double h;
-	h=psat.fm_tstep(1,1,0,psat.settings.t0);
-	psat.fm_int_dyn(psat.settings.t0,psat.settings.tf,h);
+//	Psat psat;
+//	psat.specifySystem();
+//	psat.init();
+//	psat.formConMatrix();
+//	psat.initialLF();
+//	psat.fm_spf();
+//	psat.fm_int_intial();
+//	psat.resetBoundNode();
+//	double h;
+//	h=psat.fm_tstep(1,1,0,psat.settings.t0);
+//	psat.fm_int_dyn(psat.settings.t0,psat.settings.tf,h);
+//
+//	return 0;
 
-//	culaShutdown();
-	return 0;
+  dyn_main();
 }
-
+int dyn_main(){
+  Psat psat;
+  psat.specifySystem();
+  psat.init();
+  psat.formConMatrix();
+  psat.initialLF();
+  psat.fm_spf();
+  return 0;
+}
 //int main()
 //{
 //     char JOBU;
