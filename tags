@@ -27,6 +27,7 @@ Fault	inc/Fault.h	/^class Fault$/;"	c
 Fault	src/Fault.cpp	/^Fault::Fault()$/;"	f	class:Fault
 Fx	inc/DAE.h	/^	double *Fx;$/;"	m	class:DAE
 Fy	inc/DAE.h	/^	double *Fy;$/;"	m	class:DAE
+Gmres	inc/Solver.h	/^class Gmres{$/;"	c
 Gp	inc/Syn.h	/^	double *Gp;$/;"	m	class:Syn
 Gq	inc/Syn.h	/^	double *Gq;$/;"	m	class:Syn
 Gx	inc/DAE.h	/^	double *Gx;$/;"	m	class:DAE
@@ -42,6 +43,7 @@ J21	inc/DAE.h	/^	double *J21;$/;"	m	class:DAE
 J21	inc/Syn.h	/^	double *J21;$/;"	m	class:Syn
 J22	inc/DAE.h	/^	double *J22;$/;"	m	class:DAE
 J22	inc/Syn.h	/^	double *J22;$/;"	m	class:Syn
+Jfng	inc/Solver.h	/^class Jfng{$/;"	c
 Jlf	inc/DAE.h	/^	double *Jlf;$/;"	m	class:DAE
 Jlfd	inc/DAE.h	/^	double *Jlfd;$/;"	m	class:DAE
 Jlfv	inc/DAE.h	/^	double *Jlfv;$/;"	m	class:DAE
@@ -58,11 +60,13 @@ Mn	inc/Mn.h	/^class Mn{$/;"	c
 Mn	src/Mn.cpp	/^Mn::Mn(){$/;"	f	class:Mn
 Mndelete	src/Mn.cpp	/^void Mn::Mndelete(int _n){$/;"	f	class:Mn
 Mninit	src/Mn.cpp	/^void Mn::Mninit(int _n){$/;"	f	class:Mn
+Newton	inc/Solver.h	/^class Newton{$/;"	c
 OBJDIR_DEBUG	makefile	/^OBJDIR_DEBUG = obj\/Debug$/;"	m
 OBJ_DEBUG	makefile	/^OBJ_DEBUG = $(OBJDIR_DEBUG)\/src\/PV.o $(OBJDIR_DEBUG)\/src\/BoundaryNode.o $(OBJDIR_DEBUG)\/src\/Bus.o $(OBJDIR_DEBUG)\/src\/Clpsat.o $(OBJDIR_DEBUG)\/src\/DAE.o $(OBJDIR_DEBUG)\/src\/Fault.o $(OBJDIR_DEBUG)\/src\/Line.o $(OBJDIR_DEBUG)\/src\/Mn.o $(OBJDIR_DEBUG)\/src\/PQ.o $(OBJDIR_DEBUG)\/src\/Psat.o $(OBJDIR_DEBUG)\/src\/SW.o $(OBJDIR_DEBUG)\/src\/Settings.o $(OBJDIR_DEBUG)\/src\/Shunt.o $(OBJDIR_DEBUG)\/src\/Syn.o $(OBJDIR_DEBUG)\/src\/Varout.o $(OBJDIR_DEBUG)\/src\/main.o $(OBJDIR_DEBUG)\/lib\/myLib.o$/;"	m
 OBJ_RELEASE	makefile	/^OBJ_RELEASE = $(OBJDIR_RELEASE)\/src\/PV.o $(OBJDIR_RELEASE)\/src\/BoundaryNode.o $(OBJDIR_RELEASE)\/src\/Bus.o $(OBJDIR_RELEASE)\/src\/Clpsat.o $(OBJDIR_RELEASE)\/src\/DAE.o $(OBJDIR_RELEASE)\/src\/Fault.o $(OBJDIR_RELEASE)\/src\/Line.o $(OBJDIR_RELEASE)\/src\/Mn.o $(OBJDIR_RELEASE)\/src\/PQ.o $(OBJDIR_RELEASE)\/src\/Psat.o $(OBJDIR_RELEASE)\/src\/SW.o $(OBJDIR_RELEASE)\/src\/Settings.o $(OBJDIR_RELEASE)\/src\/Shunt.o $(OBJDIR_RELEASE)\/src\/Syn.o $(OBJDIR_RELEASE)\/src\/Varout.o $(OBJDIR_RELEASE)\/src\/main.o $(OBJDIR_RELEASE)\/lib\/myLib.o$/;"	m
 OUT_DEBUG	makefile	/^OUT_DEBUG = bin\/Debug\/psat$/;"	m
 P	inc/BoundaryNode.h	/^	double *P;$/;"	m	class:BoundaryNode
+P	inc/Solver.h	/^  double *P;$/;"	m	class:Solver
 P0	inc/PQ.h	/^	double *P0;$/;"	m	class:PQ
 PQ	inc/PQ.h	/^class PQ$/;"	c
 PQ	src/PQ.cpp	/^PQ::PQ()$/;"	f	class:PQ
@@ -72,6 +76,7 @@ Pg	inc/Bus.h	/^	double *Pg;$/;"	m	class:Bus
 Pg	inc/Syn.h	/^	double *Pg;$/;"	m	class:Syn
 Pl	inc/Bus.h	/^	double *Pl;$/;"	m	class:Bus
 Pm	inc/Varout.h	/^	double *Pm;$/;"	m	class:Varout
+Precond	inc/Solver.h	/^class Precond{$/;"	c
 Psat	inc/Psat.h	/^class Psat{$/;"	c
 Psat	src/Psat.cpp	/^Psat::Psat(){$/;"	f	class:Psat
 Q	inc/BoundaryNode.h	/^	double *Q;$/;"	m	class:BoundaryNode
@@ -82,6 +87,8 @@ Ql	inc/Bus.h	/^	double *Ql;$/;"	m	class:Bus
 RCFLAGS_DEBUG	makefile	/^RCFLAGS_DEBUG = $(RCFLAGS)$/;"	m
 RESINC	makefile	/^RESINC = $/;"	m
 RESINC_DEBUG	makefile	/^RESINC_DEBUG = $(RESINC) -I..\/..\/..\/下载\/software\/lapack-3.4.2\/CBLAS\/src -I..\/..\/..\/下载\/software\/lapack-3.4.2\/SRC$/;"	m
+SIMU_HEADER	inc/Simu.h	5;"	d
+SOLVER_HEADER	inc/Solver.h	5;"	d
 SW	inc/SW.h	/^class SW{$/;"	c
 SW	src/SW.cpp	/^SW::SW()$/;"	f	class:SW
 Settings	inc/settings.h	/^class Settings {$/;"	c
@@ -89,8 +96,11 @@ Settings	src/Settings.cpp	/^Settings::Settings()$/;"	f	class:Settings
 Shunt	inc/Shunt.h	/^class Shunt{$/;"	c
 Shunt	src/Shunt.cpp	/^Shunt::Shunt()$/;"	f	class:Shunt
 Shuntdelete	src/Shunt.cpp	/^void Shunt::Shuntdelete(int _n)$/;"	f	class:Shunt
+Simu	inc/Simu.h	/^class Simu{$/;"	c
+Solver	inc/Solver.h	/^class Solver{$/;"	c
 Syn	inc/Syn.h	/^class Syn$/;"	c
 Syn	src/Syn.cpp	/^Syn::Syn()$/;"	f	class:Syn
+Update	inc/Solver.h	/^class Update{$/;"	c
 V	inc/DAE.h	/^	double *V;$/;"	m	class:DAE
 V	inc/Fault.h	/^	double *V;$/;"	m	class:Fault
 V	inc/Varout.h	/^	double *V;$/;"	m	class:Varout
@@ -145,6 +155,7 @@ bus	inc/SW.h	/^	int *bus;$/;"	m	class:SW
 bus	inc/Shunt.h	/^	int *bus;$/;"	m	class:Shunt
 bus	inc/Syn.h	/^	int *bus;$/;"	m	class:Syn
 busDelete	src/Bus.cpp	/^void Bus::busDelete(){$/;"	f	class:Bus
+c	inc/Solver.h	/^  double *c;$/;"	m	class:Gmres
 c1	inc/Syn.h	/^	double *c1;$/;"	m	class:Syn
 c2	inc/Syn.h	/^	double *c2;$/;"	m	class:Syn
 c3	inc/Syn.h	/^	double *c3;$/;"	m	class:Syn
@@ -178,10 +189,12 @@ con	inc/Syn.h	/^	double **con;$/;"	m	class:Syn
 conj	lib/myLib.cpp	/^complex<double> conj(complex<double>a)$/;"	f
 conj_	lib/myLib.cpp	/^complex<double> *conj_(int n,complex<double>*a)$/;"	f
 conv	inc/settings.h	/^	int conv;$/;"	m	class:Settings
+converged	inc/Simu.h	/^  int converged;$/;"	m	class:Simu
 dac	inc/settings.h	/^	int dac;$/;"	m	class:Settings
 dae	inc/Psat.h	/^	DAE dae;$/;"	m	class:Psat
 daeDelete	src/DAE.cpp	/^void DAE::daeDelete()$/;"	f	class:DAE
 dat	inc/Fault.h	/^	double *dat;$/;"	m	class:Fault
+debug	inc/Solver.h	/^  int debug;$/;"	m	class:Newton
 deleteVarout	src/Varout.cpp	/^void Varout::deleteVarout(){$/;"	f	class:Varout
 delta	inc/Fault.h	/^	double delta;$/;"	m	class:Fault
 delta	inc/Syn.h	/^	double *delta;$/;"	m	class:Syn
@@ -189,7 +202,16 @@ delta_idx	inc/Syn.h	/^	int *delta_idx;$/;"	m	class:Syn
 deltamax	inc/settings.h	/^	double deltamax;$/;"	m	class:Settings
 deltamin	inc/settings.h	/^	double deltamin;$/;"	m	class:Settings
 deltat	inc/settings.h	/^	double deltat;$/;"	m	class:Settings
+deltx	inc/Solver.h	/^  double *deltx;$/;"	m	class:Solver
+delty	inc/Solver.h	/^  double *delty;$/;"	m	class:Solver
+dest	inc/Solver.h	/^  int dest;$/;"	m	class:Update
 distrsw	inc/settings.h	/^	int distrsw;$/;"	m	class:Settings
+dyn_f_iniDae	src/Psat.cpp	/^void Psat::dyn_f_iniDae(int iFlag){$/;"	f	class:Psat
+dyn_f_iniNet	src/Psat.cpp	/^void Psat::dyn_f_iniNet(int iFlag){$/;"	f	class:Psat
+dyn_f_iniSimu	src/Psat.cpp	/^void Psat::dyn_f_iniSimu(int iFlag){$/;"	f	class:Psat
+dyn_f_iniSolver	src/Psat.cpp	/^void Psat::dyn_f_iniSolver(int iFlag){$/;"	f	class:Psat
+dyn_f_iniSyn	src/Psat.cpp	/^void Psat::dyn_f_iniSyn(int iFlag){$/;"	f	class:Psat
+dyn_main	src/main.cpp	/^int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps,double tStep){$/;"	f
 dynmit	inc/settings.h	/^	int dynmit;$/;"	m	class:Settings
 dyntol	inc/settings.h	/^	double dyntol;$/;"	m	class:Settings
 e1d	inc/Syn.h	/^	double *e1d;$/;"	m	class:Syn
@@ -207,6 +229,7 @@ fault	inc/Psat.h	/^	Fault fault;$/;"	m	class:Psat
 faultDelete	src/Fault.cpp	/^void Fault::faultDelete()$/;"	f	class:Fault
 find	lib/myLib.cpp	/^int find(double *srcArray,int len,double ref,int *dstArray)$/;"	f
 findi	lib/myLib.cpp	/^int findi(int *srcArray,int len,int ref,int *dstArray)$/;"	f
+findiff	inc/Solver.h	/^  double findiff;$/;"	m	class:Jfng
 fixt	inc/settings.h	/^	int fixt;$/;"	m	class:Settings
 fm_base_line	src/Psat.cpp	/^void Psat::fm_base_line(){$/;"	f	class:Psat
 fm_base_mn	src/Psat.cpp	/^void Psat::fm_base_mn(){$/;"	f	class:Psat
@@ -222,31 +245,31 @@ fm_fault	src/Psat.cpp	/^void Psat::fm_fault(int flag,double t){}$/;"	f	class:Psa
 fm_fault_0	src/Psat.cpp	/^void Psat::fm_fault_0(double t){$/;"	f	class:Psat
 fm_fault_1	src/Psat.cpp	/^void Psat::fm_fault_1(double t){$/;"	f	class:Psat
 fm_int_dyn	src/Psat.cpp	/^void Psat::fm_int_dyn(double t0,double tf,double h){$/;"	f	class:Psat
-fm_int_intial	src/Psat.cpp	/^void Psat::fm_int_intial(){$/;"	f	class:Psat
+fm_int_intial	src/Psat.cpp	/^  void Psat::fm_int_intial(){$/;"	f	class:Psat
 fm_int_step	src/Psat.cpp	/^void Psat::fm_int_step(double t,double h,double *tempi,int k){$/;"	f	class:Psat
-fm_lf_1	src/Psat.cpp	/^void Psat::fm_lf_1(){$/;"	f	class:Psat
+fm_lf_1	src/Psat.cpp	/^ void Psat::fm_lf_1(){$/;"	f	class:Psat
 fm_lf_2	src/Psat.cpp	/^void Psat::fm_lf_2(){$/;"	f	class:Psat
 fm_mn_0	src/Psat.cpp	/^void Psat::fm_mn_0(){}$/;"	f	class:Psat
-fm_mn_1	src/Psat.cpp	/^void Psat::fm_mn_1(){$/;"	f	class:Psat
+fm_mn_1	src/Psat.cpp	/^ void Psat::fm_mn_1(){$/;"	f	class:Psat
 fm_mn_2	src/Psat.cpp	/^void Psat::fm_mn_2(){$/;"	f	class:Psat
 fm_ncomp	src/Psat.cpp	/^int Psat::fm_ncomp(){$/;"	f	class:Psat
-fm_nrlf	src/Psat.cpp	/^int Psat::fm_nrlf(int iter_max,double tol){$/;"	f	class:Psat
+fm_nrlf	src/Psat.cpp	/^ int Psat::fm_nrlf(int iter_max,double tol){$/;"	f	class:Psat
 fm_out_0	src/Psat.cpp	/^void Psat::fm_out_0(double t,int k){$/;"	f	class:Psat
 fm_out_1	src/Psat.cpp	/^void Psat::fm_out_1(double t,int k){}$/;"	f	class:Psat
 fm_out_2	src/Psat.cpp	/^void Psat::fm_out_2(double t,int k){$/;"	f	class:Psat
 fm_out_3	src/Psat.cpp	/^void Psat::fm_out_3(double t,int k){}$/;"	f	class:Psat
-fm_pq_1	src/Psat.cpp	/^void Psat::fm_pq_1(){$/;"	f	class:Psat
-fm_pq_2	src/Psat.cpp	/^void Psat::fm_pq_2(){$/;"	f	class:Psat
-fm_pv_1	src/Psat.cpp	/^void Psat::fm_pv_1(){$/;"	f	class:Psat
+fm_pq_1	src/Psat.cpp	/^ void Psat::fm_pq_1(){$/;"	f	class:Psat
+fm_pq_2	src/Psat.cpp	/^ void Psat::fm_pq_2(){$/;"	f	class:Psat
+fm_pv_1	src/Psat.cpp	/^ void Psat::fm_pv_1(){$/;"	f	class:Psat
 fm_pv_2	src/Psat.cpp	/^void Psat::fm_pv_2(){$/;"	f	class:Psat
-fm_spf	src/Psat.cpp	/^void Psat::fm_spf(){$/;"	f	class:Psat
-fm_sw_1	src/Psat.cpp	/^void Psat::fm_sw_1(){$/;"	f	class:Psat
+fm_spf	src/Psat.cpp	/^ void Psat::fm_spf(){$/;"	f	class:Psat
+fm_sw_1	src/Psat.cpp	/^ void Psat::fm_sw_1(){$/;"	f	class:Psat
 fm_sw_2	src/Psat.cpp	/^void Psat::fm_sw_2(){$/;"	f	class:Psat
-fm_syn	src/Psat.cpp	/^void Psat::fm_syn(int flag){$/;"	f	class:Psat
-fm_syn1	src/Psat.cpp	/^void Psat::fm_syn1(int flag){$/;"	f	class:Psat
-fm_syn2	src/Psat.cpp	/^void Psat::fm_syn2(int flag){$/;"	f	class:Psat
-fm_syn3	src/Psat.cpp	/^void Psat::fm_syn3(int flag){$/;"	f	class:Psat
-fm_syn4	src/Psat.cpp	/^void Psat::fm_syn4(int flag){$/;"	f	class:Psat
+fm_syn	src/Psat.cpp	/^ void Psat::fm_syn(int flag){$/;"	f	class:Psat
+fm_syn1	src/Psat.cpp	/^  void Psat::fm_syn1(int flag){$/;"	f	class:Psat
+fm_syn2	src/Psat.cpp	/^  void Psat::fm_syn2(int flag){$/;"	f	class:Psat
+fm_syn3	src/Psat.cpp	/^  void Psat::fm_syn3(int flag){$/;"	f	class:Psat
+fm_syn4	src/Psat.cpp	/^  void Psat::fm_syn4(int flag){$/;"	f	class:Psat
 fm_synit	src/PV.cpp	/^void PV::fm_synit(int _n,int *_bus){$/;"	f	class:PV
 fm_synit	src/Psat.cpp	/^void Psat::fm_synit(){$/;"	f	class:Psat
 fm_synit	src/SW.cpp	/^void SW::fm_synit(int _n,int *_bus){$/;"	f	class:SW
@@ -271,8 +294,10 @@ g	inc/DAE.h	/^	double *g;$/;"	m	class:DAE
 g	inc/Shunt.h	/^	double *g;$/;"	m	class:Shunt
 glfp	inc/DAE.h	/^	double *glfp;$/;"	m	class:DAE
 glfq	inc/DAE.h	/^	double *glfq;$/;"	m	class:DAE
+gmres	inc/Solver.h	/^  Gmres gmres;$/;"	m	class:Jfng
 gp	inc/DAE.h	/^	double *gp;$/;"	m	class:DAE
 gq	inc/DAE.h	/^	double *gq;$/;"	m	class:DAE
+h	inc/Solver.h	/^  double *h;$/;"	m	class:Gmres
 indexAll	inc/BoundaryNode.h	/^	int *indexAll;$/;"	m	class:BoundaryNode
 indexG	inc/BoundaryNode.h	/^	int *indexG;$/;"	m	class:BoundaryNode
 init	inc/Clpsat.h	/^	int init;$/;"	m	class:Clpsat
@@ -290,6 +315,8 @@ init	src/Shunt.cpp	/^void Shunt::init(int _n){$/;"	f	class:Shunt
 init	src/Syn.cpp	/^void Syn::init()$/;"	f	class:Syn
 init_n	inc/Mn.h	/^	int init_n;$/;"	m	class:Mn
 initialLF	src/Psat.cpp	/^void Psat::initialLF(){$/;"	f	class:Psat
+inner	inc/Solver.h	/^  int inner;$/;"	m	class:Precond
+innerStop	inc/Solver.h	/^  int innerStop;$/;"	m	class:Precond
 internel	inc/Bus.h	/^	int *internel;$/;"	m	class:Bus
 ipiv	inc/Psat.h	/^	int *ipiv;$/;"	m	class:Psat
 is2	inc/Syn.h	/^	int *is2;$/;"	m	class:Syn
@@ -314,7 +341,9 @@ island_n	inc/Bus.h	/^	int island_n;$/;"	m	class:Bus
 iter	inc/settings.h	/^	int iter;$/;"	m	class:Settings
 jay	inc/Psat.h	/^	complex<double> jay;$/;"	m	class:Psat
 jay	inc/Syn.h	/^	complex<double> jay;$/;"	m	class:Syn
+jfng	inc/Solver.h	/^  Jfng jfng;$/;"	m	class:Solver
 kg	inc/DAE.h	/^	int kg;$/;"	m	class:DAE
+last_num	inc/Solver.h	/^  int last_num;$/;"	m	class:Update
 lfmit	inc/settings.h	/^	double lfmit;$/;"	m	class:Settings
 lftime	inc/settings.h	/^	double lftime;$/;"	m	class:Settings
 lftol	inc/settings.h	/^	double lftol;$/;"	m	class:Settings
@@ -323,9 +352,14 @@ lineDelete	src/Line.cpp	/^void Line::lineDelete()$/;"	f	class:Line
 local	inc/settings.h	/^	int local;$/;"	m	class:Settings
 locksnap	inc/settings.h	/^	int locksnap;$/;"	m	class:Settings
 main	src/main.cpp	/^int main()$/;"	f
+maxit	inc/Solver.h	/^  int maxit;$/;"	m	class:Gmres
+maxit	inc/Solver.h	/^  int maxit;$/;"	m	class:Newton
+maxnum	inc/Solver.h	/^  int maxnum;$/;"	m	class:Update
 mesg	inc/Clpsat.h	/^	int mesg;$/;"	m	class:Clpsat
+method	inc/Solver.h	/^  int method;$/;"	m	class:Newton
 method	inc/settings.h	/^	int method;$/;"	m	class:Settings
 mn	inc/Psat.h	/^	Mn mn;$/;"	m	class:Psat
+multiSteps	inc/Simu.h	/^  int multiSteps;$/;"	m	class:Simu
 mv	inc/settings.h	/^	int mv;$/;"	m	class:Settings
 mva	inc/settings.h	/^	double mva;$/;"	m	class:Settings
 n	inc/BoundaryNode.h	/^	int n;$/;"	m	class:BoundaryNode
@@ -347,16 +381,23 @@ nPQ	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class
 nPV	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
 nSW	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
 nShunt	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
+nSteps	inc/Simu.h	/^  int nSteps;$/;"	m	class:Simu
 nSyn	inc/Psat.h	/^	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;$/;"	m	class:Psat
+neval	inc/Simu.h	/^  int neval;$/;"	m	class:Simu
+newton	inc/Solver.h	/^  Newton newton;$/;"	m	class:Jfng
+newton_iteration	inc/Simu.h	/^  int newton_iteration;$/;"	m	class:Simu
 nexttstep	inc/Psat.h	/^	double t_end,nexttstep;$/;"	m	class:Psat
 npf	inc/DAE.h	/^	int npf;$/;"	m	class:DAE
 nrecord	inc/Psat.h	/^	int nrecord;$/;"	m	class:Psat
+num	inc/Solver.h	/^  int num;$/;"	m	class:Update
 numOfStep	inc/Varout.h	/^	int numOfStep;$/;"	m	class:Varout
 octave	inc/settings.h	/^	int octave;$/;"	m	class:Settings
 ok	inc/settings.h	/^	int ok;$/;"	m	class:Settings
 omega	inc/Syn.h	/^	double *omega;$/;"	m	class:Syn
 omega_idx	inc/Syn.h	/^	int *omega_idx;$/;"	m	class:Syn
 ord	inc/Syn.h	/^	int *ord;$/;"	m	class:Syn
+outer	inc/Solver.h	/^  int outer;$/;"	m	class:Precond
+outerStop	inc/Solver.h	/^  int outerStop;$/;"	m	class:Precond
 pfsolver	inc/settings.h	/^	int pfsolver;$/;"	m	class:Settings
 pi	src/Psat.cpp	2;"	d	file:
 plot	inc/settings.h	/^	int plot;$/;"	m	class:Settings
@@ -367,6 +408,7 @@ pq	inc/Psat.h	/^	PQ pq;$/;"	m	class:Psat
 pq2z	inc/Clpsat.h	/^	int pq2z;$/;"	m	class:Clpsat
 pq2z	inc/settings.h	/^	int pq2z;$/;"	m	class:Settings
 pqDelete	src/PQ.cpp	/^void PQ::pqDelete()$/;"	f	class:PQ
+precond	inc/Solver.h	/^  Precond precond;$/;"	m	class:Jfng
 psid	inc/Syn.h	/^	double *psid;$/;"	m	class:Syn
 psid_idx	inc/Syn.h	/^	int *psid_idx;$/;"	m	class:Syn
 psiq	inc/Syn.h	/^	double *psiq;$/;"	m	class:Syn
@@ -380,13 +422,17 @@ red	inc/settings.h	/^	int red;$/;"	m	class:Settings
 refbus	inc/settings.h	/^	int refbus;$/;"	m	class:Settings
 refresh	inc/Clpsat.h	/^	int refresh;$/;"	m	class:Clpsat
 refreshsim	inc/Clpsat.h	/^	int refreshsim;$/;"	m	class:Clpsat
+reorth	inc/Solver.h	/^  int reorth;$/;"	m	class:Gmres
 resetBoundNode	src/Psat.cpp	/^void Psat::resetBoundNode(){$/;"	f	class:Psat
+s	inc/Solver.h	/^  double *s;$/;"	m	class:Gmres
 settings	inc/Psat.h	/^	Settings settings;$/;"	m	class:Psat
 show	inc/settings.h	/^	int show;$/;"	m	class:Settings
 showlf	inc/settings.h	/^	int showlf;$/;"	m	class:Settings
 showopf	inc/Clpsat.h	/^	int showopf;$/;"	m	class:Clpsat
 shunt	inc/Psat.h	/^	Shunt shunt;$/;"	m	class:Psat
 shuntvalues	inc/settings.h	/^	int shuntvalues;$/;"	m	class:Settings
+simu	inc/Psat.h	/^	Simu simu;$/;"	m	class:Psat
+solver	inc/Psat.h	/^	Solver solver;$/;"	m	class:Psat
 sort	lib/myLib.cpp	/^int* sort(int *s,int n)$/;"	f
 sortD	lib/myLib.cpp	/^double* sortD(double *s,int n)$/;"	f
 specifySystem	src/Psat.cpp	/^void Psat::specifySystem(){$/;"	f	class:Psat
@@ -402,13 +448,23 @@ t	inc/Varout.h	/^	double *t;$/;"	m	class:Varout
 t0	inc/settings.h	/^	double t0;$/;"	m	class:Settings
 tFaultEnd	inc/Fault.h	/^	double tFaultEnd;$/;"	m	class:Fault
 tFaultStart	inc/Fault.h	/^	double tFaultStart;$/;"	m	class:Fault
+t_cur	inc/Simu.h	/^  double t_cur;$/;"	m	class:Simu
 t_end	inc/Psat.h	/^	double t_end,nexttstep;$/;"	m	class:Psat
+t_end	inc/Simu.h	/^  double t_end;$/;"	m	class:Simu
+t_next	inc/Simu.h	/^  double t_next;$/;"	m	class:Simu
+t_start	inc/Simu.h	/^  double t_start;$/;"	m	class:Simu
+t_switch	inc/Simu.h	/^  double *t_switch;$/;"	m	class:Simu
 tempi	inc/settings.h	/^	double *tempi;$/;"	m	class:Settings
 tf	inc/settings.h	/^	double tf;$/;"	m	class:Settings
 tn	inc/DAE.h	/^	double *tn;$/;"	m	class:DAE
 to	inc/Line.h	/^	int *to;$/;"	m	class:Line
+tol	inc/Solver.h	/^  double tol;$/;"	m	class:Gmres
+tol	inc/Solver.h	/^  double tol;$/;"	m	class:Newton
 tol1	lib/myLib.h	8;"	d
+tol_fixed	inc/Solver.h	/^  double tol_fixed;$/;"	m	class:Gmres
 tstep	inc/settings.h	/^	double tstep;$/;"	m	class:Settings
+update	inc/Solver.h	/^  Update update;$/;"	m	class:Solver
+v	inc/Solver.h	/^  double *v;$/;"	m	class:Gmres
 varout	inc/Psat.h	/^	Varout varout;$/;"	m	class:Psat
 vf	inc/Syn.h	/^	double *vf;$/;"	m	class:Syn
 viewrep	inc/Clpsat.h	/^	int viewrep;$/;"	m	class:Clpsat
@@ -416,6 +472,7 @@ violations	inc/settings.h	/^	int violations;$/;"	m	class:Settings
 vs	inc/settings.h	/^	int vs;$/;"	m	class:Settings
 x	inc/DAE.h	/^	double *x;$/;"	m	class:DAE
 x	inc/Varout.h	/^	double *x;$/;"	m	class:Varout
+z	inc/Solver.h	/^  double *z;$/;"	m	class:Gmres
 zoom	inc/settings.h	/^	int zoom;$/;"	m	class:Settings
 ~BoundaryNode	src/BoundaryNode.cpp	/^BoundaryNode::~BoundaryNode()$/;"	f	class:BoundaryNode
 ~Bus	src/Bus.cpp	/^Bus::~Bus()$/;"	f	class:Bus

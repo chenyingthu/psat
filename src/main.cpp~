@@ -39,32 +39,33 @@
 	//	output<<"("<<d.x<<","<<d.y<<") ";
 	//	output<<endl;
 	//}
+int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps,double tStep);
 int main()
 {
 //	culaInitialize();
-//	Psat psat;
-//	psat.specifySystem();
-//	psat.init();
-//	psat.formConMatrix();
-//	psat.initialLF();
-//	psat.fm_spf();
-//	psat.fm_int_intial();
-//	psat.resetBoundNode();
-//	double h;
-//	h=psat.fm_tstep(1,1,0,psat.settings.t0);
-//	psat.fm_int_dyn(psat.settings.t0,psat.settings.tf,h);
-//
-//	return 0;
+	Psat psat;
+	psat.specifySystem();
+	psat.init();
+	psat.formConMatrix();
+	psat.initialLF();
+	psat.fm_spf();
+	psat.fm_int_intial();
+	psat.resetBoundNode();
+	double h;
+	h=psat.fm_tstep(1,1,0,psat.settings.t0);
+	psat.fm_int_dyn(psat.settings.t0,psat.settings.tf,h);
 
-  dyn_main();
+	return 0;
+
+  // dyn_main(1,39,0,2,0,2,0.005);
 }
-int dyn_main(){
+int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps,double tStep){
   Psat psat;
-  psat.specifySystem();
-  psat.init();
-  psat.formConMatrix();
-  psat.initialLF();
-  psat.fm_spf();
+  psat.dyn_f_iniNet(1);
+  psat.dyn_f_iniSyn(1);
+  psat.dyn_f_iniDae(1);
+  psat.dyn_f_iniSolver(1);
+  psat.dyn_f_iniSimu(1);
   return 0;
 }
 //int main()

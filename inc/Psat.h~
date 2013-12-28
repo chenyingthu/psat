@@ -17,6 +17,8 @@
 #include "Mn.h"
 #include "Varout.h"
 #include "Shunt.h"
+#include "Solver.h"
+#include "Simu.h"
 #include <cmath>
 #include <complex>
 //#include <cstdlib>
@@ -41,9 +43,11 @@ public:
 	Varout varout;
 	Clpsat clpsat;
 	BoundaryNode boundarynode;
+	Solver solver;
+	Simu simu;
 	int *ipiv;
 	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;
-	double t_end,nexttsstep;
+	double t_end,nexttstep;
 	int nrecord;
 	complex<double> jay;
 	complex<double>alpha;
@@ -99,5 +103,12 @@ public:
 	void fm_int_dyn(double t0,double tf,double h);
 	void fm_int_step(double t,double h,double *tempi,int k);
 	int fm_nrlf(int iter_max,double tol);
+
+	void dyn_f_iniSolver(int);
+	void dyn_f_iniNet(int);
+	void dyn_f_iniSyn(int);
+	void dyn_f_iniDae(int);
+	void dyn_f_store(int);
+	void dyn_f_iniSimu(int);
 };
 #endif
