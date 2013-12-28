@@ -804,6 +804,10 @@ void Psat::fm_syn(int flag){
 }
 void Psat::fm_syn1(int flag){
   double ag,ss,cc;
+  for(int i=0;i<dae.n;++i){
+    printf("%.16lf\n",dae.x[i]);
+  }
+  getchar();
   for ( int i = 0; i < syn.n; i += 1 ) {
     int k1=syn.delta_idx[i];
     int k2=syn.omega_idx[i];
@@ -927,9 +931,12 @@ void Psat::fm_syn3(int flag){
     dae.f[syn.omega_idx[i]]=(syn.pm[i]+syn.Pg[i]-ra*(syn.Id[i]*syn.Id[i]+syn.Iq[i]*syn.Iq[i])-D*(syn.omega[i]-1))*iM;
     Vf[i]=syn.vf[i]+K0*(syn.omega[i]-1)-Kp*(syn.pm[i]+syn.Pg[i]);
   }
-//  for ( int i = 0; i < dae.n; i += 1 ) {
-//    printf("%lf\n",dae.f[i]);
-//  }
+  // getchar();
+  // printf("dae.f\n");
+  // for ( int i = 0; i < dae.n; i += 1 ) {
+  //   printf("%lf\n",dae.f[i]);
+  // }
+  // printf("end\n");
   for ( int i = 0; i < syn.n; i += 1 ) {
     if(i<syn.is3_n){
       int k=syn.is3[i];
@@ -1495,7 +1502,7 @@ void Psat::fm_out_2(double t,int k){
     varout.f[i+kk*dae.n]=dae.f[i];
     printf("out %lf\t%lf\n",dae.x[i],dae.f[i]);
   }
-//  getchar();
+  getchar();
   for ( int i = 0; i < bus.n; i += 1 ) {
     varout.V[i+kk*bus.n]=dae.V[i];
     varout.ang[i+kk*bus.n]=dae.a[i];
@@ -1551,7 +1558,6 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
     dae.x[i]=varout.x[i+kk*dae.n];
     dae.f[i]=varout.f[i+kk*dae.n];
     xa[i]=dae.x[i];
-    fn[i]=dae.f[i];
   }
   for ( int i = 0; i < bus.n; i += 1 ) {
     dae.V[i]=varout.V[i+kk*bus.n];
@@ -1612,6 +1618,9 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
   double *tempAc=new double [AllN*AllN];
   double *deltf=new double [dae.n+2*bus.n];
   int *ipiv=new int[AllN];
+  for ( int i = 0; i < dae.n; i += 1 ) {
+    fn[i]=dae.f[i];
+  }
   while(err_max>settings.dyntol&&iterazione<=settings.dynmit){
     fm_lf_1();
     fm_mn_1();
@@ -1672,6 +1681,8 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
 	  break;
       }
     }//den of if iterazione
+    printf("%lf\n",h);
+    getchar();
     switch(settings.method){
       case 1:
 	for ( int i = 0; i < dae.n; i += 1 ) {
@@ -1680,7 +1691,8 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
 	break;
       case 2:
 	for ( int i = 0; i < dae.n; i += 1 ) {
-	  dae.tn[i]=dae.x[i]-xa[i]-h*0.5*dae.f[i];
+	  dae.tn[i]=dae.x[i]-xa[i]-0.5*h*(dae.f[i]+fn[i]);
+	  printf("%lf\t%lf\n",dae.f[i],fn[i]);
 	}
 	break;
       default:
@@ -1897,5 +1909,7 @@ int Psat::fm_nrlf(int iter_max,double tol){
   delete []inc;
   delete []ipiv;
   delete []tempJlfv;
+
+
   return conv;
 }
