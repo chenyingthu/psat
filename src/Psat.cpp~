@@ -26,15 +26,15 @@ Psat::~Psat(){
     //delete []fault.dat;
     //delete []fault.V;
     //delete []fault.ang;
-  // delete []settings.tempi;
-  delete []solver.jfng.gmres.h;
-  delete []solver.jfng.gmres.z;
-  delete []solver.jfng.gmres.v;
-  delete []solver.jfng.gmres.c;
-  delete []solver.jfng.gmres.s;
-  delete []solver.P;
-  delete []solver.deltx;
-  delete []solver.delty;
+ delete []settings.tempi;
+ delete []solver.jfng.gmres.h;
+ delete []solver.jfng.gmres.z;
+ delete []solver.jfng.gmres.v;
+ delete []solver.jfng.gmres.c;
+ delete []solver.jfng.gmres.s;
+ delete []solver.P;
+ delete []solver.deltx;
+ delete []solver.delty;
 }
 void Psat::specifySystem(){
 	double type=0;
@@ -1512,9 +1512,9 @@ void Psat::fm_out_2(double t,int k){
   for ( int i = 0; i < dae.n; i += 1 ) {
     varout.x[i+kk*dae.n]=dae.x[i];
     varout.f[i+kk*dae.n]=dae.f[i];
-    // printf("out %lf\t%lf\n",dae.x[i],dae.f[i]);
+     printf("out %lf\t%lf\n",dae.x[i],dae.f[i]);
   }
-//  getchar();
+  getchar();
   for ( int i = 0; i < bus.n; i += 1 ) {
     varout.V[i+kk*bus.n]=dae.V[i];
     varout.ang[i+kk*bus.n]=dae.a[i];
@@ -1985,7 +1985,33 @@ void Psat::dyn_f_iniSyn(int iFlag){
 }
 void Psat::dyn_f_iniDae(int iFlag){
   fm_int_intial();
+   dae.X=new double [dae.n+2*bus.n];
+   formDAEX();
 }
+ void Psat::formDAEX(){
+   int k=0;
+   for ( int i = 0; i < dae.n; i += 1 ) {
+     dae.X[k++]=dae.x[i];
+   }
+   for ( int i = 0; i < bus.n; i += 1 ) {
+     dae.X[k++]=dae.a[i];
+   }
+   for ( int i = 0; i < bus.n; i += 1 ) {
+     dae.X[k++]=dae.V[i];
+   }
+ }
+ void Psat::DAEXtox(){
+   int k=0;
+   for ( int i = 0; i < dae.n; i += 1 ) {
+     dae.x[i]=dae.X[k++];
+   }
+   for ( int i = 0; i < bus.n; i += 1 ) {
+     dae.a[i]=dae.X[k++];
+   }
+   for ( int i = 0; i < bus.n; i += 1 ) {
+     dae.V[i]=dae.X[k++];
+   }
+ }
 void Psat::dyn_f_iniSimu(int iFlag){
   simu.multiSteps=0;
   simu.nSteps=1;
@@ -2002,8 +2028,28 @@ void Psat::dyn_f_iniSimu(int iFlag){
     simu.t_switch[i]=settings.tempi[i];
     printf("%lf\n",simu.t_switch[i]);
   }
-  getchar();
-
-
-  
+  record.nhis=0;
 }
+ void Psat::dyn_f_store(int iFlag){
+   record.t=new double [(int)(simu.t_end/simu.tStep*2)];
+   record.x=new double [(dae.n+2*bus.n)*(int)(simu.t_end/simu.tStep*2)];
+   record.f=new double [(dae.n)*(int)(simu.t_end/simu.tStep*2)];
+   for ( int iStep = 0; iStep < simu.nSteps; iStep += 1 ) {
+     int iStart=(iStep-1)*(dae.n+2*bus.n);
+     int iEnd=iStep*(dae.n+2*bus.n);
+     record.t[record.nhis]=simu.t_cur+iStep*simu.tStep;
+     int k=0;
+     for ( int j = iStart; j < iEnd; j += 1 ) {
+       record.x[record.nhis*(dae.n+2*bus.n)+k++]=dae.X[j];
+     }
+     iStart=(iStep-1)*dae.n;
+     iEnd=iStep*dae.n;
+     k=0;
+     for ( int j = iStart; j < iEnd; j += 1 ) {
+       record.f[record.nhis*(dae.n)+k++]=dae.X[j];
+     }
+     record.nhis++;
+   }
+   for(int i=0;i<dae.n*record.nhis;++i)
+     printf("%lf\n",record.f[i]);
+ }

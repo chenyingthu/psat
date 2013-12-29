@@ -66,6 +66,7 @@ int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps
   psat.dyn_f_iniDae(1);
   psat.dyn_f_iniSolver(1);
   psat.dyn_f_iniSimu(1);
+  psat.dyn_f_store(1);
   return 0;
 }
 //int main()

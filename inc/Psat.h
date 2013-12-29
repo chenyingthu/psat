@@ -19,6 +19,7 @@
 #include "Shunt.h"
 #include "Solver.h"
 #include "Simu.h"
+#include "Record.h"
 #include <cmath>
 #include <complex>
 //#include <cstdlib>
@@ -45,6 +46,7 @@ public:
 	BoundaryNode boundarynode;
 	Solver solver;
 	Simu simu;
+	Record record;
 	int *ipiv;
 	int nBus,nFault,nLine,nPQ,nPV,nSW,nSyn,nMn,nShunt;
 	double t_end,nexttstep;
@@ -110,5 +112,11 @@ public:
 	void dyn_f_iniSimu(int);
 	void dyn_f_iniSolver(int);
 	void dyn_f_store(int);
+	void formDAEX();
+	void DAEXtox();
+	void dyn_f_integration(int iFlag);
+	void dyn_f_increaseTimeSteps(int);
+	void dyn_f_dealFaults(int iFlag);
+	void dyn_f_prediction(int iFlag);
 };
 #endif
