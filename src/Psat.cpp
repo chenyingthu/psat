@@ -2054,5 +2054,56 @@ void Psat::dyn_f_iniSimu(int iFlag){
      printf("%lf\n",record.f[i]);
  }
 void Psat::dyn_f_integration(int iFlag){
-  
+  if (simu.multiSteps==1){
+    simu.nSteps=settings.dyn_MulStep_nSteps;
+    simu.multiSteps=2;
+  }
+  if(settings.dyn_isPredict==1)
+    dyn_f_prediction(iFlag);
+  if(iFlag==1)
+    dae.x=solver_jfng(dae.x);
+}
+void Psat::dyn_f_prediction(int iFlag){
+ int ord=settings.dyn_predict_model;
+ double *x=new double [dae.n+2*bus.n]; 
+ for(int i = 0;i<dae.n+2*bus.n;++i){
+   x[i]=dae.X[i];
+ }
+ int isPre=0;
+ if(ord==1){
+   if(record.t[record.nhis-1]>fault.tFaultEnd+settings.dyn_tStep*3){
+     isPre=1;
+     for ( int i = 0; i < dae.n+2*bus.n; i += 1 ) {
+       x[i]=2*record.x[i+(record.nhis-1)*(dae.n+2*bus.n)]-record.x[i+(record.nhis-2)*(dae.n+2*bus.n)];
+     }
+   }
+ }
+ else if(ord==2){
+   if(record.t[record.nhis-1]>fault.tFaultEnd+settings.dyn_tStep*8){
+     isPre=1;
+     for ( int i = 0; i < dae.n+2*bus.n; i += 1 ) {
+       x[i]=3*record.x[i+(record.nhis-1)*(dae.n+2*bus.n)]-3*record.x[i+(record.nhis-2)*(dae.n+2*bus.n)]+record.x[i+(record.nhis-3)*(dae.n+2*bus.n)];
+     }
+   }
+ }
+ else if(ord==3){
+   if(record.t[record.nhis-1]>fault.tFaultEnd+settings.dyn_tStep*12){
+     isPre=1;
+     for ( int i = 0; i < dae.n+2*bus.n; i += 1 ) {
+       x[i]=4*record.x[i+(record.nhis-1)*(dae.n+2*bus.n)]-6*record.x[i+(record.nhis-2)*(dae.n+2*bus.n)]+4*record.x[i+(record.nhis-3)*(dae.n+2*bus.n)]-record.x[i+(record.nhis-4)*(dae.n+2*bus.n)];
+     }
+   }
+ }
+ if(isPre==0){
+   simu.nSteps=1;
+   simu.multiSteps=0;
+ }
+ for(int i = 0;i<dae.n+2*bus.n;++i){
+   dae.X[i]=x[i];
+ }
+ delete []x;
+}
+double * Psat::solver_jfng(double *x){
+  double *sol;
+  return sol;
 }

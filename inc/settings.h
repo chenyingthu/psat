@@ -47,6 +47,11 @@ public:
 	int shuntvalues;
 	int violations;
 	double *tempi;
+	int dyn_isPredict;
+	int dyn_predict_model;
+	int dyn_isMulStep;
+	int dyn_MulStep_nSteps;
+	double dyn_tStep;
 	char exportType[20];
 	Settings();
 	~Settings();

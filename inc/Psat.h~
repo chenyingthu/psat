@@ -118,5 +118,6 @@ public:
 	void dyn_f_increaseTimeSteps(int);
 	void dyn_f_dealFaults(int iFlag);
 	void dyn_f_prediction(int iFlag);
+	void solver_jfng(double *);
 };
 #endif

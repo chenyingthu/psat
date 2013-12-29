@@ -66,6 +66,12 @@ int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps
   psat.dyn_f_iniDae(1);
   psat.dyn_f_iniSolver(1);
   psat.dyn_f_iniSimu(1);
+  psat.dyn_f_store(1);
+  psat.settings.dyn_isPredict=isPredict;
+  psat.settings.dyn_predict_model=model;
+  psat.settings.dyn_isMultStep=isMultStep;
+  psat.settings.dyn_MulStep_nSteps=nSteps;
+  psat.settings.dyn_tStep=tStep;
   return 0;
 }
 //int main()
