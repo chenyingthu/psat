@@ -23,10 +23,10 @@ complex<double> conj(complex<double>a)
 }
 complex<double> *conj_(int n,complex<double>*a)
 {
-//	complex<double> *b=new complex<double> [n];
+	complex<double> *b=new complex<double> [n];
 	for (int i=0;i<n;++i)
-		a[i]=complex<double>(a[i].real(),-a[i].imag());
-	return a;
+		b[i]=complex<double>(a[i].real(),-a[i].imag());
+	return b;
 }
 void cat4matrix(double *A,int na,int ma,double *B,int nb,int mb,double *C,int nc,int mc,double *D,int nd,int md,double *Result)
 {
@@ -97,4 +97,11 @@ double* sortD(double *s,int n)
 		a[i]=s[i];
 	qsort(a,n,sizeof(a[0]),cmpD);
 	return a;
+}
+double norm(int n,double *x){
+  double temp=0;
+  for ( int i = 0; i < n; i += 1 ) {
+    temp+=x[i]*x[i];
+  }
+  return sqrt(temp);
 }

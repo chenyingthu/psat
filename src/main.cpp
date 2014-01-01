@@ -61,6 +61,7 @@ int main()
 }
 int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps,double tStep){
   Psat psat;
+  psat.simu.tStep=tStep;
   psat.dyn_f_iniNet(1);
   psat.dyn_f_iniSyn(1);
   psat.dyn_f_iniDae(1);
@@ -72,6 +73,10 @@ int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps
   psat.settings.dyn_isMulStep=isMultStep;
   psat.settings.dyn_MulStep_nSteps=nSteps;
   psat.settings.dyn_tStep=tStep;
+  while(psat.simu.t_cur<psat.simu.t_end){
+    psat.dyn_f_integration(iFlag);
+    getchar();
+  }
   return 0;
 }
 //int main()

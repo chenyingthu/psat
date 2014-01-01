@@ -119,5 +119,12 @@ public:
 	void dyn_f_dealFaults(int iFlag);
 	void dyn_f_prediction(int iFlag);
 	double * solver_jfng(double *);
+	double *dyn_f_dae(double *,double );
+	void updatePreconditioner(int);
+	void pre_gmres(double *,double *,double *,double,int );
+	double *step;
+	double errstep;
+	int inner_it_count;
+	void precondition(double *,int );
 };
 #endif

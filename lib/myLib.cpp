@@ -98,3 +98,10 @@ double* sortD(double *s,int n)
 	qsort(a,n,sizeof(a[0]),cmpD);
 	return a;
 }
+double norm(int n,double *x){
+  double temp=0;
+  for ( int i = 0; i < n; i += 1 ) {
+    temp+=x[i]*x[i];
+  }
+  return sqrt(temp);
+}

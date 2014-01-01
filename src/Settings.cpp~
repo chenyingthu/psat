@@ -47,7 +47,6 @@ Settings::Settings()
 	shuntvalues=0;
 	violations=0;
 	sprintf(exportType,"txt");
-	dyn_lf=2;
 }
 Settings::~Settings()
 {

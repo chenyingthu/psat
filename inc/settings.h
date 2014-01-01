@@ -51,6 +51,7 @@ public:
 	int dyn_predict_model;
 	int dyn_isMulStep;
 	int dyn_MulStep_nSteps;
+	int dyn_lf;
 	double dyn_tStep;
 	char exportType[20];
 	Settings();

@@ -11,7 +11,8 @@ int findi(int *srcArray,int len,int ref,int *dstArray);
 complex<double> conj(complex<double> a);
 complex<double>* conj_(int n,complex<double> *a);
 void cat4matrix(double *A,int na,int ma,double *B,int nb,int mb,double *C,int nc,int mc,double *D,int nd,int md,double *Result);
-void cat4matrix_Ac(double *A,int na,int ma,double *B,int nb,int mb,double *C,int nc,int mc,double *D,int nd,int md,double *Result,double h)
+void cat4matrix_Ac(double *A,int na,int ma,double *B,int nb,int mb,double *C,int nc,int mc,double *D,int nd,int md,double *Result,double h);
 int* sort(int *a,int n);
 double *sortD (double *a,int n);
+double *mynorm(int n,double *x);
 #endif

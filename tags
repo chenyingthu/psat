@@ -22,6 +22,7 @@ Clpsat	src/Clpsat.cpp	/^Clpsat::Clpsat(){$/;"	f	class:Clpsat
 Complex	inc/Psat.h	/^typedef  complex<double> Complex;$/;"	t
 DAE	inc/DAE.h	/^class DAE{$/;"	c
 DAE	src/DAE.cpp	/^DAE::DAE()$/;"	f	class:DAE
+DAEXtox	src/Psat.cpp	/^ void Psat::DAEXtox(){$/;"	f	class:Psat
 DEP_DEBUG	makefile	/^DEP_DEBUG = $/;"	m
 Fault	inc/Fault.h	/^class Fault$/;"	c
 Fault	src/Fault.cpp	/^Fault::Fault()$/;"	f	class:Fault
@@ -85,8 +86,10 @@ Qg	inc/Bus.h	/^	double *Qg;$/;"	m	class:Bus
 Qg	inc/Syn.h	/^	double *Qg;$/;"	m	class:Syn
 Ql	inc/Bus.h	/^	double *Ql;$/;"	m	class:Bus
 RCFLAGS_DEBUG	makefile	/^RCFLAGS_DEBUG = $(RCFLAGS)$/;"	m
+RECORD_HEADER	inc/Record.h	5;"	d
 RESINC	makefile	/^RESINC = $/;"	m
 RESINC_DEBUG	makefile	/^RESINC_DEBUG = $(RESINC) -I..\/..\/..\/下载\/software\/lapack-3.4.2\/CBLAS\/src -I..\/..\/..\/下载\/software\/lapack-3.4.2\/SRC$/;"	m
+Record	inc/Record.h	/^class Record{$/;"	c
 SIMU_HEADER	inc/Simu.h	5;"	d
 SOLVER_HEADER	inc/Solver.h	5;"	d
 SW	inc/SW.h	/^class SW{$/;"	c
@@ -110,6 +113,7 @@ Vf	inc/Varout.h	/^	double *Vf;$/;"	m	class:Varout
 Voltage	inc/BoundaryNode.h	/^	double *Voltage;$/;"	m	class:BoundaryNode
 WINDRES	makefile	/^WINDRES = windres$/;"	m
 WORKDIR	makefile	/^WORKDIR = `pwd`$/;"	m
+X	inc/DAE.h	/^	double *X;$/;"	m	class:DAE
 Y	inc/Line.h	/^	complex<double> *Y;$/;"	m	class:Line
 _BOUNDARYNODE_H	inc/BoundaryNode.h	2;"	d
 _BUS_H	inc/Bus.h	2;"	d
@@ -206,12 +210,22 @@ deltx	inc/Solver.h	/^  double *deltx;$/;"	m	class:Solver
 delty	inc/Solver.h	/^  double *delty;$/;"	m	class:Solver
 dest	inc/Solver.h	/^  int dest;$/;"	m	class:Update
 distrsw	inc/settings.h	/^	int distrsw;$/;"	m	class:Settings
+dyn_MulStep_nSteps	inc/settings.h	/^	int dyn_MulStep_nSteps;$/;"	m	class:Settings
+dyn_f_dae	src/Psat.cpp	/^double * Psat::dyn_f_dae(double *x_in,double t0)$/;"	f	class:Psat
 dyn_f_iniDae	src/Psat.cpp	/^void Psat::dyn_f_iniDae(int iFlag){$/;"	f	class:Psat
 dyn_f_iniNet	src/Psat.cpp	/^void Psat::dyn_f_iniNet(int iFlag){$/;"	f	class:Psat
 dyn_f_iniSimu	src/Psat.cpp	/^void Psat::dyn_f_iniSimu(int iFlag){$/;"	f	class:Psat
 dyn_f_iniSolver	src/Psat.cpp	/^void Psat::dyn_f_iniSolver(int iFlag){$/;"	f	class:Psat
 dyn_f_iniSyn	src/Psat.cpp	/^void Psat::dyn_f_iniSyn(int iFlag){$/;"	f	class:Psat
+dyn_f_integration	src/Psat.cpp	/^void Psat::dyn_f_integration(int iFlag){$/;"	f	class:Psat
+dyn_f_prediction	src/Psat.cpp	/^void Psat::dyn_f_prediction(int iFlag){\/\/to do multsteps,...$/;"	f	class:Psat
+dyn_f_store	src/Psat.cpp	/^ void Psat::dyn_f_store(int iFlag){$/;"	f	class:Psat
+dyn_isMulStep	inc/settings.h	/^	int dyn_isMulStep;$/;"	m	class:Settings
+dyn_isPredict	inc/settings.h	/^	int dyn_isPredict;$/;"	m	class:Settings
+dyn_lf	inc/settings.h	/^	int dyn_lf;$/;"	m	class:Settings
 dyn_main	src/main.cpp	/^int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps,double tStep){$/;"	f
+dyn_predict_model	inc/settings.h	/^	int dyn_predict_model;$/;"	m	class:Settings
+dyn_tStep	inc/settings.h	/^	double dyn_tStep;$/;"	m	class:Settings
 dynmit	inc/settings.h	/^	int dynmit;$/;"	m	class:Settings
 dyntol	inc/settings.h	/^	double dyntol;$/;"	m	class:Settings
 e1d	inc/Syn.h	/^	double *e1d;$/;"	m	class:Syn
@@ -224,6 +238,7 @@ e2q	inc/Syn.h	/^	double *e2q;$/;"	m	class:Syn
 e2q_idx	inc/Syn.h	/^	int *e2q_idx;$/;"	m	class:Syn
 exportType	inc/settings.h	/^	char exportType[20];$/;"	m	class:Settings
 f	inc/DAE.h	/^	double *f;$/;"	m	class:DAE
+f	inc/Record.h	/^  double *f;$/;"	m	class:Record
 f	inc/Varout.h	/^	double *f;$/;"	m	class:Varout
 fault	inc/Psat.h	/^	Fault fault;$/;"	m	class:Psat
 faultDelete	src/Fault.cpp	/^void Fault::faultDelete()$/;"	f	class:Fault
@@ -288,6 +303,7 @@ fm_tstep_2	src/Psat.cpp	/^void Psat::fm_tstep_2(int convergency,int iteration,do
 fm_y	src/Psat.cpp	/^void Psat::fm_y(){$/;"	f	class:Psat
 fm_y_line	src/Line.cpp	/^void Line::fm_y_line(int nodes,Shunt shunt)$/;"	f	class:Line
 formConMatrix	src/Psat.cpp	/^void Psat::formConMatrix(){$/;"	f	class:Psat
+formDAEX	src/Psat.cpp	/^ void Psat::formDAEX(){$/;"	f	class:Psat
 freq	inc/settings.h	/^	double freq;$/;"	m	class:Settings
 from	inc/Line.h	/^	int *from;$/;"	m	class:Line
 g	inc/DAE.h	/^	double *g;$/;"	m	class:DAE
@@ -387,6 +403,7 @@ neval	inc/Simu.h	/^  int neval;$/;"	m	class:Simu
 newton	inc/Solver.h	/^  Newton newton;$/;"	m	class:Jfng
 newton_iteration	inc/Simu.h	/^  int newton_iteration;$/;"	m	class:Simu
 nexttstep	inc/Psat.h	/^	double t_end,nexttstep;$/;"	m	class:Psat
+nhis	inc/Record.h	/^  int nhis;$/;"	m	class:Record
 npf	inc/DAE.h	/^	int npf;$/;"	m	class:DAE
 nrecord	inc/Psat.h	/^	int nrecord;$/;"	m	class:Psat
 num	inc/Solver.h	/^  int num;$/;"	m	class:Update
@@ -418,6 +435,7 @@ pv2pq	inc/settings.h	/^	int pv2pq;$/;"	m	class:Settings
 pvDelete	src/PV.cpp	/^void PV::pvDelete()$/;"	f	class:PV
 rad	inc/settings.h	/^	double rad;$/;"	m	class:Settings
 readfile	inc/Clpsat.h	/^	int readfile;$/;"	m	class:Clpsat
+record	inc/Psat.h	/^	Record record;$/;"	m	class:Psat
 red	inc/settings.h	/^	int red;$/;"	m	class:Settings
 refbus	inc/settings.h	/^	int refbus;$/;"	m	class:Settings
 refresh	inc/Clpsat.h	/^	int refresh;$/;"	m	class:Clpsat
@@ -433,6 +451,7 @@ shunt	inc/Psat.h	/^	Shunt shunt;$/;"	m	class:Psat
 shuntvalues	inc/settings.h	/^	int shuntvalues;$/;"	m	class:Settings
 simu	inc/Psat.h	/^	Simu simu;$/;"	m	class:Psat
 solver	inc/Psat.h	/^	Solver solver;$/;"	m	class:Psat
+solver_jfng	src/Psat.cpp	/^double * Psat::solver_jfng(double *x){$/;"	f	class:Psat
 sort	lib/myLib.cpp	/^int* sort(int *s,int n)$/;"	f
 sortD	lib/myLib.cpp	/^double* sortD(double *s,int n)$/;"	f
 specifySystem	src/Psat.cpp	/^void Psat::specifySystem(){$/;"	f	class:Psat
@@ -444,10 +463,12 @@ swDelete	src/SW.cpp	/^void SW::swDelete()$/;"	f	class:SW
 syn	inc/Psat.h	/^	Syn syn;$/;"	m	class:Psat
 synDelete	src/Syn.cpp	/^void Syn::synDelete()$/;"	f	class:Syn
 t	inc/DAE.h	/^	double t;$/;"	m	class:DAE
+t	inc/Record.h	/^  double *t;$/;"	m	class:Record
 t	inc/Varout.h	/^	double *t;$/;"	m	class:Varout
 t0	inc/settings.h	/^	double t0;$/;"	m	class:Settings
 tFaultEnd	inc/Fault.h	/^	double tFaultEnd;$/;"	m	class:Fault
 tFaultStart	inc/Fault.h	/^	double tFaultStart;$/;"	m	class:Fault
+tStep	inc/Simu.h	/^  double tStep;$/;"	m	class:Simu
 t_cur	inc/Simu.h	/^  double t_cur;$/;"	m	class:Simu
 t_end	inc/Psat.h	/^	double t_end,nexttstep;$/;"	m	class:Psat
 t_end	inc/Simu.h	/^  double t_end;$/;"	m	class:Simu
@@ -471,6 +492,7 @@ viewrep	inc/Clpsat.h	/^	int viewrep;$/;"	m	class:Clpsat
 violations	inc/settings.h	/^	int violations;$/;"	m	class:Settings
 vs	inc/settings.h	/^	int vs;$/;"	m	class:Settings
 x	inc/DAE.h	/^	double *x;$/;"	m	class:DAE
+x	inc/Record.h	/^  double *x;$/;"	m	class:Record
 x	inc/Varout.h	/^	double *x;$/;"	m	class:Varout
 z	inc/Solver.h	/^  double *z;$/;"	m	class:Gmres
 zoom	inc/settings.h	/^	int zoom;$/;"	m	class:Settings

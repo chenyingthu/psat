@@ -14,4 +14,5 @@ void cat4matrix(double *A,int na,int ma,double *B,int nb,int mb,double *C,int nc
 void cat4matrix_Ac(double *A,int na,int ma,double *B,int nb,int mb,double *C,int nc,int mc,double *D,int nd,int md,double *Result,double h);
 int* sort(int *a,int n);
 double *sortD (double *a,int n);
+double norm(int n,double *x);
 #endif
