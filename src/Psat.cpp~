@@ -2104,8 +2104,8 @@ void Psat::dyn_f_prediction(int iFlag){//to do multsteps,...
 }
 double * Psat::solver_jfng(double *x){
   double *sol=new double [dae.n+2*bus.n];
-  double gamma=0.9;
-  double ierr=0;
+  // double gamma=0.9;
+  // double ierr=0;
   int maxit=solver.jfng.newton.maxit;
   int n=dae.n+2*bus.n;
   double rat;
@@ -2128,7 +2128,7 @@ double * Psat::solver_jfng(double *x){
     if(solver.jfng.newton.method==1&&(solver.jfng.precond.inner==1||solver.jfng.precond.outer==1))
       updatePreconditioner(1);
     if(solver.jfng.newton.method==1)
-      pre_gmres(f0,x,step,errstep,inner_it_count);
+      pre_gmres(f0,x,step);
   }
   return sol;
 }
@@ -2210,7 +2210,7 @@ void Psat::updatePreconditioner(int iFlag){
     solver.update.last_num++;
   }//end of while
 }
-void Psat::pre_gmres(double *f0,double *xc,double *x,double error,int total_iters){
+void Psat::pre_gmres(double *f0,double *xc,double *x){
   double errtol=solver.jfng.gmres.tol;
   int kmax=solver.jfng.gmres.maxit;
   int reorth=solver.jfng.gmres.reorth;
@@ -2218,6 +2218,12 @@ void Psat::pre_gmres(double *f0,double *xc,double *x,double error,int total_iter
   double *r=new double [dae.n];
   double rho;
   double *g=new double [kmax+1];
+  double *v_temp=new double [n];
+  double *z_temp=new double [n];
+  for ( int i = 0; i < kmax+1; i += 1 ) {
+    solver.jfng.gmres.s[i]=0;
+    solver.jfng.gmres.c[i]=0;
+  }
   for (int i = 0;i < n;++i){
     x[i]=0;
   }
@@ -2229,7 +2235,7 @@ void Psat::pre_gmres(double *f0,double *xc,double *x,double error,int total_iter
     g[i]=rho;
   }
   errtol=errtol*rho;
-  error=rho;
+  errstep=rho;
   if(rho<errtol)
     return;
   for ( int i = 0; i < n; i += 1 ) {
@@ -2245,5 +2251,116 @@ void Psat::pre_gmres(double *f0,double *xc,double *x,double error,int total_iter
     }
     if(solver.jfng.precond.inner==1||solver.jfng.precond.outer==1)
       precondition(solver.jfng.gmres.z,kk);
+
+    for ( int i = 0; i < n; i += 1 ) {
+      z_temp[i]=solver.jfng.gmres.z[i+kk*solver.update.maxnum];
+    }
+    v_temp=dirder(xc,z_temp,f0);
+    if(solver.jfng.precond.inner==1 && solver.jfng.precond.innerStop == 2 && solver.update.num < solver.update.maxnum){
+      int i=solver.update.num;
+      for(int j=0;j<n;++j){
+	solver.deltx[i+j*solver.update.maxnum]=solver.jfng.gmres.z[kk+j*kmax];
+	solver.delty[i+j*solver.update.maxnum]=solver.jfng.gmres.v[kk+1+j*kmax];
+      }
+    }
+    double normav=norm(n,v_temp);
+    for ( int j = 0; j < kk; j += 1 ) {
+      double temp=0;
+      for (int i=0;i<n;++i)
+	temp+=solver.jfng.gmres.v[j+i*kmax]*v_temp[i];
+      solver.jfng.gmres.h[kk+j*kmax]=temp;
+      for (int i=0;i<n;++i)
+	v_temp[i]=v_temp[i]-temp*solver.jfng.gmres.v[j+i*kmax];
+    }
+    solver.jfng.gmres.h[kk+(kk+1)*kmax]=norm(n,v_temp);
+    double normav2=solver.jfng.gmres.h[kk+(kk+1)*kmax];
+    if((reorth==1&&abs(normav+0.001*normav2-normav)<1e-8)||reorth==3)
+    {
+      for ( int j = 0; j < kk; j += 1 ) {
+	double hr=0;
+	for (int i=0;i<n;++i)
+	  hr+=solver.jfng.gmres.v[j+i*kmax]*v_temp[i];
+	solver.jfng.gmres.h[kk+j*kmax]+=hr;
+	for (int i=0;i<n;++i)
+	  v_temp[i]=v_temp[i]-hr*solver.jfng.gmres.v[j+i*kmax];
+      }
+      solver.jfng.gmres.h[kk+(kk+1)*kmax]=norm(n,v_temp);
+    }
+    if(solver.jfng.gmres.h[kk+(kk+1)*kmax]!=0){
+      for ( int i = 0; i < n; i += 1 ) {
+	v_temp[i]=v_temp[i]/solver.jfng.gmres.h[kk+(kk+1)*kmax];
+      }
+    }
+    if(k>1)
+      givapp(solver.jfng.gmres.c,solver.jfng.gmres.s,solver.jfng.gmres.h,k-1);
+    double nu=sqrt(solver.jfng.gmres.h[kk+(kk+1)*kmax]*solver.jfng.gmres.h[kk+(kk+1)*kmax]+solver.jfng.gmres.h[kk+(kk)*kmax]*solver.jfng.gmres.h[kk+(kk)*kmax]);
+    if(nu!=0)
+    {
+      solver.jfng.gmres.c[kk]=solver.jfng.gmres.h[kk+kk*kmax]/nu;
+      solver.jfng.gmres.s[kk]=-solver.jfng.gmres.h[kk+(kk+1)*kmax]/nu;
+      solver.jfng.gmres.h[kk+kk*kmax]=solver.jfng.gmres.c[kk]*solver.jfng.gmres.h[kk+kk*kmax]-solver.jfng.gmres.s[kk]*solver.jfng.gmres.h[kk+(kk+1)*kmax];
+      solver.jfng.gmres.h[kk+(kk+1)*kmax]=0;
+      double w1=solver.jfng.gmres.c[kk]*g[kk]-solver.jfng.gmres.s[kk]*g[kk+1];
+      double w2=solver.jfng.gmres.s[kk]*g[kk]+solver.jfng.gmres.c[kk]*g[kk+1];
+      g[kk]=w1;
+      g[kk+1]=w2;
+    }
+    rho=abs(g[kk+1]);
   }
+  delete []r;
+  delete []g;
+  delete []v_temp;
+  delete []z_temp;
 } 
+void Psat::givapp(double *c,double *s,double *vin,int k){
+  for ( int i = 0; i < k; i += 1 ) {
+    double w1=c[i]*vin[i]-s[i]*vin[i+1];
+    double w2=s[i]*vin[i]+c[i]*vin[i+1];
+    vin[i]=w1;
+    vin[i+1]=w2;
+  }
+}
+void Psat::precondition(double *x,int k){//todo multiSteps
+  int kmax=solver.jfng.gmres.maxit;
+  int n=dae.n+2*bus.n;
+  for(int iStep=0;iStep<simu.nSteps;++iStep){
+    for(int i = 0;i < n;++i)
+      x[i+k*kmax]=x[i+k*kmax]*solver.update.dest;
+    for ( int i = 0; i < n; i += 1 ) {
+      double temp=0;
+      for ( int j = 0; j < n; j += 1 ) {
+	temp+=solver.deltx[i+j*solver.update.maxnum]*x[j];
+      }
+      for ( int j = 0; j < n; j += 1 ) {
+	x[i+k*kmax]=x[i+k*kmax]+temp*solver.delty[i+j*solver.update.maxnum];
+      }
+    }
+  }
+}
+double *Psat::dirder(double *x,double *w,double *f0){
+  int n=dae.n+2*bus.n;
+  double *z=new double [n];
+  double temp=norm(n,w);
+  double epsnew=solver.jfng.findiff;
+  if(temp<1e-8)
+  {
+    for ( int i = 0; i < n; i += 1 ) {
+      z[i]=0;
+    }
+    return z;
+  }
+  epsnew=epsnew*temp;
+  temp=norm(n,x);
+  if(temp>0)
+    epsnew=epsnew*temp;
+  double *del=new double [n];
+  for ( int i = 0; i < n; i += 1 ) {
+    del[i]=x[i]+epsnew*w[i];
+  }
+  double *f1=new double [n];
+  f1=dyn_f_dae(del,simu.t_next);
+  for ( int i = 0; i < n; i += 1 ) {
+    z[i]=(f1[i]-f0[i])/epsnew;
+  }
+  return z;
+}

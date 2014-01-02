@@ -209,9 +209,10 @@ deltat	inc/settings.h	/^	double deltat;$/;"	m	class:Settings
 deltx	inc/Solver.h	/^  double *deltx;$/;"	m	class:Solver
 delty	inc/Solver.h	/^  double *delty;$/;"	m	class:Solver
 dest	inc/Solver.h	/^  int dest;$/;"	m	class:Update
+dirder	src/Psat.cpp	/^double *Psat::dirder(double *x,double *w,double *f0){$/;"	f	class:Psat
 distrsw	inc/settings.h	/^	int distrsw;$/;"	m	class:Settings
 dyn_MulStep_nSteps	inc/settings.h	/^	int dyn_MulStep_nSteps;$/;"	m	class:Settings
-dyn_f_dae	src/Psat.cpp	/^double * Psat::dyn_f_dae(double *x_in,double t0)$/;"	f	class:Psat
+dyn_f_dae	src/Psat.cpp	/^double * Psat::dyn_f_dae(double *x_in,double t0)\/\/todo multiSteps$/;"	f	class:Psat
 dyn_f_iniDae	src/Psat.cpp	/^void Psat::dyn_f_iniDae(int iFlag){$/;"	f	class:Psat
 dyn_f_iniNet	src/Psat.cpp	/^void Psat::dyn_f_iniNet(int iFlag){$/;"	f	class:Psat
 dyn_f_iniSimu	src/Psat.cpp	/^void Psat::dyn_f_iniSimu(int iFlag){$/;"	f	class:Psat
@@ -236,6 +237,7 @@ e2d	inc/Syn.h	/^	double *e2d;$/;"	m	class:Syn
 e2d_idx	inc/Syn.h	/^	int *e2d_idx;$/;"	m	class:Syn
 e2q	inc/Syn.h	/^	double *e2q;$/;"	m	class:Syn
 e2q_idx	inc/Syn.h	/^	int *e2q_idx;$/;"	m	class:Syn
+errstep	inc/Psat.h	/^	double errstep;$/;"	m	class:Psat
 exportType	inc/settings.h	/^	char exportType[20];$/;"	m	class:Settings
 f	inc/DAE.h	/^	double *f;$/;"	m	class:DAE
 f	inc/Record.h	/^  double *f;$/;"	m	class:Record
@@ -308,6 +310,7 @@ freq	inc/settings.h	/^	double freq;$/;"	m	class:Settings
 from	inc/Line.h	/^	int *from;$/;"	m	class:Line
 g	inc/DAE.h	/^	double *g;$/;"	m	class:DAE
 g	inc/Shunt.h	/^	double *g;$/;"	m	class:Shunt
+givapp	src/Psat.cpp	/^void Psat::givapp(double *c,double *s,double *vin,int k){$/;"	f	class:Psat
 glfp	inc/DAE.h	/^	double *glfp;$/;"	m	class:DAE
 glfq	inc/DAE.h	/^	double *glfq;$/;"	m	class:DAE
 gmres	inc/Solver.h	/^  Gmres gmres;$/;"	m	class:Jfng
@@ -333,6 +336,7 @@ init_n	inc/Mn.h	/^	int init_n;$/;"	m	class:Mn
 initialLF	src/Psat.cpp	/^void Psat::initialLF(){$/;"	f	class:Psat
 inner	inc/Solver.h	/^  int inner;$/;"	m	class:Precond
 innerStop	inc/Solver.h	/^  int innerStop;$/;"	m	class:Precond
+inner_it_count	inc/Psat.h	/^	int inner_it_count;$/;"	m	class:Psat
 internel	inc/Bus.h	/^	int *internel;$/;"	m	class:Bus
 ipiv	inc/Psat.h	/^	int *ipiv;$/;"	m	class:Psat
 is2	inc/Syn.h	/^	int *is2;$/;"	m	class:Syn
@@ -404,6 +408,7 @@ newton	inc/Solver.h	/^  Newton newton;$/;"	m	class:Jfng
 newton_iteration	inc/Simu.h	/^  int newton_iteration;$/;"	m	class:Simu
 nexttstep	inc/Psat.h	/^	double t_end,nexttstep;$/;"	m	class:Psat
 nhis	inc/Record.h	/^  int nhis;$/;"	m	class:Record
+norm	lib/myLib.cpp	/^double norm(int n,double *x){$/;"	f
 npf	inc/DAE.h	/^	int npf;$/;"	m	class:DAE
 nrecord	inc/Psat.h	/^	int nrecord;$/;"	m	class:Psat
 num	inc/Solver.h	/^  int num;$/;"	m	class:Update
@@ -425,7 +430,9 @@ pq	inc/Psat.h	/^	PQ pq;$/;"	m	class:Psat
 pq2z	inc/Clpsat.h	/^	int pq2z;$/;"	m	class:Clpsat
 pq2z	inc/settings.h	/^	int pq2z;$/;"	m	class:Settings
 pqDelete	src/PQ.cpp	/^void PQ::pqDelete()$/;"	f	class:PQ
+pre_gmres	src/Psat.cpp	/^void Psat::pre_gmres(double *f0,double *xc,double *x){$/;"	f	class:Psat
 precond	inc/Solver.h	/^  Precond precond;$/;"	m	class:Jfng
+precondition	src/Psat.cpp	/^void Psat::precondition(double *x,int k){\/\/todo multiSteps$/;"	f	class:Psat
 psid	inc/Syn.h	/^	double *psid;$/;"	m	class:Syn
 psid_idx	inc/Syn.h	/^	int *psid_idx;$/;"	m	class:Syn
 psiq	inc/Syn.h	/^	double *psiq;$/;"	m	class:Syn
@@ -455,6 +462,7 @@ solver_jfng	src/Psat.cpp	/^double * Psat::solver_jfng(double *x){$/;"	f	class:Ps
 sort	lib/myLib.cpp	/^int* sort(int *s,int n)$/;"	f
 sortD	lib/myLib.cpp	/^double* sortD(double *s,int n)$/;"	f
 specifySystem	src/Psat.cpp	/^void Psat::specifySystem(){$/;"	f	class:Psat
+step	inc/Psat.h	/^	double *step;$/;"	m	class:Psat
 store	inc/Mn.h	/^	double **store;$/;"	m	class:Mn
 store	inc/PQ.h	/^	double **store;$/;"	m	class:PQ
 store	inc/PV.h	/^	double **store;$/;"	m	class:PV
@@ -485,6 +493,7 @@ tol1	lib/myLib.h	8;"	d
 tol_fixed	inc/Solver.h	/^  double tol_fixed;$/;"	m	class:Gmres
 tstep	inc/settings.h	/^	double tstep;$/;"	m	class:Settings
 update	inc/Solver.h	/^  Update update;$/;"	m	class:Solver
+updatePreconditioner	src/Psat.cpp	/^void Psat::updatePreconditioner(int iFlag){$/;"	f	class:Psat
 v	inc/Solver.h	/^  double *v;$/;"	m	class:Gmres
 varout	inc/Psat.h	/^	Varout varout;$/;"	m	class:Psat
 vf	inc/Syn.h	/^	double *vf;$/;"	m	class:Syn

@@ -121,10 +121,12 @@ public:
 	double * solver_jfng(double *);
 	double *dyn_f_dae(double *,double );
 	void updatePreconditioner(int);
-	void pre_gmres(double *,double *,double *,double,int );
+	void pre_gmres(double *,double *,double *);
 	double *step;
 	double errstep;
 	int inner_it_count;
 	void precondition(double *,int );
+	double * dirder(double *,double * ,double *);
+	void givapp(double *,double *,double *,int);
 };
 #endif
