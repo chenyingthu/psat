@@ -1,5 +1,8 @@
 #ifndef _PSAT_H
 #define _PSAT_H
+#define max(a,b) (((a)>(b))?(a):(b))
+#define min(a,b) (((a)<(b))?(a):(b))
+
 //extern "C"
 #include <stdio.h>
 #include <set>
@@ -128,5 +131,7 @@ public:
 	void precondition(double *,int );
 	double * dirder(double *,double * ,double *);
 	void givapp(double *,double *,double *,int);
+
+	void debug(char* str,int n,double *);
 };
 #endif

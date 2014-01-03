@@ -48,6 +48,8 @@ Settings::Settings()
 	violations=0;
 	sprintf(exportType,"txt");
 	dyn_lf=2;
+	dyn_tStep_min=0.002;
+	dyn_tStep_max=0.1;
 }
 Settings::~Settings()
 {

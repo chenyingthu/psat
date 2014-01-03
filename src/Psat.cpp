@@ -2028,11 +2028,11 @@ void Psat::dyn_f_iniSimu(int iFlag){
     printf("%lf\n",simu.t_switch[i]);
   }
   record.nhis=0;
+  record.t=new double [(int)(simu.t_end/simu.tStep*2)];
+  record.x=new double [(dae.n+2*bus.n)*(int)(simu.t_end/simu.tStep*2)];
+  record.f=new double [(dae.n)*(int)(simu.t_end/simu.tStep*2)];
 }
  void Psat::dyn_f_store(int iFlag){
-   record.t=new double [(int)(simu.t_end/simu.tStep*2)];
-   record.x=new double [(dae.n+2*bus.n)*(int)(simu.t_end/simu.tStep*2)];
-   record.f=new double [(dae.n)*(int)(simu.t_end/simu.tStep*2)];
    for ( int iStep = 0; iStep < simu.nSteps; iStep += 1 ) {
      int iStart=(iStep)*(dae.n+2*bus.n);
      int iEnd=(iStep+1)*(dae.n+2*bus.n);
@@ -2049,10 +2049,9 @@ void Psat::dyn_f_iniSimu(int iFlag){
      }
      record.nhis++;
    }
-   for(int i=0;i<dae.n*record.nhis;++i)
-     printf("%lf\n",record.f[i]);
  }
 void Psat::dyn_f_integration(int iFlag){
+  int n=dae.n+2*bus.n;
   if (simu.multiSteps==1){
     simu.nSteps=settings.dyn_MulStep_nSteps;
     simu.multiSteps=2;
@@ -2060,7 +2059,8 @@ void Psat::dyn_f_integration(int iFlag){
   if(settings.dyn_isPredict==1)
     dyn_f_prediction(iFlag);
   if(iFlag==1)
-    dae.x=solver_jfng(dae.x);
+    dae.X=solver_jfng(dae.X);
+  debug((char*)"dae.X",n,dae.X);
 }
 void Psat::dyn_f_prediction(int iFlag){//to do multsteps,...
  int ord=settings.dyn_predict_model;
@@ -2104,24 +2104,27 @@ void Psat::dyn_f_prediction(int iFlag){//to do multsteps,...
 }
 double * Psat::solver_jfng(double *x){
   double *sol=new double [dae.n+2*bus.n];
-  // double gamma=0.9;
+ double gamma=0.9;
   // double ierr=0;
   int maxit=solver.jfng.newton.maxit;
   int n=dae.n+2*bus.n;
   double rat;
   double stop_tol=solver.jfng.newton.tol;
   solver.jfng.gmres.tol=solver.jfng.gmres.tol_fixed;
-  double *f0=new double [dae.n];
+  double *f0=new double [n];
+  double *fold=new double [n];
   int itc=0;
   f0=dyn_f_dae(dae.X,simu.t_next);
   double fnrm=norm(dae.n,f0)/sqrt(n); 
-  for ( int i = 0; i < dae.n; i += 1 ) {
+  for ( int i = 0; i < n; i += 1 ) {
     printf("f0\t%lf\n",f0[i]);
   }
   printf("fnrm\t%lf\n",fnrm);
   double fnrmo=1;
   simu.neval=0;
   while(fnrm > stop_tol&& itc < maxit){
+    printf("testjfng\n");
+    getchar();
     rat=fnrm/fnrmo;
     fnrmo=fnrm;
     itc=itc+1;
@@ -2129,17 +2132,44 @@ double * Psat::solver_jfng(double *x){
       updatePreconditioner(1);
     if(solver.jfng.newton.method==1)
       pre_gmres(f0,x,step);
+    for ( int i = 0; i < n; i += 1 ) {
+      fold[i]=f0[i];
+    }
+    for ( int i = 0; i < n; i += 1 ) {
+      x[i]+=step[i];
+    }
+    f0=dyn_f_dae(dae.X,simu.t_next);
+    fnrm=norm(dae.n,f0)/sqrt(n); 
+    rat=fnrm/fnrmo;
+    if(solver.jfng.precond.outer==1 && solver.jfng.precond.outerStop == 2 && solver.update.num < solver.update.maxnum){
+      int i=solver.update.num;
+      for(int j=0;j<n;++j){
+	solver.deltx[i+j*solver.update.maxnum]=step[j];
+	solver.delty[i+j*solver.update.maxnum]=f0[j]-fold[i];
+      }
+    }
+    if(solver.jfng.gmres.tol>0){
+      double etaold=solver.jfng.gmres.tol;
+      double etanew=gamma*rat*rat;
+      if(gamma*etaold*etaold>0.1)
+	etanew=max(etanew,gamma*etaold*etaold);
+      solver.jfng.gmres.tol=min(etanew,solver.jfng.gmres.tol);
+      solver.jfng.gmres.tol=max(solver.jfng.gmres.tol,0.5*stop_tol/fnrm);
+    }
   }
+  for ( int i = 0; i < n; i += 1 ) {
+    sol[i]=x[i];
+  }
+  delete []fold;
   return sol;
 }
 double * Psat::dyn_f_dae(double *x_in,double t0)//todo multiSteps
 {
-  printf("test\n");
   int pos=-1;
   int n=dae.n+2*bus.n;
   double *x_rec=new double [n];
   double *f_rec=new double [dae.n];
-  double *f_out=new double [dae.n];
+  double *f_out=new double [n];
   DAEXtox();
   if(settings.dyn_lf!=1){
     for ( int i = 0; i < record.nhis; i += 1 ) {
@@ -2151,7 +2181,6 @@ double * Psat::dyn_f_dae(double *x_in,double t0)//todo multiSteps
       printf("no such time moment in his record");
       return NULL;
     }
-    printf("test\n");
     for ( int i = 0; i < n; i += 1 ) {
       x_rec[i]=record.x[i+pos*n];
       if(i<dae.n){
@@ -2160,7 +2189,7 @@ double * Psat::dyn_f_dae(double *x_in,double t0)//todo multiSteps
       }
     }
   }
-  printf("test\n");
+  getchar();
   fm_lf_1();
   fm_mn_1();
   fm_syn(1);
@@ -2177,6 +2206,9 @@ double * Psat::dyn_f_dae(double *x_in,double t0)//todo multiSteps
     for ( int i = 0; i < dae.n; i += 1 ) {
       f_out[i]=dae.x[i]-x_rec[i]-simu.tStep*0.5*(dae.f[i]+f_rec[i]);
     }
+  }
+  for ( int i = dae.n; i < n; i += 1 ) {
+    f_out[i]=dae.g[i-dae.n];
   }
   return f_out;
 }
@@ -2215,7 +2247,7 @@ void Psat::pre_gmres(double *f0,double *xc,double *x){
   int kmax=solver.jfng.gmres.maxit;
   int reorth=solver.jfng.gmres.reorth;
   int n=(dae.n+2*bus.n)*simu.nSteps;
-  double *r=new double [dae.n];
+  double *r=new double [n];
   double rho;
   double *g=new double [kmax+1];
   double *v_temp=new double [n];
@@ -2227,10 +2259,10 @@ void Psat::pre_gmres(double *f0,double *xc,double *x){
   for (int i = 0;i < n;++i){
     x[i]=0;
   }
-  for ( int i = 0; i < dae.n; i += 1 ) {
+  for ( int i = 0; i < n; i += 1 ) {
     r[i]=-f0[i];
   }
-  rho=norm(dae.n,r);
+  rho=norm(n,r);
   for ( int i = 0; i < kmax+1; i += 1 ) {
     g[i]=rho;
   }
@@ -2241,7 +2273,6 @@ void Psat::pre_gmres(double *f0,double *xc,double *x){
   for ( int i = 0; i < n; i += 1 ) {
     solver.jfng.gmres.v[i*kmax]=r[i]/rho;
   }
-  double beta=rho;
   int k=0;
   while((rho > errtol)&&(k<kmax)){
     k++;
@@ -2253,7 +2284,7 @@ void Psat::pre_gmres(double *f0,double *xc,double *x){
       precondition(solver.jfng.gmres.z,kk);
 
     for ( int i = 0; i < n; i += 1 ) {
-      z_temp[i]=solver.jfng.gmres.z[i+kk*solver.update.maxnum];
+      z_temp[i]=solver.jfng.gmres.z[kk+i*solver.update.maxnum];
     }
     v_temp=dirder(xc,z_temp,f0);
     if(solver.jfng.precond.inner==1 && solver.jfng.precond.innerStop == 2 && solver.update.num < solver.update.maxnum){
@@ -2306,11 +2337,33 @@ void Psat::pre_gmres(double *f0,double *xc,double *x){
       g[kk+1]=w2;
     }
     rho=abs(g[kk+1]);
+    for (int i=0;i<n;++i)
+      solver.jfng.gmres.v[kk+1+i*kmax]=v_temp[i];
   }
+  double *h_temp=new double [k*k];
+  double *z_temp2=new double [n*k];
+  int *ipiv=new int[k];
+  for ( int i = 0; i < k; i += 1 ) {
+    for ( int j = 0; j < k; j += 1 ) {
+      h_temp[j+i*k]=solver.jfng.gmres.h[j+i*kmax];
+    }
+  }
+  for ( int i = 0; i < n; i += 1 ) {
+    for ( int j = 0; j < k; j += 1 ) {
+      z_temp2[j+i*k]=solver.jfng.gmres.h[j+i*kmax];
+    }
+  }
+  LAPACKE_dgesv(LAPACK_ROW_MAJOR,k,1,h_temp,k,ipiv,g,k);
+  cblas_zgemv(CblasRowMajor,CblasNoTrans,n,k,&alpha,z_temp2,k,g,1,&beta,x,1);
+  inner_it_count=k; 
+  simu.neval+=k;
   delete []r;
   delete []g;
   delete []v_temp;
   delete []z_temp;
+  delete []h_temp;
+  delete []ipiv;
+  delete []z_temp2;
 } 
 void Psat::givapp(double *c,double *s,double *vin,int k){
   for ( int i = 0; i < k; i += 1 ) {
@@ -2363,4 +2416,52 @@ double *Psat::dirder(double *x,double *w,double *f0){
     z[i]=(f1[i]-f0[i])/epsnew;
   }
   return z;
+}
+void Psat::debug(char* str,int n,double *a)
+{
+  printf("=========%s===========\n",str);
+  for(int i = 0;i<n;++i)
+    printf("%s\t%lf\n",str,a[i]);
+  getchar();
+}
+void Psat::dyn_f_increaseTimeSteps(int iFlag){
+  switch(simu.converged){
+    case 1:
+      if(simu.newton_iteration>=15)
+	simu.tStep=max(simu.tStep*0.9,settings.dyn_tStep_min);
+      if(simu.newton_iteration<=10)
+	simu.tStep=min(simu.tStep*1.3,settings.dyn_tStep_max);
+      if(settings.fixt)
+	simu.tStep=settings.dyn_tStep;
+      break;
+    case 0:
+      simu.tStep=settings.dyn_tStep*0.5;
+      if(simu.tStep<settings.dyn_tStep_min)
+	simu.tStep=settings.dyn_tStep_min;
+      break;
+  }
+  simu.t_cur=simu.t_next;
+  simu.t_next=simu.t_cur+simu.nSteps*simu.tStep;
+  for ( int i = 0; i < 4*fault.n; i += 1 ) {
+    if(simu.t_next<simu.t_switch[i]&&simu.t_switch[i]<simu.t_next){
+      simu.t_next=simu.t_switch[i];
+      simu.tStep=simu.t_next-simu.t_cur;
+      break;
+    }
+  }
+  if(simu.t_next>fault.tFaultStart+simu.tStep){
+    solver.jfng.precond.inner=1;
+    solver.jfng.precond.outer=1;
+    if(simu.neval>0&&simu.neval<8){
+      solver.jfng.precond.innerStop=1;
+      solver.jfng.precond.outerStop=1;
+      if(settings.dyn_isMulStep==1)
+	if(simu.multiSteps==0)
+	  simu.multiSteps=1;
+    }
+    else if (simu.neval>7){
+      solver.jfng.precond.innerStop=2;
+      solver.jfng.precond.outerStop=2;
+    }
+  }
 }

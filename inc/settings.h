@@ -53,6 +53,8 @@ public:
 	int dyn_MulStep_nSteps;
 	int dyn_lf;
 	double dyn_tStep;
+	double dyn_tStep_min;
+	double dyn_tStep_max;
 	char exportType[20];
 	Settings();
 	~Settings();

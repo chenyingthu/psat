@@ -61,7 +61,6 @@ int main()
 }
 int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps,double tStep){
   Psat psat;
-  printf("test\t%lf\n",ceil(0.75));
   psat.simu.tStep=tStep;
   psat.dyn_f_iniNet(1);
   psat.dyn_f_iniSyn(1);
@@ -75,7 +74,9 @@ int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps
   psat.settings.dyn_MulStep_nSteps=nSteps;
   psat.settings.dyn_tStep=tStep;
   while(psat.simu.t_cur<psat.simu.t_end){
+    printf("beging integration at t=%lf s\n",psat.simu.t_next);
     psat.dyn_f_integration(iFlag);
+    psat.dyn_f_increaseTimeSteps(1);
     getchar();
   }
   return 0;

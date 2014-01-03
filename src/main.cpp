@@ -74,7 +74,10 @@ int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps
   psat.settings.dyn_MulStep_nSteps=nSteps;
   psat.settings.dyn_tStep=tStep;
   while(psat.simu.t_cur<psat.simu.t_end){
+    printf("beging integration at t=%lf s\n",psat.simu.t_next);
     psat.dyn_f_integration(iFlag);
+    psat.dyn_f_increaseTimeSteps(1);
+    psat.dyn_f_store(1);
     getchar();
   }
   return 0;
