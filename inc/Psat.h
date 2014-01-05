@@ -117,6 +117,7 @@ public:
 	void dyn_f_store(int);
 	void formDAEX();
 	void DAEXtox();
+	void DAEXtox_2(double *);
 	void dyn_f_integration(int iFlag);
 	void dyn_f_increaseTimeSteps(int);
 	void dyn_f_dealFaults(int iFlag);

@@ -199,6 +199,7 @@ dae	inc/Psat.h	/^	DAE dae;$/;"	m	class:Psat
 daeDelete	src/DAE.cpp	/^void DAE::daeDelete()$/;"	f	class:DAE
 dat	inc/Fault.h	/^	double *dat;$/;"	m	class:Fault
 debug	inc/Solver.h	/^  int debug;$/;"	m	class:Newton
+debug	src/Psat.cpp	/^void Psat::debug(char* str,int n,double *a)$/;"	f	class:Psat
 deleteVarout	src/Varout.cpp	/^void Varout::deleteVarout(){$/;"	f	class:Varout
 delta	inc/Fault.h	/^	double delta;$/;"	m	class:Fault
 delta	inc/Syn.h	/^	double *delta;$/;"	m	class:Syn
@@ -213,6 +214,7 @@ dirder	src/Psat.cpp	/^double *Psat::dirder(double *x,double *w,double *f0){$/;"	
 distrsw	inc/settings.h	/^	int distrsw;$/;"	m	class:Settings
 dyn_MulStep_nSteps	inc/settings.h	/^	int dyn_MulStep_nSteps;$/;"	m	class:Settings
 dyn_f_dae	src/Psat.cpp	/^double * Psat::dyn_f_dae(double *x_in,double t0)\/\/todo multiSteps$/;"	f	class:Psat
+dyn_f_increaseTimeSteps	src/Psat.cpp	/^void Psat::dyn_f_increaseTimeSteps(int iFlag){$/;"	f	class:Psat
 dyn_f_iniDae	src/Psat.cpp	/^void Psat::dyn_f_iniDae(int iFlag){$/;"	f	class:Psat
 dyn_f_iniNet	src/Psat.cpp	/^void Psat::dyn_f_iniNet(int iFlag){$/;"	f	class:Psat
 dyn_f_iniSimu	src/Psat.cpp	/^void Psat::dyn_f_iniSimu(int iFlag){$/;"	f	class:Psat
@@ -227,6 +229,8 @@ dyn_lf	inc/settings.h	/^	int dyn_lf;$/;"	m	class:Settings
 dyn_main	src/main.cpp	/^int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps,double tStep){$/;"	f
 dyn_predict_model	inc/settings.h	/^	int dyn_predict_model;$/;"	m	class:Settings
 dyn_tStep	inc/settings.h	/^	double dyn_tStep;$/;"	m	class:Settings
+dyn_tStep_max	inc/settings.h	/^	double dyn_tStep_max;$/;"	m	class:Settings
+dyn_tStep_min	inc/settings.h	/^	double dyn_tStep_min;$/;"	m	class:Settings
 dynmit	inc/settings.h	/^	int dynmit;$/;"	m	class:Settings
 dyntol	inc/settings.h	/^	double dyntol;$/;"	m	class:Settings
 e1d	inc/Syn.h	/^	double *e1d;$/;"	m	class:Syn
@@ -372,12 +376,14 @@ lineDelete	src/Line.cpp	/^void Line::lineDelete()$/;"	f	class:Line
 local	inc/settings.h	/^	int local;$/;"	m	class:Settings
 locksnap	inc/settings.h	/^	int locksnap;$/;"	m	class:Settings
 main	src/main.cpp	/^int main()$/;"	f
+max	inc/Psat.h	3;"	d
 maxit	inc/Solver.h	/^  int maxit;$/;"	m	class:Gmres
 maxit	inc/Solver.h	/^  int maxit;$/;"	m	class:Newton
 maxnum	inc/Solver.h	/^  int maxnum;$/;"	m	class:Update
 mesg	inc/Clpsat.h	/^	int mesg;$/;"	m	class:Clpsat
 method	inc/Solver.h	/^  int method;$/;"	m	class:Newton
 method	inc/settings.h	/^	int method;$/;"	m	class:Settings
+min	inc/Psat.h	4;"	d
 mn	inc/Psat.h	/^	Mn mn;$/;"	m	class:Psat
 multiSteps	inc/Simu.h	/^  int multiSteps;$/;"	m	class:Simu
 mv	inc/settings.h	/^	int mv;$/;"	m	class:Settings

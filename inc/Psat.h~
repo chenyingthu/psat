@@ -132,6 +132,6 @@ public:
 	double * dirder(double *,double * ,double *);
 	void givapp(double *,double *,double *,int);
 
-	void debug(string str,int n,double *);
+	void debug(char* str,int n,double *);
 };
 #endif
