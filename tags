@@ -23,6 +23,7 @@ Complex	inc/Psat.h	/^typedef  complex<double> Complex;$/;"	t
 DAE	inc/DAE.h	/^class DAE{$/;"	c
 DAE	src/DAE.cpp	/^DAE::DAE()$/;"	f	class:DAE
 DAEXtox	src/Psat.cpp	/^ void Psat::DAEXtox(){$/;"	f	class:Psat
+DAEXtox_2	src/Psat.cpp	/^ void Psat::DAEXtox_2(double *x_in){$/;"	f	class:Psat
 DEP_DEBUG	makefile	/^DEP_DEBUG = $/;"	m
 Fault	inc/Fault.h	/^class Fault$/;"	c
 Fault	src/Fault.cpp	/^Fault::Fault()$/;"	f	class:Fault
@@ -210,10 +211,11 @@ deltat	inc/settings.h	/^	double deltat;$/;"	m	class:Settings
 deltx	inc/Solver.h	/^  double *deltx;$/;"	m	class:Solver
 delty	inc/Solver.h	/^  double *delty;$/;"	m	class:Solver
 dest	inc/Solver.h	/^  int dest;$/;"	m	class:Update
-dirder	src/Psat.cpp	/^double *Psat::dirder(double *x,double *w,double *f0){$/;"	f	class:Psat
+dirder	src/Psat.cpp	/^void Psat::dirder(double *x,double *w,double *f0,double *z){$/;"	f	class:Psat
 distrsw	inc/settings.h	/^	int distrsw;$/;"	m	class:Settings
 dyn_MulStep_nSteps	inc/settings.h	/^	int dyn_MulStep_nSteps;$/;"	m	class:Settings
 dyn_f_dae	src/Psat.cpp	/^double * Psat::dyn_f_dae(double *x_in,double t0)\/\/todo multiSteps$/;"	f	class:Psat
+dyn_f_dealFaults	src/Psat.cpp	/^void Psat::dyn_f_dealFaults(int iFalg){$/;"	f	class:Psat
 dyn_f_increaseTimeSteps	src/Psat.cpp	/^void Psat::dyn_f_increaseTimeSteps(int iFlag){$/;"	f	class:Psat
 dyn_f_iniDae	src/Psat.cpp	/^void Psat::dyn_f_iniDae(int iFlag){$/;"	f	class:Psat
 dyn_f_iniNet	src/Psat.cpp	/^void Psat::dyn_f_iniNet(int iFlag){$/;"	f	class:Psat

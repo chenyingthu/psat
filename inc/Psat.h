@@ -130,9 +130,10 @@ public:
 	double errstep;
 	int inner_it_count;
 	void precondition(double *,int );
-	double * dirder(double *,double * ,double *);
+	void dirder(double *,double * ,double *,double *);
 	void givapp(double *,double *,double *,int);
 
 	void debug(char* str,int n,double *);
+	double *V_bak;
 };
 #endif

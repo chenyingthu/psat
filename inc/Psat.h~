@@ -117,6 +117,7 @@ public:
 	void dyn_f_store(int);
 	void formDAEX();
 	void DAEXtox();
+	void DAEXtox_2(double *);
 	void dyn_f_integration(int iFlag);
 	void dyn_f_increaseTimeSteps(int);
 	void dyn_f_dealFaults(int iFlag);
@@ -129,7 +130,7 @@ public:
 	double errstep;
 	int inner_it_count;
 	void precondition(double *,int );
-	double * dirder(double *,double * ,double *);
+	void dirder(double *,double * ,double *,double *);
 	void givapp(double *,double *,double *,int);
 
 	void debug(char* str,int n,double *);
