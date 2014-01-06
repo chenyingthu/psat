@@ -27,8 +27,8 @@
 #include <complex>
 //#include <cstdlib>
 #include <iostream>
-#include <lapacke.h>
-#include <cblas.h>
+// #include <lapacke.h>
+// #include <cblas.h>
 typedef  complex<double> Complex;
 using namespace std;
 class Psat{
@@ -134,5 +134,6 @@ public:
 	void givapp(double *,double *,double *,int);
 
 	void debug(char* str,int n,double *);
+	double *V_bak;
 };
 #endif

@@ -370,7 +370,8 @@ void Psat::fm_dynlf(){}
    }
 
    ipiv=new int[dae.n+2*bus.n-2*boundarynode.n];
-   LAPACKE_dgesv(LAPACK_COL_MAJOR,dae.n+2*bus.n-2*boundarynode.n,1,tmp_nosw,dae.n+2*bus.n-2*boundarynode.n,ipiv,deltf_nosw,dae.n+2*bus.n-2*boundarynode.n);
+   // LAPACKE_dgesv(LAPACK_COL_MAJOR,dae.n+2*bus.n-2*boundarynode.n,1,tmp_nosw,dae.n+2*bus.n-2*boundarynode.n,ipiv,deltf_nosw,dae.n+2*bus.n-2*boundarynode.n);
+   MyDgesv(0,dae.n+2*bus.n-2*boundarynode.n,1,tmp_nosw,dae.n+2*bus.n-2*boundarynode.n,ipiv,deltf_nosw,dae.n+2*bus.n-2*boundarynode.n);
 
    for ( int i = 0; i < dae.n+2*bus.n-2*boundarynode.n; i += 1 ) {
      deltf_nosw[i]=-deltf_nosw[i];
@@ -384,12 +385,6 @@ void Psat::fm_dynlf(){}
     dae.a[h]+=deltf_nosw[dae.n+i];
     dae.V[h]+=deltf_nosw[dae.n+i+bus.n-boundarynode.n];
   }
-
-
-
-
-
-
   iteration++;
   err_max=0;
   for(int i=0;i<dae.n+2*bus.n-2*boundarynode.n;++i)
@@ -488,16 +483,16 @@ if(dae.n>0){
  }
 }
 fm_syn(4);
-for ( int i = 0; i < dae.n; i += 1 ) {
- printf("%lf\n",dae.x[i]);
-}
-for ( int i = 0; i < bus.n; i += 1 ) {
- printf("%lf\n",dae.a[i]);
-}
-for ( int i = 0; i < bus.n; i += 1 ) {
- printf("%lf\n",dae.V[i]);
-}
-getchar();
+// for ( int i = 0; i < dae.n; i += 1 ) {
+//  printf("%lf\n",dae.x[i]);
+// }
+// for ( int i = 0; i < bus.n; i += 1 ) {
+//  printf("%lf\n",dae.a[i]);
+// }
+// for ( int i = 0; i < bus.n; i += 1 ) {
+//  printf("%lf\n",dae.V[i]);
+// }
+// getchar();
 //   FILE	*fp;										/* output-file pointer */
 //
 //   fp	= fopen( "tmp", "w" );
@@ -588,7 +583,8 @@ delete []indexG;
     Vc[i]=dae.V[i]*exp(jay*dae.a[i]);
 //    cout<<Vc[i]<<endl;
   }
-  cblas_zgemv(CblasColMajor,CblasTrans,bus.n,bus.n,&alpha,line.Y,bus.n,Vc,1,&beta,S,1);
+  // cblas_zgemv(CblasColMajor,CblasTrans,bus.n,bus.n,&alpha,line.Y,bus.n,Vc,1,&beta,S,1);
+  MyZgemv(1,bus.n,bus.n,alpha,line.Y,bus.n,Vc,1,beta,S,1);
   for ( int i = 0; i < bus.n; i += 1 ) {
     S[i]=Vc[i]*conj(S[i]);
     dae.gp[i]=S[i].real();
@@ -676,17 +672,21 @@ void Psat::fm_lf_2(){
     U[i]=exp(jay*dae.a[i]);
     V[i]=dae.V[i]*U[i];
   }
-  cblas_zgemv(CblasColMajor,CblasTrans,bus.n,bus.n,&alpha,line.Y,bus.n,V,1,&beta,I,1);
+  // cblas_zgemv(CblasColMajor,CblasTrans,bus.n,bus.n,&alpha,line.Y,bus.n,V,1,&beta,I,1);
+  MyZgemv(1,bus.n,bus.n,alpha,line.Y,bus.n,V,1,beta,I,1);
   for ( int i = 0; i < bus.n; i += 1 ) {
     Vc[i+i*bus.n]=V[i];
     Vn[i+i*bus.n]=U[i];
     Ic[i+i*bus.n]=I[i];
   }
-  cblas_zgemm(CblasColMajor,CblasNoTrans, CblasNoTrans, bus.n, bus.n, bus.n, &alpha,  line.Y, bus.n, Vn,bus.n, &beta, temp, bus.n);
+  // cblas_zgemm(CblasColMajor,CblasNoTrans, CblasNoTrans, bus.n, bus.n, bus.n, &alpha,  line.Y, bus.n, Vn,bus.n, &beta, temp, bus.n);
+  MyZgemm(0, bus.n, bus.n, bus.n, alpha,  line.Y, bus.n, Vn,bus.n, beta, temp, bus.n);
   tempConj=conj_(bus.n*bus.n,temp);
-  cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,bus.n,bus.n,bus.n,&alpha,Vc,bus.n,tempConj,bus.n,&beta,dS,bus.n);
+  // cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,bus.n,bus.n,bus.n,&alpha,Vc,bus.n,tempConj,bus.n,&beta,dS,bus.n);
+  MyZgemm(0,bus.n,bus.n,bus.n,alpha,Vc,bus.n,tempConj,bus.n,beta,dS,bus.n);
   IcConj=conj_(bus.n*bus.n,Ic);
-  cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,bus.n,bus.n,bus.n,&alpha,IcConj,bus.n,Vn,bus.n,&beta,temp,bus.n);
+  // cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,bus.n,bus.n,bus.n,&alpha,IcConj,bus.n,Vn,bus.n,&beta,temp,bus.n);
+  MyZgemm(0,bus.n,bus.n,bus.n,alpha,IcConj,bus.n,Vn,bus.n,beta,temp,bus.n);
   for ( int i = 0; i < bus.n*bus.n; i += 1 ) {
    dS[i]=dS[i]+temp[i];
    dae.J12[i]=dS[i].real();
@@ -695,12 +695,14 @@ void Psat::fm_lf_2(){
     /*-----------------------------------------------------------------------------
      *  with cblasColMajor ,output has been trans,be Carefull!!!
      *-----------------------------------------------------------------------------*/
-     cblas_zgemm(CblasColMajor,CblasNoTrans, CblasNoTrans, bus.n, bus.n, bus.n, &alpha,  line.Y, bus.n, Vc,bus.n, &beta, temp, bus.n);
+     // cblas_zgemm(CblasColMajor,CblasNoTrans, CblasNoTrans, bus.n, bus.n, bus.n, &alpha,  line.Y, bus.n, Vc,bus.n, &beta, temp, bus.n);
+     MyZgemm(0, bus.n, bus.n, bus.n, alpha,  line.Y, bus.n, Vc,bus.n, beta, temp, bus.n);
 
      for ( int i = 0; i < bus.n*bus.n; i += 1 ) {
       temp[i]=conj(Ic[i]-temp[i]);
     }
-    cblas_zgemm(CblasColMajor,CblasNoTrans, CblasNoTrans, bus.n, bus.n, bus.n, &jay,  Vc, bus.n, temp,bus.n, &beta, dS, bus.n);
+    // cblas_zgemm(CblasColMajor,CblasNoTrans, CblasNoTrans, bus.n, bus.n, bus.n, &jay,  Vc, bus.n, temp,bus.n, &beta, dS, bus.n);
+    MyZgemm(0, bus.n, bus.n, bus.n, jay,  Vc, bus.n, temp,bus.n, beta, dS, bus.n);
 //    for ( int i = 0; i < bus.n; i += 1 ) {
 //      for ( int j = 0; j < bus.n; j += 1 ) {
 //	cout<<dS[i+j*bus.n];
@@ -1420,15 +1422,18 @@ void Psat::fm_tstep_1(int convergency,int iteration,double t){
   ipiv=new int[2*bus.n];
   double alpha1=1;
   double beta1=0;
-  LAPACKE_dgesv(LAPACK_COL_MAJOR,2*bus.n,dae.n,tempJlfv,2*bus.n,ipiv,tempGx,2*bus.n);
-  cblas_dgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,dae.n,dae.n,2*bus.n,alpha1,tempFy,dae.n,tempGx,2*bus.n,beta1,As,dae.n);
+  // LAPACKE_dgesv(LAPACK_COL_MAJOR,2*bus.n,dae.n,tempJlfv,2*bus.n,ipiv,tempGx,2*bus.n);
+  MyDgesv(0,2*bus.n,dae.n,tempJlfv,2*bus.n,ipiv,tempGx,2*bus.n);
+  // cblas_dgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,dae.n,dae.n,2*bus.n,alpha1,tempFy,dae.n,tempGx,2*bus.n,beta1,As,dae.n);
+  MyDgemm(0,dae.n,dae.n,2*bus.n,alpha1,tempFy,dae.n,tempGx,2*bus.n,beta1,As,dae.n);
 
   for ( int i = 0; i < dae.n; i += 1 ) {
     for ( int j = 0; j < dae.n; j += 1 ) {
       As[j+i*dae.n]=dae.Fx[i+j*dae.n]-As[j+i*dae.n];
     }
   }
-  LAPACKE_dgeev(LAPACK_COL_MAJOR,'N','N',dae.n,As,dae.n,wr,wi,vl,dae.n,vr,dae.n);
+  // LAPACKE_dgeev(LAPACK_COL_MAJOR,'N','N',dae.n,As,dae.n,wr,wi,vl,dae.n,vr,dae.n);
+  MyDgeev(0,dae.n,As,dae.n,wr,wi,vl,dae.n,vr,dae.n);
   double freq=0;
   int freq_max=0;
   for(int i=0;i<dae.n;++i){
@@ -1727,7 +1732,8 @@ for ( int i = 0; i < dae.n+2*bus.n-2*boundarynode.n; i += 1 ) {
    tempAc[j+i*(dae.n+2*bus.n-2*boundarynode.n)]=dae.Ac[col+row*(dae.n+2*bus.n)];
  }
 }
-LAPACKE_dgesv(LAPACK_COL_MAJOR,AllN,1,tempAc,AllN,ipiv,inc,AllN);
+// LAPACKE_dgesv(LAPACK_COL_MAJOR,AllN,1,tempAc,AllN,ipiv,inc,AllN);
+MyDgesv(0,AllN,1,tempAc,AllN,ipiv,inc,AllN);
 err_max=0;
 for ( int i = 0; i <AllN; i += 1 ) {
  inc[i]=-inc[i];
@@ -1877,7 +1883,8 @@ iterazione++;
      int k=index[i];
      inc[i]=dae.g[k];
    }
-   LAPACKE_dgesv(LAPACK_COL_MAJOR,2*bus.n-2*boundarynode.n,1,tempJlfv,2*bus.n-2*boundarynode.n,ipiv,inc,2*bus.n-2*boundarynode.n);
+   // LAPACKE_dgesv(LAPACK_COL_MAJOR,2*bus.n-2*boundarynode.n,1,tempJlfv,2*bus.n-2*boundarynode.n,ipiv,inc,2*bus.n-2*boundarynode.n);
+   MyDgesv(0,2*bus.n-2*boundarynode.n,1,tempJlfv,2*bus.n-2*boundarynode.n,ipiv,inc,2*bus.n-2*boundarynode.n);
    for (int i=0;i < 2*(bus.n-boundarynode.n); i +=1 ){
      int k=index[i];
      y2[k]+=-inc[i];
@@ -2072,7 +2079,7 @@ void Psat::dyn_f_integration(int iFlag){
     dyn_f_prediction(iFlag);
   if(iFlag==1){
     dae.X=solver_jfng(dae.X);
-    // debug((char*)"daeX",dae.n+2*bus.n,dae.X);
+    debug((char*)"daeX",dae.n+2*bus.n,dae.X);
   }
 }
 void Psat::dyn_f_prediction(int iFlag){//to do multsteps,...
@@ -2402,9 +2409,11 @@ void Psat::pre_gmres(double *f0,double *xc,double *x){
 //  fclose(fp);
   double alpha=1;
   double beta=0;
-  LAPACKE_dgesv(LAPACK_COL_MAJOR,k,1,h_temp,k,ipiv,g,k);
+  // LAPACKE_dgesv(LAPACK_COL_MAJOR,k,1,h_temp,k,ipiv,g,k);
+  MyDgesv(0,k,1,h_temp,k,ipiv,g,k);
   // debug("g",k,g);
-  cblas_dgemv(CblasColMajor,CblasNoTrans,n,k,alpha,z_temp2,n,g,1,beta,x,1);
+  // cblas_dgemv(CblasColMajor,CblasNoTrans,n,k,alpha,z_temp2,n,g,1,beta,x,1);
+  MyDgemv(0,n,k,alpha,z_temp2,n,g,1,beta,x,1);
   // debug("x",n,x);
   inner_it_count=k; 
   simu.neval+=k;

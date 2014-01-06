@@ -105,3 +105,47 @@ double norm(int n,double *x){
   }
   return sqrt(temp);
 }
+void MyDgemv(int Trans,int A_row,int A_col,double alpha,double *A,int lda,double *b,int inc_b,double beta,double *c,int inc_c){
+  if(Trans==0)//No Trans
+    cblas_dgemv(CblasColMajor,CblasNoTrans,A_row,A_col,alpha,A,lda,b,inc_b,beta,c,inc_c);
+  else if (Trans==1) //Trans
+    cblas_dgemv(CblasColMajor,CblasTrans,A_row,A_col,alpha,A,lda,b,inc_b,beta,c,inc_c);
+  else
+    printf("Wrong in MyDgemv\n");
+}
+void MyDgesv(int Major,int A_row,int nhis,double *A,int lda,int *ipiv,double *b,int ldb){
+  if(Major==0)//Col Major
+    LAPACKE_dgesv(LAPACK_COL_MAJOR,A_row,nhis,A,lda,ipiv,b,ldb);
+  else if(Major==1)//Row Major
+    LAPACKE_dgesv(LAPACK_ROW_MAJOR,A_row,nhis,A,lda,ipiv,b,ldb);
+  else
+    printf("Wrong in MyDgesv\n");
+}
+void MyDgemm(int Major,int m,int k,int n,double alpha,double *A,int lda,double *B,int ldb,double beta,double *C,int ldc){
+  if(Major==0)//Col Major
+    cblas_dgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,m,k,n,alpha,A,lda,B,ldb,beta,C,ldc);
+  else if(Major==1)
+    cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,m,k,n,alpha,A,lda,B,ldb,beta,C,ldc);
+}
+void MyDgeev(int Major,int A_row,double *A,int lda,double *wr,double *wi,double *vl,int n1,double *vr,int n2){
+  if(Major==0)//Col Major
+    LAPACKE_dgeev(LAPACK_COL_MAJOR,'N','N',A_row,A,lda,wr,wi,vl,n1,vr,n2);
+  else if(Major==1)//Row Major
+    LAPACKE_dgeev(LAPACK_ROW_MAJOR,'N','N',A_row,A,lda,wr,wi,vl,n1,vr,n2);
+  else
+    printf("Worng in MyZgeev\n");
+}
+void MyZgemm(int Major,int m,int k,int n,Complex alpha,Complex *A,int lda,Complex *B,int ldb,Complex beta,Complex *C,int ldc){
+  if(Major==0)//Col Major
+    cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,m,k,n,&alpha,A,lda,B,ldb,&beta,C,ldc);
+  else if(Major==1)
+    cblas_zgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,m,k,n,&alpha,A,lda,B,ldb,&beta,C,ldc);
+}
+void MyZgemv(int Trans,int A_row,int A_col,Complex alpha,Complex *A,int lda,Complex *b,int inc_b,Complex beta,Complex *c,int inc_c){
+  if(Trans==0)//No Trans
+    cblas_zgemv(CblasColMajor,CblasNoTrans,A_row,A_col,&alpha,A,lda,b,inc_b,&beta,c,inc_c);
+  else if (Trans==1) //Trans
+    cblas_zgemv(CblasColMajor,CblasTrans,A_row,A_col,&alpha,A,lda,b,inc_b,&beta,c,inc_c);
+  else
+    printf("Wrong in MyZgemv\n");
+}
