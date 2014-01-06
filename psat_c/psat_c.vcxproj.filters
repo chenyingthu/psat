@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{4c598de2-10ac-44b8-a584-1162147bd299}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lib\myLib.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BoundaryNode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bus.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Clpsat.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DAE.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Fault.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Line.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mn.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PQ.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Psat.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PV.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Settings.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shunt.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Solver.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SW.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Syn.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Varout.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lib\myLib.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\BoundaryNode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Bus.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Clpsat.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\DAE.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Fault.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Line.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Mn.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\PQ.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Psat.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\PV.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Record.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\settings.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Shunt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Simu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Solver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\SW.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Syn.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Varout.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

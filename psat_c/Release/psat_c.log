@@ -1,0 +1,74 @@
+﻿生成启动时间为 2014/1/7 2:35:04。
+     1>项目“D:\home\yzt\bishe\psat\psat_c\psat_c.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“Release\psat_c.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt lib\myLib.cpp src\Line.cpp src\Psat.cpp src\Syn.cpp src\main.cpp
+         myLib.cpp
+         Line.cpp
+         Psat.cpp
+     1>src\Psat.cpp(2): warning C4005: “pi”: 宏重定义
+                 d:\home\yzt\bishe\psat\psat_c\inc\Syn.h(11) : 参见“pi”的前一个定义
+     1>src\Psat.cpp(42): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : 参见“fopen”的声明
+     1>src\Psat.cpp(43): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : 参见“fscanf”的声明
+     1>src\Psat.cpp(76): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : 参见“fopen”的声明
+     1>src\Psat.cpp(77): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : 参见“fscanf”的声明
+     1>src\Psat.cpp(82): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : 参见“fscanf”的声明
+     1>src\Psat.cpp(89): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : 参见“fscanf”的声明
+     1>src\Psat.cpp(96): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : 参见“fscanf”的声明
+     1>src\Psat.cpp(103): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : 参见“fscanf”的声明
+     1>src\Psat.cpp(110): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : 参见“fscanf”的声明
+     1>src\Psat.cpp(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : 参见“fscanf”的声明
+     1>src\Psat.cpp(124): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : 参见“fscanf”的声明
+     1>src\Psat.cpp(131): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : 参见“fscanf”的声明
+     1>src\Psat.cpp(138): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : 参见“fscanf”的声明
+     1>src\Psat.cpp(320): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+     1>src\Psat.cpp(1861): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+     1>src\Psat.cpp(1973): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+         Syn.cpp
+         main.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\home\yzt\bishe\psat\Release\psat_c.exe" /INCREMENTAL:NO /NOLOGO cula_core.lib cula_lapack.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\psat_c.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\home\yzt\bishe\psat\Release\psat_c.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\home\yzt\bishe\psat\Release\psat_c.lib" /MACHINE:X86 Release\myLib.obj
+         Release\BoundaryNode.obj
+         Release\Bus.obj
+         Release\Clpsat.obj
+         Release\DAE.obj
+         Release\Fault.obj
+         Release\Line.obj
+         Release\main.obj
+         Release\Mn.obj
+         Release\PQ.obj
+         Release\Psat.obj
+         Release\PV.obj
+         Release\Settings.obj
+         Release\Shunt.obj
+         Release\Solver.obj
+         Release\SW.obj
+         Release\Syn.obj
+         Release\Varout.obj
+         正在生成代码
+         已完成代码的生成
+         psat_c.vcxproj -> D:\home\yzt\bishe\psat\Release\psat_c.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"D:\home\yzt\bishe\psat\Release\psat_c.exe;#1" /manifest Release\psat_c.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         正在删除文件“Release\psat_c.unsuccessfulbuild”。
+         正在对“Release\psat_c.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“D:\home\yzt\bishe\psat\psat_c\psat_c.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:05.71
