@@ -79,7 +79,6 @@ int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps
     psat.dyn_f_increaseTimeSteps(1);
     psat.dyn_f_dealFaults(iFlag);
     psat.dyn_f_store(1);
-    getchar();
   }
   return 0;
 }

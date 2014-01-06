@@ -2039,7 +2039,6 @@ void Psat::dyn_f_iniSimu(int iFlag){
   simu.t_switch=new double [4*fault.n];
   for ( int i = 0; i < 4*fault.n; i += 1 ) {
     simu.t_switch[i]=settings.tempi[i];
-    printf("%lf\n",simu.t_switch[i]);
   }
   record.nhis=0;
   record.t=new double [(int)(simu.t_end/simu.tStep*2)];
@@ -2065,9 +2064,6 @@ void Psat::dyn_f_iniSimu(int iFlag){
    }
  }
 void Psat::dyn_f_integration(int iFlag){
-  int n=dae.n+2*bus.n;
-  double *temp=new double [n];
-  debug((char*)"dae.X",n,dae.X);
   if (simu.multiSteps==1){
     simu.nSteps=settings.dyn_MulStep_nSteps;
     simu.multiSteps=2;
@@ -2075,11 +2071,9 @@ void Psat::dyn_f_integration(int iFlag){
   if(settings.dyn_isPredict==1)
     dyn_f_prediction(iFlag);
   if(iFlag==1){
-    for (int i=0;i<n;++i)
-      temp[i]=dae.X[i];
-    dae.X=solver_jfng(temp);
+    dae.X=solver_jfng(dae.X);
+    // debug((char*)"daeX",dae.n+2*bus.n,dae.X);
   }
-  // debug((char*)"dae.X",n,dae.X);
 }
 void Psat::dyn_f_prediction(int iFlag){//to do multsteps,...
  int ord=settings.dyn_predict_model;
@@ -2183,6 +2177,7 @@ double * Psat::solver_jfng(double *x){
     sol[i]=x[i];
   }
   delete []fold;
+  delete []f0;
   return sol;
 }
 double * Psat::dyn_f_dae(double *x_in,double t0)//todo multiSteps
@@ -2236,6 +2231,8 @@ double * Psat::dyn_f_dae(double *x_in,double t0)//todo multiSteps
   for ( int i = dae.n; i < n; i += 1 ) {
     f_out[i]=dae.g[i-dae.n];
   }
+  delete []x_rec;
+  delete []f_rec;
   return f_out;
 }
 void Psat::updatePreconditioner(int iFlag){
@@ -2244,7 +2241,6 @@ void Psat::updatePreconditioner(int iFlag){
   double *q=new double [n];
   double temp=0;
   while(solver.update.last_num+1<solver.update.num){
-    printf("i am here\n");
     for ( int i = 0; i < n; i += 1 ) {
       p[i]=solver.update.dest*solver.deltx[solver.update.last_num+i*solver.update.maxnum];
       q[i]=solver.delty[solver.update.last_num+i*solver.update.maxnum];
@@ -2272,6 +2268,8 @@ void Psat::updatePreconditioner(int iFlag){
     
     solver.update.last_num++;
   }//end of while
+  delete []p; 
+  delete []q;
 }
 void Psat::pre_gmres(double *f0,double *xc,double *x){
   double errtol=solver.jfng.gmres.tol;
@@ -2579,9 +2577,7 @@ void Psat::dyn_f_dealFaults(int iFalg){
        for ( int i = 0; i < bus.n-boundarynode.n; i += 1 ) {
          int k=boundarynode.indexG[i];
          dae.a[k]=mean_delta-fault.delta+fault.ang[k];
-	 printf("V\t%lf\n",dae.V[i]);
        }
-       getchar();
      }
      else{
        for ( int i = 0; i < bus.n; i += 1 ) {
