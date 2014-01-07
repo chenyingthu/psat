@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CudaCompile Include="kernel.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{7cf4c16f-7f18-48be-872d-9b34255379f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{76d48720-e0fa-4f67-93aa-ab38b741782d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{d60a37cd-4c02-471c-98a3-9d7cd809de35}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\BoundaryNode.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Bus.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Clpsat.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\DAE.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Fault.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Line.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Mn.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\PQ.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Psat.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\PV.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Record.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\settings.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Shunt.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Simu.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Solver.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\SW.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Syn.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Varout.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\myLib.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lib\myLib.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BoundaryNode.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bus.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Clpsat.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DAE.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Fault.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Line.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mn.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PQ.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Psat.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PV.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Settings.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shunt.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Solver.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SW.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Syn.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Varout.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
