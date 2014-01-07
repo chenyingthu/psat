@@ -149,3 +149,111 @@ void MyZgemv(int Trans,int A_row,int A_col,Complex alpha,Complex *A,int lda,Comp
 	else
 		printf("Wrong in MyZgemv\n");
 }
+
+
+void MyDeviceDgemv(int Trans,int A_row,int A_col,double alpha,double *A,int lda,double *b,int inc_b,double beta,double *c,int inc_c){
+	double *A_dev;
+	cudaMalloc((void**)&A_dev, A_row*A_col * sizeof(double));
+	double *b_dev;
+	cudaMalloc((void**)&b_dev, A_col * sizeof(double));
+	double *c_dev;
+	cudaMalloc((void**)&c_dev, A_row * sizeof(double));
+	cudaMemcpy(A_dev, A, A_row*A_col * sizeof(double), cudaMemcpyHostToDevice);
+	cudaMemcpy(b_dev, b, A_col * sizeof(double), cudaMemcpyHostToDevice);
+	if(Trans==0)//No Trans
+		culaDeviceDgemv('N',A_row,A_col,alpha,A_dev,lda,b_dev,inc_b,beta,c_dev,inc_c);
+	else if (Trans==1) //Trans
+		culaDeviceDgemv('T',A_row,A_col,alpha,A_dev,lda,b_dev,inc_b,beta,c_dev,inc_c);
+	else
+		printf("Wrong in MyDeviceDgemv\n");
+	cudaMemcpy(c, c_dev, A_row * sizeof(double), cudaMemcpyDeviceToHost);
+	cudaFree(A_dev);
+	cudaFree(b_dev);
+	cudaFree(c_dev);
+}
+void MyDeviceDgesv(int Major,int A_row,int nhis,double *A,int lda,int *ipiv,double *b,int ldb){
+	double *A_dev;
+	cudaMalloc((void**)&A_dev, A_row*A_row * sizeof(double));
+	double *b_dev;
+	cudaMalloc((void**)&b_dev, A_row * sizeof(double));
+	int *ipiv_dev;
+	cudaMalloc((void**)&ipiv_dev, A_row * sizeof(double));
+	cudaMemcpy(A_dev, A, A_row*A_row * sizeof(double), cudaMemcpyHostToDevice);
+	cudaMemcpy(b_dev, b, A_row * sizeof(double), cudaMemcpyHostToDevice);
+	if(Major==0)//Col Major
+		culaDeviceDgesv(A_row,nhis,A_dev,lda,ipiv_dev,b_dev,ldb);
+	else if(Major==1)//Row Major
+		culaDeviceDgesv(A_row,nhis,A_dev,lda,ipiv_dev,b_dev,ldb);
+	else
+		printf("Wrong in MyDeviceDgesv\n");
+	cudaMemcpy(b, b_dev, A_row * sizeof(double), cudaMemcpyDeviceToHost);
+	cudaFree(A_dev);
+	cudaFree(b_dev);
+	cudaFree(ipiv_dev);
+}
+void MyDeviceDgemm(int Major,int m,int k,int n,double alpha,double *A,int lda,double *B,int ldb,double beta,double *C,int ldc){
+	double *A_dev;
+	cudaMalloc((void**)&A_dev, m*n * sizeof(double));
+	double *B_dev;
+	cudaMalloc((void**)&B_dev, n*k * sizeof(double));
+	double *C_dev;
+	cudaMalloc((void**)&C_dev, m*k * sizeof(double));
+	cudaMemcpy(A_dev, A, m*n * sizeof(double), cudaMemcpyHostToDevice);
+	cudaMemcpy(B_dev, B,n*k * sizeof(double), cudaMemcpyHostToDevice);
+	cudaMemcpy(C_dev, C,n*k * sizeof(double), cudaMemcpyHostToDevice);
+	if(Major==0)//Col Major
+		culaDeviceDgemm('N','N',m,k,n,alpha,A_dev,lda,B_dev,ldb,beta,C_dev,ldc);
+	else if(Major==1)
+		culaDeviceDgemm('N','N',m,k,n,alpha,A_dev,lda,B_dev,ldb,beta,C_dev,ldc);
+	cudaMemcpy(C, C_dev, m*k * sizeof(double), cudaMemcpyDeviceToHost);
+	cudaFree(A_dev);
+	cudaFree(B_dev);
+	cudaFree(C_dev);
+}
+void MyDeviceDgeev(int Major,int A_row,double *A,int lda,double *wr,double *wi,double *vl,int n1,double *vr,int n2){
+	if(Major==0)//Col Major
+		culaDeviceDgeev('N','N',A_row,A,lda,wr,wi,vl,n1,vr,n2);
+	else if(Major==1)//Row Major
+		culaDeviceDgeev('N','N',A_row,A,lda,wr,wi,vl,n1,vr,n2);
+	else
+		printf("Worng in MyDeviceZgeev\n");
+}
+void MyDeviceZgemm(int Major,int m,int k,int n,Complex alpha,Complex *A,int lda,Complex *B,int ldb,Complex beta,Complex *C,int ldc){
+	Complex *A_dev;
+	cudaMalloc((void**)&A_dev, m*n * sizeof(Complex));
+	Complex *B_dev;
+	cudaMalloc((void**)&B_dev, n*k * sizeof(Complex));
+	Complex *C_dev;
+	cudaMalloc((void**)&C_dev, m*k * sizeof(Complex));
+	cudaMemcpy(A_dev, A, m*n * sizeof(Complex), cudaMemcpyHostToDevice);
+	cudaMemcpy(B_dev, B,n*k * sizeof(Complex), cudaMemcpyHostToDevice);
+	cudaMemcpy(C_dev, C,n*k * sizeof(Complex), cudaMemcpyHostToDevice);
+	if(Major==0)//Col Major
+		culaDeviceZgemm('N','N',m,k,n,alpha,A_dev,lda,B_dev,ldb,beta,C_dev,ldc);
+	else if(Major==1)
+		culaDeviceZgemm('N','N',m,k,n,alpha,A_dev,lda,B_dev,ldb,beta,C_dev,ldc);
+	cudaMemcpy(C, C_dev, m*k * sizeof(Complex), cudaMemcpyDeviceToHost);
+	cudaFree(A_dev);
+	cudaFree(B_dev);
+	cudaFree(C_dev);
+}
+void MyDeviceZgemv(int Trans,int A_row,int A_col,Complex alpha,Complex *A,int lda,Complex *b,int inc_b,Complex beta,Complex *c,int inc_c){
+	Complex *A_dev;
+	Complex *b_dev;
+	Complex *c_dev;
+	cudaMalloc((void**)&A_dev, A_row*A_col * sizeof(Complex));
+	cudaMalloc((void**)&b_dev, A_col * sizeof(Complex));
+	cudaMalloc((void**)&c_dev, A_row * sizeof(Complex));
+	cudaMemcpy(A_dev, A, A_row*A_col * sizeof(Complex), cudaMemcpyHostToDevice);
+	cudaMemcpy(b_dev, b, A_col * sizeof(Complex), cudaMemcpyHostToDevice);
+	if(Trans==0)//No Trans
+		culaDeviceZgemv('N',A_row,A_col,alpha,A_dev,lda,b_dev,inc_b,beta,c_dev,inc_c);
+	else if (Trans==1) //Trans
+		culaDeviceZgemv('T',A_row,A_col,alpha,A_dev,lda,b_dev,inc_b,beta,c_dev,inc_c);
+	else
+		printf("Wrong in MyDeviceZgemv\n");
+	cudaMemcpy(c, c_dev, A_row * sizeof(Complex), cudaMemcpyDeviceToHost);
+	cudaFree(A_dev);
+	cudaFree(b_dev);
+	cudaFree(c_dev);
+}

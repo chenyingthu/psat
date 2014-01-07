@@ -1,5 +1,6 @@
 #include "../inc/Psat.h"
 #define pi 3.141592653589793
+#define gpu
 Psat::Psat(){
 	jay=Complex(0,1);
 	nBus=0;
@@ -371,7 +372,11 @@ void Psat::fm_spf(){
 
 		ipiv=new int[dae.n+2*bus.n-2*boundarynode.n];
 		// LAPACKE_dgesv(LAPACK_COL_MAJOR,dae.n+2*bus.n-2*boundarynode.n,1,tmp_nosw,dae.n+2*bus.n-2*boundarynode.n,ipiv,deltf_nosw,dae.n+2*bus.n-2*boundarynode.n);
+#ifndef gpu
 		MyDgesv(0,dae.n+2*bus.n-2*boundarynode.n,1,tmp_nosw,dae.n+2*bus.n-2*boundarynode.n,ipiv,deltf_nosw,dae.n+2*bus.n-2*boundarynode.n);
+#else 
+		MyDeviceDgesv(0,dae.n+2*bus.n-2*boundarynode.n,1,tmp_nosw,dae.n+2*bus.n-2*boundarynode.n,ipiv,deltf_nosw,dae.n+2*bus.n-2*boundarynode.n);
+#endif
 
 		for ( int i = 0; i < dae.n+2*bus.n-2*boundarynode.n; i += 1 ) {
 			deltf_nosw[i]=-deltf_nosw[i];
@@ -584,7 +589,11 @@ void Psat::fm_lf_1(){
 		//    cout<<Vc[i]<<endl;
 	}
 	// cblas_zgemv(CblasColMajor,CblasTrans,bus.n,bus.n,&alpha,line.Y,bus.n,Vc,1,&beta,S,1);
+#ifndef gpu
 	MyZgemv(1,bus.n,bus.n,alpha,line.Y,bus.n,Vc,1,beta,S,1);
+#else
+	MyDeviceZgemv(1,bus.n,bus.n,alpha,line.Y,bus.n,Vc,1,beta,S,1);
+#endif
 	for ( int i = 0; i < bus.n; i += 1 ) {
 		S[i]=Vc[i]*conj(S[i]);
 		dae.gp[i]=S[i].real();
@@ -672,6 +681,7 @@ void Psat::fm_lf_2(){
 		U[i]=exp(jay*dae.a[i]);
 		V[i]=dae.V[i]*U[i];
 	}
+#ifndef gpu
 	// cblas_zgemv(CblasColMajor,CblasTrans,bus.n,bus.n,&alpha,line.Y,bus.n,V,1,&beta,I,1);
 	MyZgemv(1,bus.n,bus.n,alpha,line.Y,bus.n,V,1,beta,I,1);
 	for ( int i = 0; i < bus.n; i += 1 ) {
@@ -687,6 +697,19 @@ void Psat::fm_lf_2(){
 	IcConj=conj_(bus.n*bus.n,Ic);
 	// cblas_zgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,bus.n,bus.n,bus.n,&alpha,IcConj,bus.n,Vn,bus.n,&beta,temp,bus.n);
 	MyZgemm(0,bus.n,bus.n,bus.n,alpha,IcConj,bus.n,Vn,bus.n,beta,temp,bus.n);
+#else
+	MyDeviceZgemv(1,bus.n,bus.n,alpha,line.Y,bus.n,V,1,beta,I,1);
+	for ( int i = 0; i < bus.n; i += 1 ) {
+		Vc[i+i*bus.n]=V[i];
+		Vn[i+i*bus.n]=U[i];
+		Ic[i+i*bus.n]=I[i];
+	}
+	MyDeviceZgemm(0, bus.n, bus.n, bus.n, alpha,  line.Y, bus.n, Vn,bus.n, beta, temp, bus.n);
+	tempConj=conj_(bus.n*bus.n,temp);
+	MyDeviceZgemm(0,bus.n,bus.n,bus.n,alpha,Vc,bus.n,tempConj,bus.n,beta,dS,bus.n);
+	IcConj=conj_(bus.n*bus.n,Ic);
+	MyDeviceZgemm(0,bus.n,bus.n,bus.n,alpha,IcConj,bus.n,Vn,bus.n,beta,temp,bus.n);
+#endif
 	for ( int i = 0; i < bus.n*bus.n; i += 1 ) {
 		dS[i]=dS[i]+temp[i];
 		dae.J12[i]=dS[i].real();
@@ -696,6 +719,7 @@ void Psat::fm_lf_2(){
 	*  with cblasColMajor ,output has been trans,be Carefull!!!
 	*-----------------------------------------------------------------------------*/
 	// cblas_zgemm(CblasColMajor,CblasNoTrans, CblasNoTrans, bus.n, bus.n, bus.n, &alpha,  line.Y, bus.n, Vc,bus.n, &beta, temp, bus.n);
+#ifndef gpu
 	MyZgemm(0, bus.n, bus.n, bus.n, alpha,  line.Y, bus.n, Vc,bus.n, beta, temp, bus.n);
 
 	for ( int i = 0; i < bus.n*bus.n; i += 1 ) {
@@ -703,6 +727,13 @@ void Psat::fm_lf_2(){
 	}
 	// cblas_zgemm(CblasColMajor,CblasNoTrans, CblasNoTrans, bus.n, bus.n, bus.n, &jay,  Vc, bus.n, temp,bus.n, &beta, dS, bus.n);
 	MyZgemm(0, bus.n, bus.n, bus.n, jay,  Vc, bus.n, temp,bus.n, beta, dS, bus.n);
+#else
+	MyDeviceZgemm(0, bus.n, bus.n, bus.n, alpha,  line.Y, bus.n, Vc,bus.n, beta, temp, bus.n);
+	for ( int i = 0; i < bus.n*bus.n; i += 1 ) {
+		temp[i]=conj(Ic[i]-temp[i]);
+	}
+	MyDeviceZgemm(0, bus.n, bus.n, bus.n, jay,  Vc, bus.n, temp,bus.n, beta, dS, bus.n);
+#endif
 	//    for ( int i = 0; i < bus.n; i += 1 ) {
 	//      for ( int j = 0; j < bus.n; j += 1 ) {
 	//	cout<<dS[i+j*bus.n];
@@ -1423,10 +1454,19 @@ void Psat::fm_tstep_1(int convergency,int iteration,double t){
 	double alpha1=1;
 	double beta1=0;
 	// LAPACKE_dgesv(LAPACK_COL_MAJOR,2*bus.n,dae.n,tempJlfv,2*bus.n,ipiv,tempGx,2*bus.n);
+	
+#ifndef gpu
 	MyDgesv(0,2*bus.n,dae.n,tempJlfv,2*bus.n,ipiv,tempGx,2*bus.n);
+#else
+	MyDeviceDgesv(0,2*bus.n,dae.n,tempJlfv,2*bus.n,ipiv,tempGx,2*bus.n);
+#endif
 	// cblas_dgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,dae.n,dae.n,2*bus.n,alpha1,tempFy,dae.n,tempGx,2*bus.n,beta1,As,dae.n);
+	//MyDgemm(0,dae.n,dae.n,2*bus.n,alpha1,tempFy,dae.n,tempGx,2*bus.n,beta1,As,dae.n);
+#ifndef gpu
 	MyDgemm(0,dae.n,dae.n,2*bus.n,alpha1,tempFy,dae.n,tempGx,2*bus.n,beta1,As,dae.n);
-
+#else
+	MyDeviceDgemm(0,dae.n,dae.n,2*bus.n,alpha1,tempFy,dae.n,tempGx,2*bus.n,beta1,As,dae.n);
+#endif
 	for ( int i = 0; i < dae.n; i += 1 ) {
 		for ( int j = 0; j < dae.n; j += 1 ) {
 			As[j+i*dae.n]=dae.Fx[i+j*dae.n]-As[j+i*dae.n];
@@ -1733,7 +1773,11 @@ void Psat::fm_int_step(double t,double h,double *tempi,int k){
 			}
 		}
 		// LAPACKE_dgesv(LAPACK_COL_MAJOR,AllN,1,tempAc,AllN,ipiv,inc,AllN);
+#ifndef gpu
 		MyDgesv(0,AllN,1,tempAc,AllN,ipiv,inc,AllN);
+#else
+		MyDeviceDgesv(0,AllN,1,tempAc,AllN,ipiv,inc,AllN);
+#endif
 		err_max=0;
 		for ( int i = 0; i <AllN; i += 1 ) {
 			inc[i]=-inc[i];
@@ -1884,7 +1928,12 @@ int Psat::fm_nrlf(int iter_max,double tol){
 			inc[i]=dae.g[k];
 		}
 		// LAPACKE_dgesv(LAPACK_COL_MAJOR,2*bus.n-2*boundarynode.n,1,tempJlfv,2*bus.n-2*boundarynode.n,ipiv,inc,2*bus.n-2*boundarynode.n);
+#ifndef gpu
 		MyDgesv(0,2*bus.n-2*boundarynode.n,1,tempJlfv,2*bus.n-2*boundarynode.n,ipiv,inc,2*bus.n-2*boundarynode.n);
+#else
+		MyDeviceDgesv(0,2*bus.n-2*boundarynode.n,1,tempJlfv,2*bus.n-2*boundarynode.n,ipiv,inc,2*bus.n-2*boundarynode.n);
+#endif
+		
 		for (int i=0;i < 2*(bus.n-boundarynode.n); i +=1 ){
 			int k=index[i];
 			y2[k]+=-inc[i];
@@ -2081,7 +2130,7 @@ void Psat::dyn_f_integration(int iFlag){
 		dyn_f_prediction(iFlag);
 	if(iFlag==1){
 		dae.X=solver_jfng(dae.X);
-		debug((char*)"daeX",dae.n+2*bus.n,dae.X);
+		//debug((char*)"daeX",dae.n+2*bus.n,dae.X);
 	}
 }
 void Psat::dyn_f_prediction(int iFlag){//to do multsteps,...
@@ -2415,10 +2464,20 @@ void Psat::pre_gmres(double *f0,double *xc,double *x){
 	double beta=0;
 	// LAPACKE_dgesv(LAPACK_COL_MAJOR,k,1,h_temp,k,ipiv,g,k);
 	//debug("g",k,g);
+	
+#ifndef gpu
 	MyDgesv(0,k,1,h_temp,k,ipiv,g,k);
+#else
+	MyDeviceDgesv(0,k,1,h_temp,k,ipiv,g,k);
+#endif
+	//MyDgesv(0,k,1,h_temp,k,ipiv,g,k);
 	//debug("g",k,g);
 	// cblas_dgemv(CblasColMajor,CblasNoTrans,n,k,alpha,z_temp2,n,g,1,beta,x,1);
+#ifndef gpu
 	MyDgemv(0,n,k,alpha,z_temp2,n,g,1,beta,x,1);
+#else
+	MyDeviceDgemv(0,n,k,alpha,z_temp2,n,g,1,beta,x,1);
+#endif
 	// debug("x",n,x);
 	inner_it_count=k; 
 	simu.neval+=k;
