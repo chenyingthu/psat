@@ -58,6 +58,7 @@ int main()
 	 //return 0;
 
      dyn_main(1,39,0,2,0,2,0.005);
+	 culaShutdown();
 }
 int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps,double tStep){
 	  Psat psat;
