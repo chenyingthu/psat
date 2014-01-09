@@ -6,6 +6,7 @@
 #include <iostream>
 #include <complex>
 #include <stdio.h>
+#define gpu
 //typedef culaFloatComplex cuComplex;
 //class cuComplex{
 //public:
@@ -29,59 +30,67 @@
 //	return output;
 //	}
 //};
-	//cuComplex &operator*(const cuComplex&a){
-	//	return cuComplex(x*a.x-y*a.y, y*a.x+x*a.y);
-	//}
-	//cuComplex &operator+(const cuComplex &a) {
-	//	return cuComplex(x+a.x,y+a.y);
-	//}
-	//ostream &operator<<(ostream &output,cuComplex &d){
-	//	output<<"("<<d.x<<","<<d.y<<") ";
-	//	output<<endl;
-	//}
+//cuComplex &operator*(const cuComplex&a){
+//	return cuComplex(x*a.x-y*a.y, y*a.x+x*a.y);
+//}
+//cuComplex &operator+(const cuComplex &a) {
+//	return cuComplex(x+a.x,y+a.y);
+//}
+//ostream &operator<<(ostream &output,cuComplex &d){
+//	output<<"("<<d.x<<","<<d.y<<") ";
+//	output<<endl;
+//}
 int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps,double tStep);
 int main()
 {
-    culaInitialize();
-	 //Psat psat;
-	 //psat.specifySystem();
-	 //psat.init();
-	 //psat.formConMatrix();
-	 //psat.initialLF();
-	 //psat.fm_spf();
-	 //psat.fm_int_intial();
-	 //psat.resetBoundNode();
-	 //double h;
-	 //h=psat.fm_tstep(1,1,0,psat.settings.t0);
-	 //psat.fm_int_dyn(psat.settings.t0,psat.settings.tf,h);
+	culaInitialize();
+	//Psat psat;
+	//psat.specifySystem();
+	//psat.init();
+	//psat.formConMatrix();
+	//psat.initialLF();
+	//psat.fm_spf();
+	//psat.fm_int_intial();
+	//psat.resetBoundNode();
+	//double h;
+	//h=psat.fm_tstep(1,1,0,psat.settings.t0);
+	//psat.fm_int_dyn(psat.settings.t0,psat.settings.tf,h);
 
-	 //return 0;
+	//return 0;
 
-     dyn_main(1,39,0,2,0,2,0.005);
-	 culaShutdown();
+	dyn_main(1,39,0,2,0,2,0.005);
+	culaShutdown();
 }
 int dyn_main(int iFlag,int sys,int isPredict,int model,int isMultStep,int nSteps,double tStep){
-	  Psat psat;
-	  psat.simu.tStep=tStep;
-	  psat.dyn_f_iniNet(1);
-	  psat.dyn_f_iniSyn(1);
-	  psat.dyn_f_iniDae(1);
-	  psat.dyn_f_iniSolver(1);
-	  psat.dyn_f_iniSimu(1);
-	  psat.dyn_f_store(1);
-	  psat.settings.dyn_isPredict=isPredict;
-	  psat.settings.dyn_predict_model=model;
-	  psat.settings.dyn_isMulStep=isMultStep;
-	  psat.settings.dyn_MulStep_nSteps=nSteps;
-	  psat.settings.dyn_tStep=tStep;
-	  while(psat.simu.t_cur<psat.simu.t_end){
+	Psat psat;
+	psat.simu.tStep=tStep;
+	psat.dyn_f_iniNet(1);
+	psat.dyn_f_iniSyn(1);
+	psat.dyn_f_iniDae(1);
+	psat.dyn_f_iniSolver(1);
+	psat.dyn_f_iniSimu(1);
+	psat.dyn_f_store(1);
+	psat.settings.dyn_isPredict=isPredict;
+	psat.settings.dyn_predict_model=model;
+	psat.settings.dyn_isMulStep=isMultStep;
+	psat.settings.dyn_MulStep_nSteps=nSteps;
+	psat.settings.dyn_tStep=tStep;
+	while(psat.simu.t_cur<psat.simu.t_end){
+#ifndef gpu
 		printf("beging integration at t=%lf s\n",psat.simu.t_next);
 		psat.dyn_f_integration(iFlag);
 		psat.dyn_f_increaseTimeSteps(1);
 		psat.dyn_f_dealFaults(iFlag);
 		psat.dyn_f_store(1);
-	  }
-  return 0;
+#else 
+		printf("beging integration at t=%lf s\n",psat.simu.t_next);
+		psat.dyn_f_integration_gpu(iFlag);
+		psat.dyn_f_increaseTimeSteps_gpu(1);
+		psat.dyn_f_dealFaults_gpu(iFlag);
+		psat.dyn_f_store_gpu(1);
+#endif
+	}
+	return 0;
 }
 //int main()
 //{

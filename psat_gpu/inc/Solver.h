@@ -55,6 +55,8 @@ class Solver{
   double *P;
   double *deltx;
   double *delty;
+  double *deltx_dev;
+  double *delty_dev;
   void dyn_f_iniSolver(int);
 };
 #endif

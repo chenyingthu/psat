@@ -135,5 +135,21 @@ public:
 
 	void debug(char* str,int n,double *);
 	double *V_bak;
+
+	void dyn_f_store_gpu(int);
+	void formDAEX_gpu();
+	void DAEXtox_gpu();
+	void DAEXtox_2_gpu(double *);
+	void dyn_f_integration_gpu(int iFlag);
+	void dyn_f_increaseTimeSteps_gpu(int);
+	void dyn_f_dealFaults_gpu(int iFlag);
+	void dyn_f_prediction_gpu(int iFlag);
+	double * solver_jfng_gpu(double *);
+	double *dyn_f_dae_gpu(double *,double );
+	void updatePreconditioner_gpu(int);
+	void pre_gmres_gpu(double *,double *,double *);
+	void precondition_gpu(double * );
+	void dirder_gpu(double *,double * ,double *,double *);
+	void givapp_gpu(double *,double *,double *,int);
 };
 #endif
